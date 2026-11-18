@@ -100,4 +100,6 @@ Details stehen in [CONTRIBUTING.md](CONTRIBUTING.md) und [docs/adding-vendors.md
 
 [MIT](LICENSE). Drittanbieter: [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md). Datenschutz: [PRIVACY.md](PRIVACY.md). Sicherheitslücken bitte nach [SECURITY.md](SECURITY.md) melden.
 
+**Code signing policy:** Die Signatur der Windows-Releases über die SignPath Foundation wird beantragt; bis dahin sind die Releases unsigniert. Regeln und Zuständigkeiten: [docs/code-signing-policy.md](docs/code-signing-policy.md).
+
 DriverCompass ist ein unabhängiges Projekt und steht in keiner Verbindung zu den genannten Herstellern. Alle Marken gehören ihren Inhabern.

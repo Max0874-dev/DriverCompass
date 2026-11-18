@@ -96,4 +96,6 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/adding-vendors.md](docs/adding-
 
 [MIT](LICENSE). Third-party components: [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md). Privacy: [PRIVACY.md](PRIVACY.md). Please report vulnerabilities as described in [SECURITY.md](SECURITY.md).
 
+**Code signing policy:** signing of the Windows releases by SignPath Foundation is being applied for; until then releases are unsigned. Rules and roles: [docs/code-signing-policy.md](docs/code-signing-policy.md).
+
 DriverCompass is an independent project and not affiliated with any of the manufacturers mentioned. All trademarks belong to their owners.

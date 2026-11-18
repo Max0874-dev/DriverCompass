@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  SignPath artifact configuration for DriverCompass (copy into the SignPath project as the default artifact configuration).
+  The release workflow uploads only the project's own binaries (a ZIP created by actions/upload-artifact);
+  third-party DLLs are not sent and not signed.
+  product-name must match <DriverCompassDisplayName> in Directory.Build.props.
+-->
+<artifact-configuration xmlns="http://signpath.io/artifact-configuration/v1">
+  <parameters>
+    <parameter name="version" required="true" />
+  </parameters>
+  <zip-file>
+    <pe-file-set product-name="DriverCompass" product-version="${version}">
+      <include path="DriverCompass.exe" />
+      <include path="DriverCompass.dll" />
+      <include path="DriverCompass.*.dll" min-matches="1" max-matches="unbounded" />
+      <for-each>
+        <authenticode-sign />
+      </for-each>
+    </pe-file-set>
+  </zip-file>
+</artifact-configuration>

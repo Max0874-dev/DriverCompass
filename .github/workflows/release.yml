@@ -15,6 +15,8 @@ jobs:
       DOTNET_NOLOGO: true
       DOTNET_CLI_TELEMETRY_OPTOUT: true
       HAS_SIGNING_CERT: ${{ secrets.SIGNING_CERT != '' }}
+      # Code signing via SignPath Foundation – off until the secret and variable exist (see docs/code-signing.md).
+      HAS_SIGNPATH: ${{ secrets.SIGNPATH_API_TOKEN != '' && vars.SIGNPATH_ORGANIZATION_ID != '' }}
     strategy:
       matrix:
         platform: [x64, ARM64]
@@ -39,12 +41,68 @@ jobs:
         shell: pwsh
         run: |
           $rid = if ('${{ matrix.platform }}' -eq 'ARM64') { 'win-arm64' } else { 'win-x64' }
+          "RID=$rid" >> $env:GITHUB_ENV
           dotnet publish src/DriverCompass.App/DriverCompass.App.csproj -c Release `
             -p:Platform=${{ matrix.platform }} -r $rid --self-contained true `
             -p:Version=$env:VERSION -o publish/$rid
           # Licence and notices travel with the binaries (MIT licence, third-party notices, privacy, security).
           Copy-Item LICENSE, THIRD-PARTY-NOTICES.md, PRIVACY.md, SECURITY.md, CHANGELOG.md, README.md, README.en.md -Destination publish/$rid
-          Compress-Archive -Path publish/$rid/* -DestinationPath "DriverCompass-$env:VERSION-$rid.zip"
+
+      # Only the project's own binaries are sent to SignPath; third-party DLLs stay as published by their authors.
+      - name: Collect own binaries for signing
+        if: env.HAS_SIGNPATH == 'true'
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force to-sign | Out-Null
+          Get-ChildItem "publish/$env:RID" -File |
+            Where-Object { $_.Name -eq 'DriverCompass.exe' -or ($_.Name -like 'DriverCompass*.dll') } |
+            Copy-Item -Destination to-sign
+          Get-ChildItem to-sign | ForEach-Object { Write-Host $_.Name }
+
+      - name: Upload unsigned binaries
+        id: unsigned
+        if: env.HAS_SIGNPATH == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: unsigned-${{ matrix.platform }}
+          path: to-sign/
+          if-no-files-found: error
+          retention-days: 1
+
+      # Waits until the approver approves the request in SignPath.
+      - name: Sign with SignPath
+        if: env.HAS_SIGNPATH == 'true'
+        uses: signpath/github-action-submit-signing-request@v3
+        with:
+          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
+          organization-id: ${{ vars.SIGNPATH_ORGANIZATION_ID }}
+          project-slug: ${{ vars.SIGNPATH_PROJECT_SLUG || 'DriverCompass' }}
+          signing-policy-slug: ${{ vars.SIGNPATH_SIGNING_POLICY_SLUG || 'release-signing' }}
+          github-artifact-id: ${{ steps.unsigned.outputs.artifact-id }}
+          wait-for-completion: true
+          wait-for-completion-timeout-in-seconds: 3600
+          output-artifact-directory: signed
+          parameters: |
+            version: ${{ toJSON(env.VERSION) }}
+
+      - name: Check signatures and use signed binaries
+        if: env.HAS_SIGNPATH == 'true'
+        shell: pwsh
+        run: |
+          foreach ($file in Get-ChildItem to-sign -File) {
+            $signed = Join-Path signed $file.Name
+            if (-not (Test-Path $signed)) { throw "Signed file missing: $($file.Name)" }
+            $sig = Get-AuthenticodeSignature $signed
+            if ($sig.Status -ne 'Valid' -or $sig.SignerCertificate.Subject -notmatch 'SignPath Foundation') {
+              throw "Unexpected signature on $($file.Name): $($sig.Status) $($sig.SignerCertificate.Subject)"
+            }
+            Copy-Item $signed (Join-Path "publish/$env:RID" $file.Name) -Force
+            Write-Host "$($file.Name): $($sig.SignerCertificate.Subject)"
+          }
+
+      - name: Package ZIP
+        shell: pwsh
+        run: Compress-Archive -Path "publish/$env:RID/*" -DestinationPath "DriverCompass-$env:VERSION-$env:RID.zip"
 
       # MSIX only when a signing certificate is configured (secrets SIGNING_CERT = base64 PFX, SIGNING_CERT_PASSWORD).
       - name: Build signed MSIX
@@ -69,16 +127,21 @@ jobs:
             "$((Get-FileHash $_.FullName -Algorithm SHA256).Hash.ToLower())  $($_.Name)"
           } | Out-File -Encoding ascii "SHA256SUMS-${{ matrix.platform }}.txt"
 
-      # Release notes = the section of CHANGELOG.md for this version.
+      # Release notes = the section of CHANGELOG.md for this version, plus the link to the code signing policy.
       - name: Release notes
         shell: pwsh
         run: |
           $lines = Get-Content -Encoding utf8 CHANGELOG.md
           $start = [Array]::FindIndex($lines, [Predicate[string]]{ param($l) $l.StartsWith("## [$env:VERSION]") })
-          if ($start -lt 0) { "Release $env:VERSION" | Out-File -Encoding utf8 RELEASE_NOTES.md; return }
-          $end = [Array]::FindIndex($lines, $start + 1, [Predicate[string]]{ param($l) $l.StartsWith("## ") })
-          if ($end -lt 0) { $end = $lines.Length }
-          $lines[($start + 1)..($end - 1)] | Out-File -Encoding utf8 RELEASE_NOTES.md
+          if ($start -lt 0) {
+            $notes = @("Release $env:VERSION")
+          } else {
+            $end = [Array]::FindIndex($lines, $start + 1, [Predicate[string]]{ param($l) $l.StartsWith("## ") })
+            if ($end -lt 0) { $end = $lines.Length }
+            $notes = $lines[($start + 1)..($end - 1)]
+          }
+          $notes += '', '---', "[Code signing policy](https://github.com/${{ github.repository }}/blob/main/docs/code-signing-policy.md) · [Privacy](https://github.com/${{ github.repository }}/blob/main/PRIVACY.md)"
+          $notes | Out-File -Encoding utf8 RELEASE_NOTES.md
 
       # Never touch a release that is already published (e.g. when a tag is moved) – it would be set back to draft.
       - name: Check for published release
