@@ -21,7 +21,7 @@
 - Results in both views, a filter "Newer version available", detail pane and HTML/CSV export.
 - Possible later: more OEMs with official catalogs, optional automatic check after the scan.
 
-## Stage 3 – install (part 1 ✅ Windows Update, part 2 ✅ Dell and HP)
+## Stage 3 – install ✅ (Windows Update, Dell, HP, Lenovo)
 
 Done:
 
@@ -36,7 +36,9 @@ Part 2 (done): Dell Update Packages and HP SoftPaqs.
 - Only INFs for this device, for this CPU architecture and with a validly signed catalog are installed with `pnputil /add-driver /install`; no vendor software or control panels.
 - If Windows does not use the package for any device, exactly that package is removed again.
 
-Open: Lenovo packages (Inno Setup installers – they can only be extracted by running Lenovo's own program), so Lenovo devices keep "Open driver page".
+Part 3 (done): Lenovo packages.
+
+- Lenovo packages are Inno Setup EXEs. The descriptor's standard extract command must match exactly; Lenovo's signed EXE (SHA-256 chain catalog → descriptor → EXE, signer "Lenovo") then extracts itself in the admin-only work folder with fixed arguments – the only place where vendor code runs elevated, as with Lenovo System Update. Installation as for Dell/HP: only the signed INF via pnputil.
 
 Original plan for reference:
 

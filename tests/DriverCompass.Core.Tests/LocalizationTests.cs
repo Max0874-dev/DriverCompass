@@ -49,7 +49,7 @@ public class LocalizationTests
         expected.AddRange(Enum.GetNames<InstallOutcome>().SelectMany(o => new[] { $"Install_Outcome_{o}", $"InstallOutcomeShort_{o}" }));
         expected.AddRange(Enum.GetNames<InstallAction>().Select(a => $"History_Action_{a}"));
         expected.AddRange(["RestoreReason_Disabled", "RestoreReason_FrequencyLimit", "RestoreReason_Failed"]);
-        expected.AddRange(["PackageHost_dell", "PackageHost_hp", "Install_Intro_Oem", "Install_Steps_Oem"]);
+        expected.AddRange(["PackageHost_dell", "PackageHost_hp", "PackageHost_lenovo", "Install_Intro_Oem", "Install_Steps_Oem", "Install_Steps_Lenovo"]);
 
         var missing = expected.Where(k => !keys.ContainsKey(k)).ToList();
         Assert.True(missing.Count == 0, "Missing keys: " + string.Join(", ", missing));

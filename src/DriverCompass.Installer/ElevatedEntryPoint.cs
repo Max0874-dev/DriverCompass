@@ -8,6 +8,7 @@ using DriverCompass.Scanner.Windows;
 using DriverCompass.VersionProviders;
 using DriverCompass.VersionProviders.Dell;
 using DriverCompass.VersionProviders.Hp;
+using DriverCompass.VersionProviders.Lenovo;
 using DriverCompass.VersionProviders.Net;
 using DriverCompass.VersionProviders.Packages;
 using Microsoft.Extensions.Logging;
@@ -67,7 +68,7 @@ public static class ElevatedEntryPoint
             var downloader = new CatalogDownloader(http, Path.Combine(root, "cache"), logger: loggerFactory.CreateLogger<CatalogDownloader>());
             var cabs = new ExpandCabExtractor(Path.Combine(root, "work"), loggerFactory.CreateLogger<ExpandCabExtractor>());
             var signatures = new AuthenticodeFileVerifier();
-            var payloads = new SevenZipPayloadExtractor();
+            var payloads = new PackageExtractor(new SevenZipPayloadExtractor(), new LenovoInnoExtractor(new ExtractorProcessRunner(), loggerFactory.CreateLogger<LenovoInnoExtractor>()));
 
             IPackageSource Oem(IOemPackageCatalog catalog) => new OemPackageSource(
                 catalog, wmi, downloader, signatures, payloads, driverStore, Path.Combine(root, "work"), loggerFactory.CreateLogger<OemPackageSource>());
@@ -78,6 +79,7 @@ public static class ElevatedEntryPoint
                     new WindowsUpdateSource(windowsUpdate),
                     Oem(new DellVersionProvider(downloader, cabs)),
                     Oem(new HpVersionProvider(downloader, cabs)),
+                    Oem(new LenovoVersionProvider(downloader)),
                 ],
                 new WmiRestorePointCreator(),
                 driverStore,

@@ -16,6 +16,8 @@ namespace DriverCompass.VersionProviders.Packages;
 /// <param name="HardwareIds">Devices the catalog says the package is for.</param>
 /// <param name="Signers">Accepted Authenticode signer names of the package EXE.</param>
 /// <param name="AllowedHosts">Exact hosts the download may use.</param>
+/// <param name="Extraction">How the driver files are extracted.</param>
+/// <param name="InstallerFileName">File name the package EXE must have (Lenovo).</param>
 public sealed record OemPackage(
     string Source,
     string PackageId,
@@ -26,7 +28,19 @@ public sealed record OemPackage(
     string? Version,
     IReadOnlyList<string> HardwareIds,
     IReadOnlyList<string> Signers,
-    IReadOnlyCollection<string> AllowedHosts);
+    IReadOnlyCollection<string> AllowedHosts,
+    PackageExtraction Extraction = PackageExtraction.SevenZip,
+    string? InstallerFileName = null);
+
+/// <summary>How the driver files get out of the vendor EXE.</summary>
+public enum PackageExtraction
+{
+    /// <summary>Dell / HP: appended 7z archive, extracted with Windows' tar.exe – no vendor code runs.</summary>
+    SevenZip = 0,
+
+    /// <summary>Lenovo: Inno Setup package; Lenovo's own signed EXE extracts itself (/EXTRACT=YES).</summary>
+    LenovoInno = 1,
+}
 
 /// <summary>Looks up an installable package in a vendor's signed catalog.</summary>
 public interface IOemPackageCatalog

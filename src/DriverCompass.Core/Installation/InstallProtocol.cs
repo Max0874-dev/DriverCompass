@@ -93,7 +93,8 @@ public static class InstallProtocol
                     VersionSourceIds.WindowsUpdate => null,
                     VersionSourceIds.Dell when request.UpdateId is not null || !IsSafeDellPackagePath(request.PackageId) => "invalid Dell package",
                     VersionSourceIds.Hp when request.UpdateId is not null || !IsHpSoftPaqId(request.PackageId) => "invalid HP package",
-                    VersionSourceIds.Dell or VersionSourceIds.Hp => null,
+                    VersionSourceIds.Lenovo when request.UpdateId is not null || !IsLenovoPackageId(request.PackageId) => "invalid Lenovo package",
+                    VersionSourceIds.Dell or VersionSourceIds.Hp or VersionSourceIds.Lenovo => null,
                     _ => "unsupported source",
                 };
 
@@ -110,7 +111,7 @@ public static class InstallProtocol
 
     /// <summary>Sources whose packages DriverCompass can install.</summary>
     public static IReadOnlySet<string> InstallableSources { get; } =
-        new HashSet<string>(StringComparer.Ordinal) { VersionSourceIds.WindowsUpdate, VersionSourceIds.Dell, VersionSourceIds.Hp };
+        new HashSet<string>(StringComparer.Ordinal) { VersionSourceIds.WindowsUpdate, VersionSourceIds.Dell, VersionSourceIds.Hp, VersionSourceIds.Lenovo };
 
     /// <summary>Dell component path relative to downloads.dell.com, e.g. "FOLDER14023085M/2/Name_A03.EXE".</summary>
     public static bool IsSafeDellPackagePath(string? path) =>
@@ -119,6 +120,10 @@ public static class InstallProtocol
         !path.StartsWith('/') &&
         !path.Contains("..", StringComparison.Ordinal) &&
         path.All(c => char.IsAsciiLetterOrDigit(c) || c is '/' or '-' or '_' or '.');
+
+    /// <summary>Lenovo package descriptor id, e.g. "n32li04w" or "n4ody12w_w10w11".</summary>
+    public static bool IsLenovoPackageId(string? id) =>
+        id is { Length: >= 4 and <= 40 } && id.All(c => char.IsAsciiLetterLower(c) || char.IsAsciiDigit(c) || c == '_');
 
     /// <summary>HP SoftPaq number, e.g. "sp157308".</summary>
     public static bool IsHpSoftPaqId(string? id) =>

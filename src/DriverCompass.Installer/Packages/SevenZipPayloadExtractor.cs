@@ -1,13 +1,25 @@
 using System.Diagnostics;
 using System.Runtime.Versioning;
+using DriverCompass.VersionProviders.Packages;
 
 namespace DriverCompass.Installer.Packages;
 
-/// <summary>Extracts the driver files of a vendor package without running any vendor code.</summary>
+/// <summary>Gets the driver files out of a verified vendor package.</summary>
 public interface IPayloadExtractor
 {
     /// <summary>True if files were extracted into <paramref name="targetDirectory"/> (which must be empty).</summary>
-    bool TryExtract(string packagePath, string targetDirectory);
+    bool TryExtract(OemPackage package, string packagePath, string targetDirectory);
+}
+
+/// <summary>Chooses the extractor that fits the package (Dell/HP: 7z via tar, Lenovo: its own signed EXE).</summary>
+public sealed class PackageExtractor(IPayloadExtractor sevenZip, IPayloadExtractor lenovo) : IPayloadExtractor
+{
+    public bool TryExtract(OemPackage package, string packagePath, string targetDirectory) => package.Extraction switch
+    {
+        PackageExtraction.SevenZip => sevenZip.TryExtract(package, packagePath, targetDirectory),
+        PackageExtraction.LenovoInno => lenovo.TryExtract(package, packagePath, targetDirectory),
+        _ => false,
+    };
 }
 
 /// <summary>
@@ -29,6 +41,8 @@ public sealed class SevenZipPayloadExtractor : IPayloadExtractor
 
     public SevenZipPayloadExtractor(string? tarPath = null) =>
         _tar = tarPath ?? Path.Combine(Environment.SystemDirectory, "tar.exe");
+
+    public bool TryExtract(OemPackage package, string packagePath, string targetDirectory) => TryExtract(packagePath, targetDirectory);
 
     public bool TryExtract(string packagePath, string targetDirectory)
     {
@@ -131,7 +145,7 @@ public sealed class SevenZipPayloadExtractor : IPayloadExtractor
         return process.ExitCode == 0 && Directory.EnumerateFileSystemEntries(targetDirectory).Any();
     }
 
-    private static bool WithinLimits(string directory)
+    internal static bool WithinLimits(string directory)
     {
         long total = 0;
         var count = 0;

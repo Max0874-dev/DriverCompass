@@ -8,11 +8,11 @@ DriverCompass ist eine kostenlose Open-Source-App für Windows 10 und 11. Sie er
 - 🚦 **Einfache Ansicht** mit Ampel, verständlichen Namen und einem Button „Treiber holen“.
 - 🔬 **Expertenmodus** mit Hardware-IDs, INF-Datei, Treiberanbieter, Version, Datum, Fehlercode, Suche, Filter, Sortierung und Export (HTML/CSV).
 - 🔄 **Versionsprüfung** (optional): „Versionen prüfen“ vergleicht installierte Treiber mit offiziellen Quellen: Windows Update sowie die Kataloge von Dell, Lenovo und HP. Ohne offizielle Quelle steht ehrlich „Version unbekannt – bitte Link prüfen“. Jede Quelle ist standardmäßig aus, siehe [PRIVACY.md](PRIVACY.md).
-- 🛠️ **Installation** (Windows Update, Dell, HP): „Installieren …“ installiert genau einen bestätigten Treiber – bei Dell und HP nur den signierten Treiber aus dem offiziellen Paket, ohne Herstellerprogramme auszuführen –, mit Wiederherstellungspunkt, Protokoll und „Rückgängig machen“ im Verlauf. Adminrechte nur für diesen Schritt (UAC). **Ohne Gewähr** – Treiber stammen von Drittanbietern, sichere vorher wichtige Daten.
+- 🛠️ **Installation** (Windows Update, Dell, HP, Lenovo): „Installieren …“ installiert genau einen bestätigten Treiber – bei Dell, HP und Lenovo nur den signierten Treiber aus dem offiziellen Paket (Dell/HP ohne Herstellerprogramme; Lenovo-Pakete entpackt Lenovos signiertes Programm einmal mit Adminrechten) –, mit Wiederherstellungspunkt, Protokoll und „Rückgängig machen“ im Verlauf. Adminrechte nur für diesen Schritt (UAC). **Ohne Gewähr** – Treiber stammen von Drittanbietern, sichere vorher wichtige Daten.
 - 🌍 Deutsch und Englisch.
 - 🛡️ Keine Adminrechte nötig – außer für eine bestätigte Treiberinstallation.
 
-> **Status:** Stufe 1 (Erkennen und Links), Stufe 2 (Versionsvergleich) und Stufe 3 (Installation aus Windows Update sowie Dell- und HP-Paketen) sind fertig. Lenovo-Pakete sind noch offen, siehe [docs/roadmap.md](docs/roadmap.md).
+> **Status:** Stufe 1 (Erkennen und Links), Stufe 2 (Versionsvergleich) und Stufe 3 (Installation aus Windows Update sowie Dell-, HP- und Lenovo-Paketen) sind fertig, siehe [docs/roadmap.md](docs/roadmap.md).
 
 ## Wie die Links entstehen
 

@@ -26,7 +26,7 @@ public sealed class MockInstallerClient : IElevatedInstallerClient, IInstallLog
             return new InstallResult { RequestId = request.RequestId, Outcome = InstallOutcome.RolledBack, LogEntryId = rollback.Id, Title = original?.Title };
         }
 
-        var dell = request.Source == VersionSourceIds.Dell;
+        var dell = request.Source is VersionSourceIds.Dell or VersionSourceIds.Lenovo;
         var title = dell ? "Intel AX210/AX211 WLAN Driver" : "Intel Corporation - Bluetooth - 23.150.0.3";
         var (before, after) = dell ? ("23.60.1.2", "23.130.0.4") : ("22.240.0.2", "23.150.0.3");
         if (!_restorePointShown && !request.AllowWithoutRestorePoint)
@@ -64,7 +64,7 @@ public sealed class MockInstallerClient : IElevatedInstallerClient, IInstallLog
         Outcome = outcome,
         RequestId = request.RequestId,
         DeviceInstanceId = request.DeviceInstanceId,
-        DeviceName = request.Source == VersionSourceIds.Dell ? "Intel(R) Wi-Fi 6E AX210 160MHz" : "Intel(R) Wireless Bluetooth(R)",
+        DeviceName = request.Source is VersionSourceIds.Dell or VersionSourceIds.Lenovo ? "Intel(R) Wi-Fi 6E AX210 160MHz" : "Intel(R) Wireless Bluetooth(R)",
         Source = request.Source,
         UpdateId = request.UpdateId ?? request.PackageId,
         Title = title,

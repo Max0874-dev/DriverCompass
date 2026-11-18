@@ -100,3 +100,7 @@ fresh WMI system data → IOemPackageCatalog (Dell/HP provider, signed catalog, 
 → InfMatcher (device hardware ID, architecture, CatalogFile with trusted signature)
 → restore point → pnputil → new oemNN.inf attributed by INF SHA-256 → log
 ```
+
+### Part 3 – Lenovo packages
+
+`LenovoVersionProvider` also implements `IOemPackageCatalog`; `OemPackage.Extraction = LenovoInno` routes the package through `PackageExtractor` to `LenovoInnoExtractor` instead of the 7z path. The extractor only accepts packages whose descriptor uses Lenovo's standard command (`<name>.exe /VERYSILENT /DIR=%PACKAGEPATH% /EXTRACT="YES"`), copies the verified EXE into the admin-only work folder and starts it with fixed arguments built by DriverCompass. Everything after extraction (INF choice, restore point, pnputil, log, rollback) is shared with Dell and HP.

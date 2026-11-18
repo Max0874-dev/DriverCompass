@@ -78,7 +78,8 @@ public sealed partial class MainWindow : Window, IShellService
             panel.Children.Add(Text(Localizer.F("Install_Version", confirmation.VersionText)));
         }
 
-        panel.Children.Add(Text(oem ? Localizer.F("Install_Steps_Oem", vendor, Localizer.T($"PackageHost_{confirmation.SourceId}")) : Localizer.T("Install_Steps"), secondary: true));
+        var steps = confirmation.SourceId == Core.Models.VersionSourceIds.Lenovo ? "Install_Steps_Lenovo" : "Install_Steps_Oem";
+        panel.Children.Add(Text(oem ? Localizer.F(steps, vendor, Localizer.T($"PackageHost_{confirmation.SourceId}")) : Localizer.T("Install_Steps"), secondary: true));
 
         var dialog = new ContentDialog
         {

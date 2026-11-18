@@ -57,7 +57,9 @@ public class OemRequestValidationTests
     [InlineData("hp", "sp157308", true)]
     [InlineData("hp", "sp15730x", false)]
     [InlineData("hp", "157308", false)]
-    [InlineData("lenovo", "n32li04w", false)]
+    [InlineData("lenovo", "n32li04w", true)]
+    [InlineData("lenovo", "N32LI04W", false)]
+    [InlineData("acme", "x1234", false)]
     public void PackageIds(string source, string packageId, bool valid) =>
         Assert.Equal(valid, InstallProtocol.Validate(Request(source, packageId)) is null);
 
@@ -246,7 +248,7 @@ public sealed class OemPackageSourceTests : IDisposable
     /// <summary>"Extracts" a driver folder with an INF for the given hardware ID.</summary>
     private sealed class FakeExtractor(string? infHardwareId, bool succeed = true) : IPayloadExtractor
     {
-        public bool TryExtract(string packagePath, string targetDirectory)
+        public bool TryExtract(OemPackage package, string packagePath, string targetDirectory)
         {
             if (!succeed)
             {

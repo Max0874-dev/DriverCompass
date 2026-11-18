@@ -302,4 +302,6 @@
   <data name="PackageHost_hp" xml:space="preserve"><value>ftp.hp.com</value></data>
   <data name="Install_Outcome_NotInstallable" xml:space="preserve"><value>Dieses Paket enthält keinen Treiber, den DriverCompass für dieses Gerät installieren kann ({1}). Es wurde nichts geändert. Bitte nutzen Sie die Treiberseite des Herstellers.</value></data>
   <data name="InstallOutcomeShort_NotInstallable" xml:space="preserve"><value>nicht installierbar</value></data>
+  <data name="PackageHost_lenovo" xml:space="preserve"><value>download.lenovo.com</value></data>
+  <data name="Install_Steps_Lenovo" xml:space="preserve"><value>Das Paket wird von {1} geladen und mit der Prüfsumme aus dem {0}-Katalog sowie der {0}-Signatur geprüft. Wichtig: Lenovo-Pakete lassen sich nur mit Lenovos eigenem, signiertem Programm entpacken. Dieses Programm läuft dafür einmal mit Administratorrechten – nur zum Entpacken, so wie bei Lenovo System Update. Installiert wird danach nur der signierte Treiber, keine Lenovo-Software. Vorher wird ein Wiederherstellungspunkt angelegt, und Windows fragt nach Administratorrechten. Rückgängig machen können Sie die Installation über „Verlauf“.</value></data>
 </root>

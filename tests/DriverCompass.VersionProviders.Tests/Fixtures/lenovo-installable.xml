@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Shortened, hand-written sample in the structure of an installable Lenovo package descriptor -->
+<Package name="SIO_N32LI" id="n32li04w" version="30.100.2129.8">
+  <Title default="EN"><Desc id="EN">Intel Serial IO Driver</Desc></Title>
+  <ReleaseDate>2021-10-26</ReleaseDate>
+  <DetectInstall>
+    <_Driver>
+      <HardwareID><![CDATA[PCI\VEN_8086&DEV_A0E8]]></HardwareID>
+      <Version>30.100.2129.8^</Version>
+    </_Driver>
+  </DetectInstall>
+  <ExtractCommand>n32li04w.exe /VERYSILENT /DIR=%PACKAGEPATH% /EXTRACT="YES"</ExtractCommand>
+  <Files>
+    <Installer>
+      <File>
+        <Name>n32li04w.exe</Name>
+        <CRC>217E9072A1E3253C514C6EAEF679A2007CE26CF035E9611F6F185708B830C2C1</CRC>
+        <Size>1416352</Size>
+      </File>
+    </Installer>
+  </Files>
+</Package>

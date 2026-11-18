@@ -74,7 +74,7 @@ public sealed class OemPackageSource(
 
         var work = Path.Combine(workRoot, request.RequestId.ToString("N"));
         var extracted = Path.Combine(work, "extract");
-        if (!extractor.TryExtract(packagePath, extracted))
+        if (!extractor.TryExtract(package, packagePath, extracted))
         {
             Cleanup(work, packagePath);
             return PrepareResult.Stop(InstallOutcome.NotInstallable, "UnsupportedPackage");

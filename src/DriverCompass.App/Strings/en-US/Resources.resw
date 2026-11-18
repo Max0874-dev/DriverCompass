@@ -302,4 +302,6 @@
   <data name="PackageHost_hp" xml:space="preserve"><value>ftp.hp.com</value></data>
   <data name="Install_Outcome_NotInstallable" xml:space="preserve"><value>This package contains no driver DriverCompass can install for this device ({1}). Nothing was changed. Please use the manufacturer's driver page.</value></data>
   <data name="InstallOutcomeShort_NotInstallable" xml:space="preserve"><value>not installable</value></data>
+  <data name="PackageHost_lenovo" xml:space="preserve"><value>download.lenovo.com</value></data>
+  <data name="Install_Steps_Lenovo" xml:space="preserve"><value>The package is downloaded from {1} and checked against the checksum from the {0} catalog and the {0} signature. Important: Lenovo packages can only be extracted by Lenovo's own signed program. That program runs once with administrator rights – only to extract, just like Lenovo System Update does. Afterwards only the signed driver is installed, no Lenovo software. A restore point is created first, and Windows asks for administrator rights. You can undo the installation under "History".</value></data>
 </root>
