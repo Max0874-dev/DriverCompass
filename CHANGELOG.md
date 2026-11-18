@@ -1,9 +1,17 @@
 # Changelog
 
-## [Unreleased]
+## [0.2.0] – 2026-11-19
+
+**Preview:** the EXE is still not code-signed, so Windows SmartScreen will warn ("Windows protected your PC" → *More info* → *Run anyway*). Check the SHA-256 against `SHA256SUMS-*.txt` before running it.
 
 ### Added
-- Optional update hint (off by default): at startup DriverCompass asks the public GitHub API for the latest release and, if it is newer, shows a link to the release page. Only the version number is read from the answer; the link is built from the app's own repository address. Nothing is downloaded or installed automatically, no device data is sent.
+- Optional update hint (off by default): turn on *Settings → Check for a new DriverCompass version at startup*. DriverCompass then asks the public GitHub API for the latest release and, if it is newer, shows a link to the release page. Only the version number is read from the answer; the link is built from the app's own repository address. Nothing is downloaded or installed automatically, no device data is sent.
+
+### Fixed
+- PRIVACY.md and SECURITY.md showed some folder paths without backslashes.
+
+### Download
+- `DriverCompass-0.2.0-win-x64.zip` / `-win-arm64.zip`: unzip and run `DriverCompass.exe` (self-contained, no installation, Windows 10 1809+ / Windows 11).
 
 ## [0.1.1] – 2026-11-18
 
