@@ -34,6 +34,9 @@ public sealed class JsonSettingsService : ISettingsService
     public async Task SaveAsync(AppSettings settings, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(settings);
+
+        // The choice applies to this session even if the file cannot be written (e.g. "do not download the vendor list").
+        Current = settings;
         Directory.CreateDirectory(Path.GetDirectoryName(_path)!);
 
         var temp = _path + ".tmp";
@@ -43,7 +46,6 @@ public sealed class JsonSettingsService : ISettingsService
         }
 
         File.Move(temp, _path, overwrite: true);
-        Current = settings;
     }
 
     private AppSettings Load()

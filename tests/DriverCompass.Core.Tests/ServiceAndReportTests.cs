@@ -310,6 +310,11 @@ public class SettingsServiceTests
             var old = new JsonSettingsService(path).Current;
             Assert.Equal("de-DE", old.Language);
             Assert.Empty(old.EnabledVersionSources);
+
+            // Users of 0.2.0 and older see the privacy notice once; the update hint stays off.
+            Assert.False(old.PrivacyNoticeShown);
+            Assert.False(old.CheckForAppUpdates);
+            Assert.True(old.UpdateCatalogOnline);
         }
         finally
         {
@@ -317,6 +322,30 @@ public class SettingsServiceTests
             {
                 Directory.Delete(dir, recursive: true);
             }
+        }
+    }
+
+    [Fact]
+    public async Task Privacy_choice_applies_even_if_the_file_cannot_be_written()
+    {
+        var dir = Path.Combine(Path.GetTempPath(), "dc-tests-" + Guid.NewGuid().ToString("N"));
+        var path = Path.Combine(dir, "settings.json");
+        Directory.CreateDirectory(dir);
+        try
+        {
+            var service = new JsonSettingsService(path);
+            await using (File.Create(path + ".tmp", 1, FileOptions.None))
+            {
+                // The temp file is locked, so writing fails – the choice must still be in effect for this session.
+                var choice = service.Current with { UpdateCatalogOnline = false, PrivacyNoticeShown = true };
+                await Assert.ThrowsAnyAsync<IOException>(() => service.SaveAsync(choice, TestContext.Current.CancellationToken));
+                Assert.False(service.Current.UpdateCatalogOnline);
+                Assert.True(service.Current.PrivacyNoticeShown);
+            }
+        }
+        finally
+        {
+            Directory.Delete(dir, recursive: true);
         }
     }
 }

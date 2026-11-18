@@ -206,6 +206,13 @@
   <data name="Update_Title" xml:space="preserve"><value>Neue Version verfügbar</value></data>
   <data name="Update_Available" xml:space="preserve"><value>{0} {1} ist erschienen (installiert: {2}).</value></data>
   <data name="Update_Open" xml:space="preserve"><value>Zur Download-Seite</value></data>
+  <data name="Privacy_Title" xml:space="preserve"><value>Datenschutz auf einen Blick</value></data>
+  <data name="Privacy_Intro" xml:space="preserve"><value>DriverCompass läuft lokal auf Ihrem PC. Es gibt keine Telemetrie. Gerätedaten wie Hardware-IDs, Modell oder Seriennummer verlassen den PC nicht von selbst.</value></data>
+  <data name="Privacy_Catalog_Help" xml:space="preserve"><value>Lädt beim Start die öffentliche Herstellerliste von GitHub (raw.githubusercontent.com). Es werden keine Gerätedaten gesendet, nur die üblichen Verbindungsdaten wie Ihre IP-Adresse. Ausgeschaltet nutzt die App die mitgelieferte oder zuletzt heruntergeladene Liste.</value></data>
+  <data name="Privacy_OnClick" xml:space="preserve"><value>Alles andere passiert nur, wenn Sie es auslösen: Treiber-Links öffnen sich erst beim Klick in Ihrem Browser (Hersteller-Links können Modell oder Seriennummer enthalten). Die Versionsprüfung ist standardmäßig aus und wird pro Quelle in den Einstellungen eingeschaltet. Treiber werden nur installiert, wenn Sie einen einzelnen Treiber ausdrücklich bestätigen.</value></data>
+  <data name="Privacy_Later" xml:space="preserve"><value>Sie können alles später unter „Einstellungen“ ändern.</value></data>
+  <data name="Privacy_ReadPolicy" xml:space="preserve"><value>Datenschutzerklärung lesen</value></data>
+  <data name="Privacy_Continue" xml:space="preserve"><value>Weiter</value></data>
   <data name="Settings_OpenLogs" xml:space="preserve"><value>Log-Ordner öffnen</value></data>
   <data name="Settings_About" xml:space="preserve"><value>Info</value></data>
   <data name="Settings_AboutText" xml:space="preserve"><value>{0} {1} · MIT-Lizenz · Herstellerliste {2}</value></data>

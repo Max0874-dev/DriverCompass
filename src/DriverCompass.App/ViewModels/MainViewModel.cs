@@ -293,6 +293,35 @@ public sealed partial class MainViewModel : ObservableObject
     }
 
     /// <summary>
+    /// First start only: shows what leaves the PC and lets the user switch off the automatic connections
+    /// before the first one happens. Saved even if the dialog is closed with Escape.
+    /// </summary>
+    public async Task ShowPrivacyNoticeIfNeededAsync()
+    {
+        if (_settings.Current.PrivacyNoticeShown || Shell is null)
+        {
+            return;
+        }
+
+        var current = _settings.Current;
+        var choice = await Shell.ShowPrivacyNoticeAsync(new PrivacyChoices(current.UpdateCatalogOnline, current.CheckForAppUpdates));
+        try
+        {
+            await _settings.SaveAsync(_settings.Current with
+            {
+                UpdateCatalogOnline = choice.UpdateCatalogOnline,
+                CheckForAppUpdates = choice.CheckForAppUpdates,
+                PrivacyNoticeShown = true,
+            });
+            _logger.LogInformation("Privacy notice shown (vendor list online: {Catalog}, update hint: {Updates})", choice.UpdateCatalogOnline, choice.CheckForAppUpdates);
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+            _logger.LogWarning(ex, "Could not save the privacy notice choice");
+        }
+    }
+
+    /// <summary>
     /// Optional, off by default: asks GitHub once per session whether a newer release exists and only shows a link.
     /// Called after startup and when the user switches the check on.
     /// </summary>

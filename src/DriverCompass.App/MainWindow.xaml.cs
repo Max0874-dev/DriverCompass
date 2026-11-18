@@ -51,6 +51,64 @@ public sealed partial class MainWindow : Window, IShellService
         return file?.Path;
     }
 
+    public async Task<PrivacyChoices> ShowPrivacyNoticeAsync(PrivacyChoices current)
+    {
+        var panel = new StackPanel { Spacing = 10, MaxWidth = 540 };
+        panel.Children.Add(Text(Localizer.T("Privacy_Intro")));
+
+        var catalog = new ToggleSwitch { Header = Localizer.T("Settings_UpdateCatalog"), IsOn = current.UpdateCatalogOnline };
+        panel.Children.Add(catalog);
+        panel.Children.Add(Text(Localizer.T("Privacy_Catalog_Help"), secondary: true));
+
+        var updates = new ToggleSwitch { Header = Localizer.T("Settings_CheckAppUpdates"), IsOn = current.CheckForAppUpdates };
+        panel.Children.Add(updates);
+        panel.Children.Add(Text(Localizer.T("Settings_CheckAppUpdates_Help"), secondary: true));
+
+        panel.Children.Add(Text(Localizer.T("Privacy_OnClick")));
+        panel.Children.Add(Text(Localizer.T("Privacy_Later"), secondary: true));
+
+        var policy = new HyperlinkButton { Content = Localizer.T("Privacy_ReadPolicy"), Padding = new Thickness(0) };
+        policy.Click += async (_, _) => await OpenPrivacyPolicyAsync();
+        panel.Children.Add(policy);
+
+        var dialog = new ContentDialog
+        {
+            XamlRoot = Root.XamlRoot,
+            Title = Localizer.T("Privacy_Title"),
+            Content = new ScrollViewer { Content = panel, MaxHeight = 560 },
+            PrimaryButtonText = Localizer.T("Privacy_Continue"),
+            DefaultButton = ContentDialogButton.Primary,
+            Style = (Style)Application.Current.Resources["DefaultContentDialogStyle"],
+        };
+
+        // Any way of closing keeps what the switches show – there is no "accept or leave".
+        await dialog.ShowAsync();
+        return new PrivacyChoices(catalog.IsOn, updates.IsOn);
+    }
+
+    /// <summary>Opens the PRIVACY.md shipped next to the EXE; falls back to the copy in the repository.</summary>
+    private static async Task OpenPrivacyPolicyAsync()
+    {
+        var local = Path.Combine(AppContext.BaseDirectory, "PRIVACY.md");
+        if (File.Exists(local))
+        {
+            try
+            {
+                Launcher.OpenLocal(local);
+                return;
+            }
+            catch (System.ComponentModel.Win32Exception)
+            {
+                // No app is associated with .md files – show the online copy instead.
+            }
+        }
+
+        if (Uri.TryCreate($"{AppInfo.RepositoryUrl.TrimEnd('/')}/blob/main/PRIVACY.md", UriKind.Absolute, out var online))
+        {
+            await Launcher.OpenAsync(online);
+        }
+    }
+
     public async Task<bool> ShowSettingsAsync()
     {
         var settings = App.Services.GetRequiredService<Core.Abstractions.ISettingsService>();
@@ -159,6 +217,10 @@ public sealed partial class MainWindow : Window, IShellService
         }
 
         _started = true;
+
+        // First start: the privacy notice comes before any network connection (vendor list, update check).
+        await ViewModel.ShowPrivacyNoticeIfNeededAsync();
+
         var updateCheck = ViewModel.CheckForAppUpdateAsync();
         await ViewModel.ScanCommand.ExecuteAsync(null);
         await updateCheck;

@@ -34,6 +34,12 @@ public sealed record AppSettings
     /// </summary>
     public IReadOnlyList<string> EnabledVersionSources { get; init; } = [];
 
+    /// <summary>
+    /// The first-run privacy notice was shown. Until then the app makes no network connection,
+    /// so the user can switch off the vendor list download before it happens.
+    /// </summary>
+    public bool PrivacyNoticeShown { get; init; }
+
     /// <summary>Stage 3: the user acknowledged the installation disclaimer (asked once, before the first install).</summary>
     public bool InstallDisclaimerAccepted { get; init; }
 
@@ -49,6 +55,7 @@ public sealed record AppSettings
         IncludeSerialNumberInExports == other.IncludeSerialNumberInExports &&
         UpdateCatalogOnline == other.UpdateCatalogOnline &&
         CheckForAppUpdates == other.CheckForAppUpdates &&
+        PrivacyNoticeShown == other.PrivacyNoticeShown &&
         InstallDisclaimerAccepted == other.InstallDisclaimerAccepted &&
         EnabledVersionSources.SequenceEqual(other.EnabledVersionSources, StringComparer.Ordinal);
 

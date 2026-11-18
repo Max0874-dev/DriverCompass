@@ -1,5 +1,10 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+- Privacy notice on first start: before DriverCompass connects to anything, it explains what leaves the PC and lets you switch off the vendor list download and switch on the update hint. It is shown once, also to users updating from an older version.
+
 ## [0.2.0] – 2026-11-19
 
 **Preview:** the EXE is still not code-signed, so Windows SmartScreen will warn ("Windows protected your PC" → *More info* → *Run anyway*). Check the SHA-256 against `SHA256SUMS-*.txt` before running it.
