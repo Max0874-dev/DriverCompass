@@ -1,0 +1,32 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="ARM64" />
+  </Configurations>
+  <Folder Name="/src/">
+    <Project Path="src/DriverCompass.Core/DriverCompass.Core.csproj" />
+    <Project Path="src/DriverCompass.Data/DriverCompass.Data.csproj" />
+    <Project Path="src/DriverCompass.Scanner.Windows/DriverCompass.Scanner.Windows.csproj" />
+    <Project Path="src/DriverCompass.Installer/DriverCompass.Installer.csproj" />
+    <Project Path="src/DriverCompass.App/DriverCompass.App.csproj">
+      <Platform Solution="*|Any CPU" Project="x64" />
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|ARM64" Project="ARM64" />
+    </Project>
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/DriverCompass.Core.Tests/DriverCompass.Core.Tests.csproj" />
+    <Project Path="tests/DriverCompass.Data.Tests/DriverCompass.Data.Tests.csproj" />
+    <Project Path="tests/DriverCompass.Scanner.Windows.Tests/DriverCompass.Scanner.Windows.Tests.csproj" />
+  </Folder>
+  <Folder Name="/data/">
+    <File Path="data/vendors.json" />
+    <File Path="data/vendors.schema.json" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+    <File Path="README.md" />
+  </Folder>
+</Solution>

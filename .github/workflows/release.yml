@@ -1,0 +1,77 @@
+name: Release
+
+# Push a tag like v0.1.0 to build and publish a GitHub release.
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+    env:
+      DOTNET_NOLOGO: true
+      DOTNET_CLI_TELEMETRY_OPTOUT: true
+      HAS_SIGNING_CERT: ${{ secrets.SIGNING_CERT != '' }}
+    strategy:
+      matrix:
+        platform: [x64, ARM64]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+
+      - name: Version from tag
+        shell: pwsh
+        run: |
+          $v = '${{ github.ref_name }}'.TrimStart('v')
+          "VERSION=$v" >> $env:GITHUB_ENV
+
+      - name: Test
+        if: matrix.platform == 'x64'
+        run: dotnet test --solution DriverCompass.slnx -c Release -p:Platform=x64
+
+      - name: Publish unpackaged app (self-contained)
+        shell: pwsh
+        run: |
+          $rid = if ('${{ matrix.platform }}' -eq 'ARM64') { 'win-arm64' } else { 'win-x64' }
+          dotnet publish src/DriverCompass.App/DriverCompass.App.csproj -c Release `
+            -p:Platform=${{ matrix.platform }} -r $rid --self-contained true `
+            -p:Version=$env:VERSION -o publish/$rid
+          Compress-Archive -Path publish/$rid/* -DestinationPath "DriverCompass-$env:VERSION-$rid.zip"
+
+      # MSIX only when a signing certificate is configured (secrets SIGNING_CERT = base64 PFX, SIGNING_CERT_PASSWORD).
+      - name: Build signed MSIX
+        if: matrix.platform == 'x64' && env.HAS_SIGNING_CERT == 'true'
+        env:
+          SIGNING_CERT: ${{ secrets.SIGNING_CERT }}
+          SIGNING_CERT_PASSWORD: ${{ secrets.SIGNING_CERT_PASSWORD }}
+        shell: pwsh
+        run: |
+          [IO.File]::WriteAllBytes("$env:RUNNER_TEMP\cert.pfx", [Convert]::FromBase64String($env:SIGNING_CERT))
+          dotnet publish src/DriverCompass.App/DriverCompass.App.csproj -c Release -p:Platform=x64 -r win-x64 `
+            -p:WindowsPackageType=MSIX -p:GenerateAppxPackageOnBuild=true -p:Version=$env:VERSION `
+            -p:AppxPackageSigningEnabled=true -p:PackageCertificateKeyFile="$env:RUNNER_TEMP\cert.pfx" `
+            -p:PackageCertificatePassword="$env:SIGNING_CERT_PASSWORD" -p:AppxPackageDir="$PWD\msix\"
+          Remove-Item "$env:RUNNER_TEMP\cert.pfx"
+          Get-ChildItem msix -Recurse -Filter *.msix | Copy-Item -Destination .
+
+      - name: Checksums
+        shell: pwsh
+        run: |
+          Get-ChildItem -Path . -File | Where-Object { $_.Extension -in '.zip', '.msix' } | ForEach-Object {
+            "$((Get-FileHash $_.FullName -Algorithm SHA256).Hash.ToLower())  $($_.Name)"
+          } | Out-File -Encoding ascii "SHA256SUMS-${{ matrix.platform }}.txt"
+
+      - name: Upload to release
+        uses: softprops/action-gh-release@v2
+        with:
+          draft: true
+          files: |
+            *.zip
+            *.msix
+            SHA256SUMS-*.txt

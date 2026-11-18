@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <!-- {AppName} wird zur Laufzeit durch den zentralen Anzeigenamen ersetzt. -->
+  <data name="App_Tagline" xml:space="preserve"><value>Fehlende und generische Treiber finden</value></data>
+
+  <!-- Befehlsleiste -->
+  <data name="Cmd_Scan" xml:space="preserve"><value>Neu scannen</value></data>
+  <data name="Cmd_View" xml:space="preserve"><value>Ansicht</value></data>
+  <data name="Cmd_ViewSimple" xml:space="preserve"><value>Einfach</value></data>
+  <data name="Cmd_ViewExpert" xml:space="preserve"><value>Experte</value></data>
+  <data name="Cmd_Export" xml:space="preserve"><value>Exportieren</value></data>
+  <data name="Cmd_ExportHtml" xml:space="preserve"><value>HTML-Bericht</value></data>
+  <data name="Cmd_ExportCsv" xml:space="preserve"><value>CSV-Tabelle</value></data>
+  <data name="Cmd_Settings" xml:space="preserve"><value>Einstellungen</value></data>
+
+  <!-- Status / Zusammenfassung -->
+  <data name="Busy_Scanning" xml:space="preserve"><value>Geräte werden gescannt …</value></data>
+  <data name="Summary_AllGood" xml:space="preserve"><value>Alle Geräte haben einen funktionierenden Treiber.</value></data>
+  <data name="Summary_Attention_One" xml:space="preserve"><value>1 Gerät braucht Aufmerksamkeit.</value></data>
+  <data name="Summary_Attention_Many" xml:space="preserve"><value>{0} Geräte brauchen Aufmerksamkeit.</value></data>
+  <data name="Summary_Counts" xml:space="preserve"><value>{0} Geräte · {1} Systemgeräte ausgeblendet</value></data>
+  <data name="Status_PcLabel" xml:space="preserve"><value>PC: {0}</value></data>
+  <data name="Status_BoardLabel" xml:space="preserve"><value>Mainboard: {0}</value></data>
+  <data name="Status_CatalogLabel" xml:space="preserve"><value>Herstellerliste {0} ({1})</value></data>
+  <data name="Status_Unknown" xml:space="preserve"><value>unbekannt</value></data>
+  <data name="CatalogSource_Embedded" xml:space="preserve"><value>mitgeliefert</value></data>
+  <data name="CatalogSource_Cache" xml:space="preserve"><value>gespeichert</value></data>
+  <data name="CatalogSource_Remote" xml:space="preserve"><value>online aktualisiert</value></data>
+  <data name="Mock_Banner" xml:space="preserve"><value>Demo-Modus: Statt Ihrer Hardware werden Beispielgeräte angezeigt (--mock).</value></data>
+  <data name="Catalog_RemoteUnavailable" xml:space="preserve"><value>Die Herstellerliste konnte nicht aktualisiert werden (offline?). Die gespeicherte Version wird verwendet.</value></data>
+  <data name="Catalog_RemoteInvalid" xml:space="preserve"><value>Die heruntergeladene Herstellerliste hat die Prüfung nicht bestanden und wurde ignoriert.</value></data>
+  <data name="Catalog_RemoteOlder" xml:space="preserve"><value>Die Online-Herstellerliste ist älter als die mitgelieferte und wurde ignoriert.</value></data>
+  <data name="Catalog_CacheInvalid" xml:space="preserve"><value>Die gespeicherte Herstellerliste war beschädigt und wurde entfernt.</value></data>
+  <data name="Error_ScanFailed" xml:space="preserve"><value>Der Scan ist fehlgeschlagen: {0}</value></data>
+  <data name="Export_Saved" xml:space="preserve"><value>Bericht gespeichert: {0}</value></data>
+  <data name="Export_Open" xml:space="preserve"><value>Öffnen</value></data>
+  <data name="Export_Failed" xml:space="preserve"><value>Export fehlgeschlagen: {0}</value></data>
+  <data name="Export_FileType_Html" xml:space="preserve"><value>HTML-Bericht</value></data>
+  <data name="Export_FileType_Csv" xml:space="preserve"><value>CSV-Tabelle</value></data>
+  <data name="Export_FileName" xml:space="preserve"><value>treiberbericht</value></data>
+
+  <!-- Statusnamen -->
+  <data name="Status_Error" xml:space="preserve"><value>Problem</value></data>
+  <data name="Status_MissingDriver" xml:space="preserve"><value>Treiber fehlt</value></data>
+  <data name="Status_GenericDriver" xml:space="preserve"><value>Nur allgemeiner Treiber</value></data>
+  <data name="Status_Disabled" xml:space="preserve"><value>Ausgeschaltet</value></data>
+  <data name="Status_Ok" xml:space="preserve"><value>OK</value></data>
+
+  <!-- Einfache Ansicht -->
+  <data name="Simple_GetDriver" xml:space="preserve"><value>Treiber holen</value></data>
+  <data name="Simple_MoreSources" xml:space="preserve"><value>Weitere Quellen</value></data>
+  <data name="Simple_Sources" xml:space="preserve"><value>Treiberquellen</value></data>
+  <data name="Simple_NoLinks" xml:space="preserve"><value>Keine Downloadquelle bekannt</value></data>
+
+  <!-- Gründe (verständlich formuliert) -->
+  <data name="Reason_VendorDriver" xml:space="preserve"><value>Der Treiber des Herstellers ist installiert.</value></data>
+  <data name="Reason_InboxDriver" xml:space="preserve"><value>Nutzt einen Windows-Standardtreiber – für dieses Gerät ist das in Ordnung.</value></data>
+  <data name="Reason_NoDriverInfo" xml:space="preserve"><value>Funktioniert ohne eigenen Treiber.</value></data>
+  <data name="Reason_NoDriverInstalled" xml:space="preserve"><value>Es ist kein Treiber installiert, deshalb funktioniert das Gerät nicht.</value></data>
+  <data name="Reason_DeviceError" xml:space="preserve"><value>Windows meldet ein Problem (Code {0}): {1}</value></data>
+  <data name="Reason_Disabled" xml:space="preserve"><value>Das Gerät ist in Windows ausgeschaltet.</value></data>
+  <data name="Reason_NotPresent" xml:space="preserve"><value>Das Gerät ist zurzeit nicht angeschlossen.</value></data>
+  <data name="Reason_Generic_Display" xml:space="preserve"><value>Läuft mit dem einfachen Windows-Grafiktreiber: geringe Auflösung, keine 3D-Beschleunigung. Installieren Sie den Grafiktreiber.</value></data>
+  <data name="Reason_Generic_Audio" xml:space="preserve"><value>Läuft mit dem allgemeinen Windows-Audiotreiber. Der Herstellertreiber bietet z. B. Buchsenerkennung und Klangeinstellungen.</value></data>
+  <data name="Reason_Generic_Network" xml:space="preserve"><value>Läuft mit einem allgemeinen Windows-Netzwerktreiber. Der Herstellertreiber ist meist schneller und stabiler.</value></data>
+  <data name="Reason_Generic_Bluetooth" xml:space="preserve"><value>Läuft mit dem allgemeinen Windows-Bluetooth-Treiber. Der Herstellertreiber kann Verbindungsprobleme beheben.</value></data>
+  <data name="Reason_Generic_Storage" xml:space="preserve"><value>Läuft mit einem allgemeinen Windows-Speichertreiber. Der Herstellertreiber kann schneller sein.</value></data>
+  <data name="Reason_Generic_Other" xml:space="preserve"><value>Läuft mit einem allgemeinen Windows-Treiber. Ein Herstellertreiber wird empfohlen.</value></data>
+
+  <!-- Fehlercodes des Geräte-Managers -->
+  <data name="CmError_Unknown" xml:space="preserve"><value>Fehlercode {0}</value></data>
+  <data name="CmError_1" xml:space="preserve"><value>Das Gerät ist nicht richtig konfiguriert.</value></data>
+  <data name="CmError_3" xml:space="preserve"><value>Der Treiber ist eventuell beschädigt oder der Arbeitsspeicher reicht nicht.</value></data>
+  <data name="CmError_10" xml:space="preserve"><value>Das Gerät kann nicht gestartet werden.</value></data>
+  <data name="CmError_12" xml:space="preserve"><value>Für dieses Gerät sind nicht genügend freie Ressourcen vorhanden.</value></data>
+  <data name="CmError_14" xml:space="preserve"><value>Ein Neustart ist erforderlich.</value></data>
+  <data name="CmError_18" xml:space="preserve"><value>Die Treiber müssen neu installiert werden.</value></data>
+  <data name="CmError_19" xml:space="preserve"><value>Die Konfiguration in der Registrierung ist beschädigt.</value></data>
+  <data name="CmError_21" xml:space="preserve"><value>Windows entfernt dieses Gerät gerade.</value></data>
+  <data name="CmError_22" xml:space="preserve"><value>Das Gerät ist deaktiviert.</value></data>
+  <data name="CmError_24" xml:space="preserve"><value>Das Gerät fehlt oder funktioniert nicht richtig.</value></data>
+  <data name="CmError_28" xml:space="preserve"><value>Es ist kein Treiber installiert.</value></data>
+  <data name="CmError_29" xml:space="preserve"><value>Das Gerät ist in der Firmware (BIOS/UEFI) deaktiviert.</value></data>
+  <data name="CmError_31" xml:space="preserve"><value>Windows kann den Treiber nicht laden.</value></data>
+  <data name="CmError_32" xml:space="preserve"><value>Der Treiberdienst ist deaktiviert.</value></data>
+  <data name="CmError_37" xml:space="preserve"><value>Der Treiber hat beim Start einen Fehler gemeldet.</value></data>
+  <data name="CmError_39" xml:space="preserve"><value>Der Treiber fehlt oder ist beschädigt.</value></data>
+  <data name="CmError_41" xml:space="preserve"><value>Der Treiber wurde geladen, aber die Hardware wurde nicht gefunden.</value></data>
+  <data name="CmError_43" xml:space="preserve"><value>Windows hat das Gerät angehalten, weil es Probleme gemeldet hat.</value></data>
+  <data name="CmError_45" xml:space="preserve"><value>Das Gerät ist nicht angeschlossen.</value></data>
+  <data name="CmError_48" xml:space="preserve"><value>Der Treiber wurde wegen bekannter Probleme blockiert.</value></data>
+  <data name="CmError_52" xml:space="preserve"><value>Die digitale Signatur des Treibers konnte nicht geprüft werden.</value></data>
+
+  <!-- Geräteklassen (verständliche Kategorien) -->
+  <data name="Class_Unknown" xml:space="preserve"><value>Sonstiges Gerät</value></data>
+  <data name="Class_Display" xml:space="preserve"><value>Grafikkarte</value></data>
+  <data name="Class_Net" xml:space="preserve"><value>Netzwerk</value></data>
+  <data name="Class_MEDIA" xml:space="preserve"><value>Audio &amp; Multimedia</value></data>
+  <data name="Class_AudioEndpoint" xml:space="preserve"><value>Audio-Ein-/Ausgang</value></data>
+  <data name="Class_Bluetooth" xml:space="preserve"><value>Bluetooth</value></data>
+  <data name="Class_USB" xml:space="preserve"><value>USB-Controller &amp; Hubs</value></data>
+  <data name="Class_HIDClass" xml:space="preserve"><value>Eingabegeräte</value></data>
+  <data name="Class_Keyboard" xml:space="preserve"><value>Tastatur</value></data>
+  <data name="Class_Mouse" xml:space="preserve"><value>Maus &amp; Touchpad</value></data>
+  <data name="Class_DiskDrive" xml:space="preserve"><value>Laufwerk</value></data>
+  <data name="Class_SCSIAdapter" xml:space="preserve"><value>Speichercontroller</value></data>
+  <data name="Class_HDC" xml:space="preserve"><value>Speichercontroller</value></data>
+  <data name="Class_System" xml:space="preserve"><value>Systemgerät</value></data>
+  <data name="Class_Camera" xml:space="preserve"><value>Kamera</value></data>
+  <data name="Class_Image" xml:space="preserve"><value>Kamera &amp; Scanner</value></data>
+  <data name="Class_Monitor" xml:space="preserve"><value>Monitor</value></data>
+  <data name="Class_Printer" xml:space="preserve"><value>Drucker</value></data>
+  <data name="Class_Processor" xml:space="preserve"><value>Prozessor</value></data>
+  <data name="Class_Battery" xml:space="preserve"><value>Akku &amp; Stromversorgung</value></data>
+  <data name="Class_Biometric" xml:space="preserve"><value>Fingerabdruck &amp; Gesichtserkennung</value></data>
+  <data name="Class_SmartCardReader" xml:space="preserve"><value>Kartenleser</value></data>
+  <data name="Class_Ports" xml:space="preserve"><value>Serielle Anschlüsse (COM)</value></data>
+  <data name="Class_Firmware" xml:space="preserve"><value>Firmware</value></data>
+  <data name="Class_SecurityDevices" xml:space="preserve"><value>Sicherheitschip (TPM)</value></data>
+  <data name="Class_Sensor" xml:space="preserve"><value>Sensor</value></data>
+  <data name="Class_WPD" xml:space="preserve"><value>Mobilgerät</value></data>
+  <data name="Class_Extension" xml:space="preserve"><value>Erweiterung</value></data>
+  <data name="Class_Computer" xml:space="preserve"><value>Computer</value></data>
+  <data name="Class_Volume" xml:space="preserve"><value>Volume</value></data>
+  <data name="Class_PrintQueue" xml:space="preserve"><value>Druckwarteschlange</value></data>
+  <data name="Class_SoftwareDevice" xml:space="preserve"><value>Softwaregerät</value></data>
+  <data name="Class_SoftwareComponent" xml:space="preserve"><value>Softwarekomponente</value></data>
+
+  <!-- Links -->
+  <data name="Link_OemSupport_Serial" xml:space="preserve"><value>{0}-Support für genau diesen PC</value></data>
+  <data name="Link_OemSupport_Model" xml:space="preserve"><value>{0}-Support für Ihr Modell</value></data>
+  <data name="Link_OemSupport_HardwareId" xml:space="preserve"><value>{0}-Treiberdownloads</value></data>
+  <data name="Link_OemSupport_Generic" xml:space="preserve"><value>{0}-Treiberdownloads</value></data>
+  <data name="Link_ChipVendor" xml:space="preserve"><value>Treiberseite von {0}</value></data>
+  <data name="Link_MicrosoftCatalog" xml:space="preserve"><value>Im Microsoft Update Catalog suchen</value></data>
+
+  <!-- Expertenmodus -->
+  <data name="Expert_Search" xml:space="preserve"><value>Name, Hersteller, Hardware-ID suchen …</value></data>
+  <data name="Filter_AllStatuses" xml:space="preserve"><value>Alle Status</value></data>
+  <data name="Filter_Problems" xml:space="preserve"><value>Nur Probleme</value></data>
+  <data name="Filter_AllClasses" xml:space="preserve"><value>Alle Klassen</value></data>
+  <data name="Expert_ShowSystem" xml:space="preserve"><value>Systemgeräte anzeigen</value></data>
+  <data name="Expert_Count" xml:space="preserve"><value>{0} von {1} Geräten</value></data>
+  <data name="Detail_None" xml:space="preserve"><value>Wählen Sie ein Gerät aus, um Details zu sehen.</value></data>
+  <data name="Detail_Copy" xml:space="preserve"><value>Kopieren</value></data>
+  <data name="Detail_SearchCatalog" xml:space="preserve"><value>Im Catalog suchen</value></data>
+  <data name="Detail_Note" xml:space="preserve"><value>Hinweis</value></data>
+
+  <!-- Spalten (auch in Berichten) -->
+  <data name="Col_Status" xml:space="preserve"><value>Status</value></data>
+  <data name="Col_Reason" xml:space="preserve"><value>Grund</value></data>
+  <data name="Col_Name" xml:space="preserve"><value>Gerät</value></data>
+  <data name="Col_Category" xml:space="preserve"><value>Kategorie</value></data>
+  <data name="Col_DeviceClass" xml:space="preserve"><value>Geräteklasse</value></data>
+  <data name="Col_Vendor" xml:space="preserve"><value>Chip-Hersteller</value></data>
+  <data name="Col_Manufacturer" xml:space="preserve"><value>Hersteller (Windows)</value></data>
+  <data name="Col_Provider" xml:space="preserve"><value>Treiberanbieter</value></data>
+  <data name="Col_Version" xml:space="preserve"><value>Version</value></data>
+  <data name="Col_Date" xml:space="preserve"><value>Datum</value></data>
+  <data name="Col_Inf" xml:space="preserve"><value>INF-Datei</value></data>
+  <data name="Col_ErrorCode" xml:space="preserve"><value>Code</value></data>
+  <data name="Col_HardwareId" xml:space="preserve"><value>Hardware-ID</value></data>
+  <data name="Col_HardwareIds" xml:space="preserve"><value>Hardware-IDs</value></data>
+  <data name="Col_CompatibleIds" xml:space="preserve"><value>Kompatible IDs</value></data>
+  <data name="Col_InstanceId" xml:space="preserve"><value>Instanzpfad</value></data>
+  <data name="Col_Links" xml:space="preserve"><value>Treiberquellen</value></data>
+  <data name="Col_BestLink" xml:space="preserve"><value>Beste Quelle</value></data>
+  <data name="Col_Signer" xml:space="preserve"><value>Signiert von</value></data>
+
+  <!-- Berichte -->
+  <data name="Report_Title" xml:space="preserve"><value>{0} – Treiberbericht</value></data>
+  <data name="Report_GeneratedAt" xml:space="preserve"><value>Erstellt am {0}</value></data>
+  <data name="Report_CatalogVersion" xml:space="preserve"><value>Herstellerliste {0}</value></data>
+  <data name="Report_System" xml:space="preserve"><value>System</value></data>
+  <data name="Report_Devices" xml:space="preserve"><value>Geräte ({0})</value></data>
+  <data name="Report_Privacy" xml:space="preserve"><value>Lokal erstellt. Dieser Bericht enthält Hardwaredetails Ihres PCs – prüfen Sie ihn, bevor Sie ihn weitergeben.</value></data>
+  <data name="Sys_Manufacturer" xml:space="preserve"><value>PC-Hersteller</value></data>
+  <data name="Sys_Model" xml:space="preserve"><value>Modell</value></data>
+  <data name="Sys_BaseBoard" xml:space="preserve"><value>Mainboard</value></data>
+  <data name="Sys_Bios" xml:space="preserve"><value>BIOS/UEFI-Version</value></data>
+  <data name="Sys_OperatingSystem" xml:space="preserve"><value>Betriebssystem</value></data>
+  <data name="Sys_SerialNumber" xml:space="preserve"><value>Seriennummer</value></data>
+
+  <!-- Einstellungen -->
+  <data name="Settings_Title" xml:space="preserve"><value>Einstellungen</value></data>
+  <data name="Settings_Save" xml:space="preserve"><value>Speichern</value></data>
+  <data name="Settings_Cancel" xml:space="preserve"><value>Abbrechen</value></data>
+  <data name="Settings_Language" xml:space="preserve"><value>Sprache</value></data>
+  <data name="Settings_Language_System" xml:space="preserve"><value>Wie Windows</value></data>
+  <data name="Settings_LanguageRestart" xml:space="preserve"><value>Eine geänderte Sprache gilt nach einem Neustart von {AppName}.</value></data>
+  <data name="Settings_StartView" xml:space="preserve"><value>Startansicht</value></data>
+  <data name="Settings_ShowSystem" xml:space="preserve"><value>System- und Softwaregeräte anzeigen</value></data>
+  <data name="Settings_UseSerial" xml:space="preserve"><value>Seriennummer in Hersteller-Links verwenden</value></data>
+  <data name="Settings_UseSerial_Help" xml:space="preserve"><value>Öffnet die genaue Supportseite Ihres PCs. Die Nummer wird erst an den Hersteller übertragen, wenn Sie den Link anklicken.</value></data>
+  <data name="Settings_SerialInExports" xml:space="preserve"><value>Seriennummer in Berichte aufnehmen</value></data>
+  <data name="Settings_UpdateCatalog" xml:space="preserve"><value>Herstellerliste beim Start online aktualisieren</value></data>
+  <data name="Settings_UpdateCatalog_Help" xml:space="preserve"><value>Lädt eine öffentliche Datei von GitHub. Es werden keine Gerätedaten gesendet.</value></data>
+  <data name="Settings_OpenLogs" xml:space="preserve"><value>Log-Ordner öffnen</value></data>
+  <data name="Settings_About" xml:space="preserve"><value>Info</value></data>
+  <data name="Settings_AboutText" xml:space="preserve"><value>{0} {1} · MIT-Lizenz · Herstellerliste {2}</value></data>
+  <data name="Settings_Privacy" xml:space="preserve"><value>Alles läuft lokal auf Ihrem PC. Keine Telemetrie. Treiber-Links öffnen sich erst beim Klick in Ihrem Browser.</value></data>
+</root>

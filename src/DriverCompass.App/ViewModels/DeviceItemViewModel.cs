@@ -1,0 +1,135 @@
+using System.Globalization;
+using CommunityToolkit.Mvvm.Input;
+using DriverCompass.App.Services;
+using DriverCompass.Core.Abstractions;
+using DriverCompass.Core.Links;
+using DriverCompass.Core.Models;
+using DriverCompass.Core.Reporting;
+using Microsoft.UI.Xaml.Media;
+
+namespace DriverCompass.App.ViewModels;
+
+/// <summary>One device row/card. All texts are computed once when the scan result arrives.</summary>
+public sealed partial class DeviceItemViewModel
+{
+    public DeviceItemViewModel(DeviceAssessment assessment, ITextProvider t, string language)
+    {
+        Assessment = assessment;
+        var device = assessment.Device;
+        var driver = device.Driver;
+
+        Name = assessment.DisplayName;
+        WindowsName = device.Name ?? string.Empty;
+        Category = AssessmentTexts.Category(t, device.DeviceClass);
+        StatusText = AssessmentTexts.Status(t, assessment.Status);
+        Reason = AssessmentTexts.Reason(t, assessment);
+        Vendor = assessment.VendorName ?? string.Empty;
+        Manufacturer = device.Manufacturer ?? string.Empty;
+        Provider = driver?.ProviderName ?? string.Empty;
+        Version = driver?.Version ?? string.Empty;
+        Date = driver?.Date;
+        DateText = driver?.Date?.ToString("d", CultureInfo.CurrentCulture) ?? string.Empty;
+        Inf = driver?.InfName ?? string.Empty;
+        Signer = driver?.Signer ?? string.Empty;
+        ErrorCode = device.ConfigManagerErrorCode;
+        ErrorCodeText = ErrorCode == 0 ? string.Empty : ErrorCode.ToString(CultureInfo.InvariantCulture);
+        DeviceClass = device.DeviceClass ?? string.Empty;
+        InstanceId = device.InstanceId;
+        HardwareId = device.HardwareIds.FirstOrDefault() ?? string.Empty;
+        HardwareIds = device.HardwareIds.Select(h => new HardwareIdItem(h)).ToList();
+        CompatibleIds = device.CompatibleIds.Select(h => new HardwareIdItem(h)).ToList();
+        Note = assessment.ChipVendor?.Note?.Get(language[..2]) ?? string.Empty;
+
+        Links = assessment.Links.Select(l => new LinkViewModel(l, AssessmentTexts.LinkLabel(t, l))).ToList();
+        PrimaryLink = Links.FirstOrDefault();
+        SecondaryLinks = Links.Skip(1).ToList();
+
+        SearchIndex = string.Join('\n', new[] { Name, WindowsName, Vendor, Manufacturer, Provider, Inf, DeviceClass, Category, InstanceId }
+            .Concat(device.HardwareIds)).ToUpperInvariant();
+    }
+
+    public DeviceAssessment Assessment { get; }
+    public DeviceStatus Status => Assessment.Status;
+    public bool NeedsAttention => Assessment.NeedsAttention;
+    public bool IsSystemDevice => Assessment.IsSystemDevice;
+
+    public string Name { get; }
+    public string WindowsName { get; }
+    public string Category { get; }
+    public string StatusText { get; }
+    public string Reason { get; }
+    public string Vendor { get; }
+    public string Manufacturer { get; }
+    public string Provider { get; }
+    public string Version { get; }
+    public DateOnly? Date { get; }
+    public string DateText { get; }
+    public string Inf { get; }
+    public string Signer { get; }
+    public int ErrorCode { get; }
+    public string ErrorCodeText { get; }
+    public string DeviceClass { get; }
+    public string InstanceId { get; }
+    public string HardwareId { get; }
+    public IReadOnlyList<HardwareIdItem> HardwareIds { get; }
+    public IReadOnlyList<HardwareIdItem> CompatibleIds { get; }
+    public string Note { get; }
+
+    public IReadOnlyList<LinkViewModel> Links { get; }
+    public LinkViewModel? PrimaryLink { get; }
+    public IReadOnlyList<LinkViewModel> SecondaryLinks { get; }
+    public bool HasLinks => Links.Count > 0;
+    public bool HasSecondaryLinks => SecondaryLinks.Count > 0;
+
+    /// <summary>The prominent "Get driver" button is shown for problem devices only.</summary>
+    public bool ShowGetDriver => NeedsAttention && HasLinks;
+
+    public bool ShowNoLinks => NeedsAttention && !HasLinks;
+
+    /// <summary>"More sources" next to the primary button, "Driver sources" when it stands alone.</summary>
+    public string SourcesLabel => Localizer.T(ShowGetDriver ? "Simple_MoreSources" : "Simple_Sources");
+
+    public Brush StatusBrush => StatusVisuals.Brush(Status);
+    public string StatusGlyph => StatusVisuals.Glyph(Status);
+
+    /// <summary>Upper-case text used by the expert search.</summary>
+    internal string SearchIndex { get; }
+
+    [RelayCommand]
+    private Task GetDriverAsync() => PrimaryLink is null ? Task.CompletedTask : Launcher.OpenAsync(PrimaryLink.Uri);
+
+    [RelayCommand]
+    private void CopyInstanceId() => Launcher.CopyText(InstanceId);
+}
+
+public sealed partial class LinkViewModel(DriverLink link, string label)
+{
+    public DriverLink Link { get; } = link;
+    public Uri Uri => Link.Uri;
+    public string Label { get; } = label;
+    public string Host => Link.Uri.Host;
+
+    [RelayCommand]
+    private Task OpenAsync() => Launcher.OpenAsync(Link.Uri);
+}
+
+public sealed partial class HardwareIdItem(string id)
+{
+    public string Id { get; } = id;
+
+    [RelayCommand]
+    private void Copy() => Launcher.CopyText(Id);
+
+    [RelayCommand]
+    private Task SearchCatalogAsync() => Launcher.OpenAsync(MicrosoftCatalogLinkSource.BuildSearchUri(Id));
+}
+
+/// <summary>Group for the simple view (one per traffic-light status).</summary>
+public sealed class DeviceGroupViewModel(DeviceStatus status, string title, IEnumerable<DeviceItemViewModel> items) : List<DeviceItemViewModel>(items)
+{
+    public DeviceStatus Status { get; } = status;
+    public string Title { get; } = title;
+    public string Header => $"{Title} ({Count})";
+    public Brush StatusBrush => StatusVisuals.Brush(Status);
+    public string StatusGlyph => StatusVisuals.Glyph(Status);
+}

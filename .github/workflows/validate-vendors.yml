@@ -1,0 +1,31 @@
+name: Validate vendor list
+
+# Runs on every pull request that touches the vendor list, so community contributions
+# are checked with exactly the same validator the app uses (schema + HTTPS/domain rules).
+on:
+  pull_request:
+    paths:
+      - 'data/**'
+  push:
+    branches: [main]
+    paths:
+      - 'data/**'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: windows-latest
+    env:
+      DOTNET_NOLOGO: true
+      DOTNET_CLI_TELEMETRY_OPTOUT: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+
+      - name: Validate data/vendors.json
+        run: dotnet test --project tests/DriverCompass.Data.Tests/DriverCompass.Data.Tests.csproj -c Release

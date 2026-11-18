@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="xunit.v3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\DriverCompass.Data\DriverCompass.Data.csproj" />
+  </ItemGroup>
+
+  <!-- The repository files are tested directly, so a broken pull request fails CI. -->
+  <ItemGroup>
+    <None Include="..\..\data\vendors.json" Link="RepoData\vendors.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\data\examples\new-vendor.example.json" Link="RepoData\new-vendor.example.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,28 @@
+{
+  "_comment": "Example entries for a pull request. Copy the object you need into data/vendors.json (into chipVendors or oems), raise dataVersion and run the tests. This file is NOT loaded by the app.",
+  "chipVendor": {
+    "id": "example-audio",
+    "name": "Example Audio Inc.",
+    "ids": { "pci": ["1234"], "usb": ["ABCD"] },
+    "allowedDomains": ["example-audio.com"],
+    "driverPages": [
+      { "url": "https://www.example-audio.com/support/drivers", "deviceClasses": ["MEDIA"] },
+      { "url": "https://www.example-audio.com/support" }
+    ],
+    "note": {
+      "en": "Optional hint shown next to the link.",
+      "de": "Optionaler Hinweis, der neben dem Link angezeigt wird."
+    }
+  },
+  "oem": {
+    "id": "example-pc",
+    "name": "Example PC",
+    "match": ["^Example PC"],
+    "allowedDomains": ["example-pc.com"],
+    "supportUrls": [
+      { "template": "https://support.example-pc.com/product/{serial}/drivers", "requires": ["serial"] },
+      { "template": "https://support.example-pc.com/search?model={model}", "requires": ["model"] },
+      { "template": "https://support.example-pc.com/drivers", "requires": [] }
+    ]
+  }
+}

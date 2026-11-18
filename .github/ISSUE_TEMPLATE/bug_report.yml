@@ -1,0 +1,44 @@
+name: Bug report / Fehler melden
+description: Something does not work as expected. / Etwas funktioniert nicht wie erwartet.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Privacy:** Please do not paste serial numbers or full reports with personal data. Hardware IDs (e.g. `PCI\VEN_10EC&DEV_8125`) are fine.
+        **Datenschutz:** Bitte keine Seriennummern oder vollständigen Berichte mit persönlichen Daten einfügen. Hardware-IDs sind in Ordnung.
+  - type: input
+    id: version
+    attributes:
+      label: DriverCompass version
+      placeholder: 0.1.0
+    validations:
+      required: true
+  - type: input
+    id: windows
+    attributes:
+      label: Windows version
+      placeholder: Windows 11 24H2 (26100)
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened? / Was ist passiert?
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect? / Was hätten Sie erwartet?
+  - type: textarea
+    id: hwid
+    attributes:
+      label: Affected hardware IDs (optional)
+      render: text
+  - type: textarea
+    id: log
+    attributes:
+      label: Log excerpt (optional)
+      description: '%LOCALAPPDATA%\DriverCompass\logs'
+      render: text

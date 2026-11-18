@@ -1,0 +1,303 @@
+{
+  "$schema": "./vendors.schema.json",
+  "schemaVersion": 1,
+  "dataVersion": "2026.11.18.1",
+  "chipVendors": [
+    {
+      "id": "nvidia",
+      "name": "NVIDIA",
+      "ids": { "pci": ["10DE"], "usb": ["0955"] },
+      "allowedDomains": ["nvidia.com"],
+      "driverPages": [{ "url": "https://www.nvidia.com/en-us/drivers/" }]
+    },
+    {
+      "id": "amd",
+      "name": "AMD",
+      "ids": { "pci": ["1002", "1022"], "acpi": ["AMDI", "AMD"] },
+      "allowedDomains": ["amd.com"],
+      "driverPages": [{ "url": "https://www.amd.com/en/support/download/drivers.html" }]
+    },
+    {
+      "id": "intel",
+      "name": "Intel",
+      "ids": { "pci": ["8086"], "usb": ["8087"], "acpi": ["INT", "INTC"] },
+      "allowedDomains": ["intel.com"],
+      "driverPages": [
+        { "url": "https://www.intel.com/content/www/us/en/support/detect.html" },
+        { "url": "https://www.intel.com/content/www/us/en/download-center/home.html" }
+      ]
+    },
+    {
+      "id": "realtek",
+      "name": "Realtek",
+      "ids": { "pci": ["10EC"], "usb": ["0BDA"], "acpi": ["RTL"] },
+      "allowedDomains": ["realtek.com"],
+      "driverPages": [{ "url": "https://www.realtek.com/Download/Overview" }],
+      "note": {
+        "en": "For onboard chips (audio, network), the PC or mainboard manufacturer's driver is often the better choice.",
+        "de": "Bei Onboard-Chips (Audio, Netzwerk) ist der Treiber des PC- oder Mainboard-Herstellers oft die bessere Wahl."
+      }
+    },
+    {
+      "id": "logitech",
+      "name": "Logitech",
+      "ids": { "usb": ["046D"] },
+      "allowedDomains": ["logi.com", "logitech.com"],
+      "driverPages": [{ "url": "https://support.logi.com/hc/en-us" }]
+    },
+    {
+      "id": "qualcomm",
+      "name": "Qualcomm",
+      "ids": { "pci": ["168C", "17CB"], "usb": ["0CF3", "05C6"], "acpi": ["QCOM"] },
+      "allowedDomains": ["qualcomm.com"],
+      "driverPages": [{ "url": "https://www.qualcomm.com/support" }],
+      "note": {
+        "en": "Qualcomm drivers are normally distributed by the PC manufacturer or Windows Update.",
+        "de": "Qualcomm-Treiber gibt es normalerweise über den PC-Hersteller oder Windows Update."
+      }
+    },
+    {
+      "id": "mediatek",
+      "name": "MediaTek",
+      "ids": { "pci": ["14C3"], "usb": ["0E8D"] },
+      "allowedDomains": ["mediatek.com"],
+      "driverPages": [{ "url": "https://www.mediatek.com/" }],
+      "note": {
+        "en": "MediaTek does not offer end-user drivers; use the PC manufacturer or Windows Update.",
+        "de": "MediaTek bietet keine Endkunden-Treiber an; nutzen Sie den PC-Hersteller oder Windows Update."
+      }
+    },
+    {
+      "id": "broadcom",
+      "name": "Broadcom",
+      "ids": { "pci": ["14E4"], "usb": ["0A5C"], "acpi": ["BCM"] },
+      "allowedDomains": ["broadcom.com"],
+      "driverPages": [{ "url": "https://www.broadcom.com/support/download-search" }]
+    },
+    {
+      "id": "marvell",
+      "name": "Marvell",
+      "ids": { "pci": ["1B4B", "11AB"] },
+      "allowedDomains": ["marvell.com"],
+      "driverPages": [{ "url": "https://www.marvell.com/support/downloads.html" }]
+    },
+    {
+      "id": "samsung",
+      "name": "Samsung",
+      "ids": { "pci": ["144D"], "usb": ["04E8"] },
+      "allowedDomains": ["samsung.com"],
+      "driverPages": [{ "url": "https://semiconductor.samsung.com/consumer-storage/support/tools/", "deviceClasses": ["SCSIAdapter", "DiskDrive", "HDC"] }]
+    },
+    {
+      "id": "micron-crucial",
+      "name": "Crucial (Micron)",
+      "ids": { "pci": ["1344"] },
+      "allowedDomains": ["crucial.com"],
+      "driverPages": [{ "url": "https://www.crucial.com/support/ssd-support" }]
+    },
+    {
+      "id": "kingston",
+      "name": "Kingston",
+      "ids": { "pci": ["2646"], "usb": ["0951"] },
+      "allowedDomains": ["kingston.com"],
+      "driverPages": [{ "url": "https://www.kingston.com/en/support" }]
+    },
+    {
+      "id": "via",
+      "name": "VIA",
+      "ids": { "pci": ["1106"], "usb": ["2109"] },
+      "allowedDomains": ["viatech.com"],
+      "driverPages": [{ "url": "https://www.viatech.com/en/support/drivers/" }]
+    },
+    {
+      "id": "asmedia",
+      "name": "ASMedia",
+      "ids": { "pci": ["1B21"] },
+      "allowedDomains": ["asmedia.com.tw"],
+      "driverPages": [{ "url": "https://www.asmedia.com.tw/" }],
+      "note": {
+        "en": "ASMedia controllers are supported via the mainboard manufacturer.",
+        "de": "ASMedia-Controller werden über den Mainboard-Hersteller unterstützt."
+      }
+    },
+    {
+      "id": "creative",
+      "name": "Creative",
+      "ids": { "pci": ["1102"], "usb": ["041E"] },
+      "allowedDomains": ["creative.com"],
+      "driverPages": [{ "url": "https://support.creative.com/" }]
+    },
+    {
+      "id": "silabs",
+      "name": "Silicon Labs",
+      "ids": { "usb": ["10C4"] },
+      "allowedDomains": ["silabs.com"],
+      "driverPages": [{ "url": "https://www.silabs.com/developers/usb-to-uart-bridge-vcp-drivers" }]
+    },
+    {
+      "id": "ftdi",
+      "name": "FTDI",
+      "ids": { "usb": ["0403"] },
+      "allowedDomains": ["ftdichip.com"],
+      "driverPages": [{ "url": "https://ftdichip.com/drivers/" }]
+    },
+    {
+      "id": "wch",
+      "name": "WCH (CH340/CH341)",
+      "ids": { "usb": ["1A86"] },
+      "allowedDomains": ["wch-ic.com"],
+      "driverPages": [{ "url": "https://www.wch-ic.com/downloads/CH341SER_EXE.html" }]
+    },
+    {
+      "id": "prolific",
+      "name": "Prolific",
+      "ids": { "usb": ["067B"] },
+      "allowedDomains": ["prolific.com.tw"],
+      "driverPages": [{ "url": "https://www.prolific.com.tw/" }]
+    },
+    {
+      "id": "synaptics",
+      "name": "Synaptics",
+      "ids": { "usb": ["06CB"], "acpi": ["SYN", "SYNA"] },
+      "allowedDomains": ["synaptics.com"],
+      "driverPages": [{ "url": "https://www.synaptics.com/" }],
+      "note": {
+        "en": "Touchpad and fingerprint drivers come from the notebook manufacturer.",
+        "de": "Touchpad- und Fingerabdruck-Treiber kommen vom Notebook-Hersteller."
+      }
+    },
+    {
+      "id": "wacom",
+      "name": "Wacom",
+      "ids": { "usb": ["056A"] },
+      "allowedDomains": ["wacom.com"],
+      "driverPages": [{ "url": "https://www.wacom.com/en-us/support/product-support/drivers" }]
+    },
+    {
+      "id": "razer",
+      "name": "Razer",
+      "ids": { "usb": ["1532"] },
+      "allowedDomains": ["razer.com"],
+      "driverPages": [{ "url": "https://www.razer.com/synapse-4" }]
+    },
+    {
+      "id": "corsair",
+      "name": "Corsair",
+      "ids": { "usb": ["1B1C"] },
+      "allowedDomains": ["corsair.com"],
+      "driverPages": [{ "url": "https://www.corsair.com/us/en/s/downloads" }]
+    },
+    {
+      "id": "steelseries",
+      "name": "SteelSeries",
+      "ids": { "usb": ["1038"] },
+      "allowedDomains": ["steelseries.com"],
+      "driverPages": [{ "url": "https://steelseries.com/gg" }]
+    },
+    {
+      "id": "elgato",
+      "name": "Elgato",
+      "ids": { "usb": ["0FD9"] },
+      "allowedDomains": ["elgato.com"],
+      "driverPages": [{ "url": "https://www.elgato.com/us/en/s/downloads" }]
+    },
+    {
+      "id": "epson",
+      "name": "Epson",
+      "ids": { "usb": ["04B8"] },
+      "allowedDomains": ["epson.com"],
+      "driverPages": [{ "url": "https://epson.com/Support/sl/s" }]
+    },
+    {
+      "id": "brother",
+      "name": "Brother",
+      "ids": { "usb": ["04F9"] },
+      "allowedDomains": ["brother.com"],
+      "driverPages": [{ "url": "https://support.brother.com/" }]
+    },
+    {
+      "id": "hp-peripherals",
+      "name": "HP",
+      "ids": { "usb": ["03F0"] },
+      "allowedDomains": ["hp.com"],
+      "driverPages": [{ "url": "https://support.hp.com/us-en/drivers" }]
+    }
+  ],
+  "oems": [
+    {
+      "id": "dell",
+      "name": "Dell",
+      "match": ["^Dell"],
+      "allowedDomains": ["dell.com"],
+      "supportUrls": [
+        { "template": "https://www.dell.com/support/home/product-support/servicetag/{serial}/drivers", "requires": ["serial"] },
+        { "template": "https://www.dell.com/support/home/drivers", "requires": [] }
+      ]
+    },
+    {
+      "id": "lenovo",
+      "name": "Lenovo",
+      "match": ["^LENOVO"],
+      "allowedDomains": ["lenovo.com"],
+      "supportUrls": [
+        { "template": "https://pcsupport.lenovo.com/products/{serial}", "requires": ["serial"] },
+        { "template": "https://pcsupport.lenovo.com/", "requires": [] }
+      ]
+    },
+    {
+      "id": "hp",
+      "name": "HP",
+      "match": ["^HP$", "^HP ", "^Hewlett[- ]?Packard"],
+      "allowedDomains": ["hp.com"],
+      "supportUrls": [{ "template": "https://support.hp.com/us-en/drivers", "requires": [] }]
+    },
+    {
+      "id": "asus",
+      "name": "ASUS",
+      "match": ["^ASUSTeK", "^ASUS"],
+      "allowedDomains": ["asus.com"],
+      "supportUrls": [{ "template": "https://www.asus.com/support/download-center/", "requires": [] }]
+    },
+    {
+      "id": "msi",
+      "name": "MSI",
+      "match": ["^Micro-Star", "^MSI\\b"],
+      "allowedDomains": ["msi.com"],
+      "supportUrls": [{ "template": "https://www.msi.com/support/download", "requires": [] }]
+    },
+    {
+      "id": "gigabyte",
+      "name": "GIGABYTE",
+      "match": ["^Gigabyte"],
+      "allowedDomains": ["gigabyte.com"],
+      "supportUrls": [{ "template": "https://www.gigabyte.com/Support", "requires": [] }]
+    },
+    {
+      "id": "asrock",
+      "name": "ASRock",
+      "match": ["^ASRock"],
+      "allowedDomains": ["asrock.com"],
+      "supportUrls": [{ "template": "https://www.asrock.com/support/index.asp", "requires": [] }]
+    },
+    {
+      "id": "acer",
+      "name": "Acer",
+      "match": ["^Acer"],
+      "allowedDomains": ["acer.com"],
+      "supportUrls": [{ "template": "https://www.acer.com/us-en/support/drivers-and-manuals", "requires": [] }]
+    },
+    {
+      "id": "microsoft-surface",
+      "name": "Microsoft Surface",
+      "match": ["^Microsoft Corporation$"],
+      "allowedDomains": ["microsoft.com"],
+      "supportUrls": [{ "template": "https://support.microsoft.com/en-us/surface/drivers-firmware/download-drivers-and-firmware-for-surface", "requires": [] }]
+    }
+  ],
+  "genericDrivers": [
+    { "id": "basic-display", "infName": "display.inf", "category": "display" },
+    { "id": "basic-display-name", "deviceNamePattern": "^Microsoft Basic Display Adapter$", "category": "display" },
+    { "id": "hd-audio", "infName": "hdaudio.inf", "category": "audio" },
+    { "id": "generic-bluetooth", "infName": "bth.inf", "deviceClass": "Bluetooth", "enumerators": ["USB", "PCI"], "category": "bluetooth" }
+  ]
+}

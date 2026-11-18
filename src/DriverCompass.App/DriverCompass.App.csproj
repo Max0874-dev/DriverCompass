@@ -1,0 +1,70 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows10.0.22621.0</TargetFramework>
+    <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
+    <SupportedOSPlatformVersion>10.0.17763.0</SupportedOSPlatformVersion>
+    <RootNamespace>DriverCompass.App</RootNamespace>
+    <AssemblyName>DriverCompass</AssemblyName>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>Assets\DriverCompass.ico</ApplicationIcon>
+    <Platforms>x64;ARM64</Platforms>
+    <RuntimeIdentifiers>win-x64;win-arm64</RuntimeIdentifiers>
+    <UseWinUI>true</UseWinUI>
+    <DefaultLanguage>en-US</DefaultLanguage>
+
+    <!-- Unpackaged EXE by default (no certificate needed). MSIX: see docs/release-checklist.md -->
+    <WindowsPackageType>None</WindowsPackageType>
+    <EnableMsixTooling>true</EnableMsixTooling>
+    <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
+  </PropertyGroup>
+
+  <!-- WinUI needs a concrete architecture; default to x64 when built as AnyCPU. -->
+  <PropertyGroup Condition="'$(Platform)' == 'AnyCPU' or '$(Platform)' == ''">
+    <Platform>x64</Platform>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(RuntimeIdentifier)' == ''">
+    <RuntimeIdentifier Condition="'$(Platform)' == 'ARM64'">win-arm64</RuntimeIdentifier>
+    <RuntimeIdentifier Condition="'$(Platform)' != 'ARM64'">win-x64</RuntimeIdentifier>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DriverCompass.Core\DriverCompass.Core.csproj" />
+    <ProjectReference Include="..\DriverCompass.Data\DriverCompass.Data.csproj" />
+    <ProjectReference Include="..\DriverCompass.Scanner.Windows\DriverCompass.Scanner.Windows.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.WindowsAppSDK.WinUI" />
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" />
+    <PackageReference Include="CommunityToolkit.Mvvm" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+    <PackageReference Include="Microsoft.Extensions.Logging" />
+    <PackageReference Include="Serilog" />
+    <PackageReference Include="Serilog.Extensions.Logging" />
+    <PackageReference Include="Serilog.Sinks.File" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Assets\**\*.png" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="Assets\DriverCompass.ico" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <!--
+    MSIX manifest: generated from Package.appxmanifest.template so that the display name
+    comes from Directory.Build.props. Only used when building with -p:WindowsPackageType=MSIX.
+  -->
+  <ItemGroup Condition="'$(WindowsPackageType)' == 'MSIX'">
+    <AppxManifest Include="$(IntermediateOutputPath)Package.appxmanifest" />
+  </ItemGroup>
+  <Target Name="GenerateAppxManifestFromTemplate" BeforeTargets="PrepareForBuild" Condition="'$(WindowsPackageType)' == 'MSIX'">
+    <PropertyGroup>
+      <_DcManifest>$([System.IO.File]::ReadAllText('$(MSBuildProjectDirectory)\Package.appxmanifest.template'))</_DcManifest>
+      <_DcManifest>$(_DcManifest.Replace('$DisplayName$', '$(DriverCompassDisplayName)').Replace('$Version$', '$(Version).0'))</_DcManifest>
+    </PropertyGroup>
+    <MakeDir Directories="$(IntermediateOutputPath)" />
+    <WriteLinesToFile File="$(IntermediateOutputPath)Package.appxmanifest" Lines="$(_DcManifest)" Overwrite="true" WriteOnlyWhenDifferent="true" />
+  </Target>
+
+</Project>

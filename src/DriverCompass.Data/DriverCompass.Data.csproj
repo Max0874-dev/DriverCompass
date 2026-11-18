@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>DriverCompass.Data</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DriverCompass.Core\DriverCompass.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="JsonSchema.Net" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+  </ItemGroup>
+
+  <!-- The single source of truth lives in /data; it is embedded as offline fallback. -->
+  <ItemGroup>
+    <EmbeddedResource Include="..\..\data\vendors.json" LogicalName="DriverCompass.Data.vendors.json" Link="Embedded\vendors.json" />
+    <EmbeddedResource Include="..\..\data\vendors.schema.json" LogicalName="DriverCompass.Data.vendors.schema.json" Link="Embedded\vendors.schema.json" />
+    <EmbeddedResource Include="..\..\data\third-party\pci.ids" LogicalName="DriverCompass.Data.pci.ids" Link="Embedded\pci.ids" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="DriverCompass.Data.Tests" />
+  </ItemGroup>
+
+</Project>

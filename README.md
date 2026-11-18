@@ -1,0 +1,98 @@
+# DriverCompass
+
+**Deutsch** · [English](README.en.md)
+
+DriverCompass ist eine kostenlose Open-Source-App für Windows 10 und 11. Sie erkennt alle Geräte in deinem PC, zeigt dir, welche Treiber **fehlen**, **Fehler melden** oder **nur generisch** sind (z. B. „Microsoft Basic Display Adapter“), und führt dich zur **offiziellen Treiberseite** des Herstellers.
+
+- 🔒 **Alles lokal.** Keine Telemetrie, keine Gerätedaten verlassen den PC. Die einzige Netzwerkverbindung ist das Laden der öffentlichen Herstellerliste von GitHub. Das lässt sich abschalten.
+- 🚦 **Einfache Ansicht** mit Ampel, verständlichen Namen und einem Button „Treiber holen“.
+- 🔬 **Expertenmodus** mit Hardware-IDs, INF-Datei, Treiberanbieter, Version, Datum, Fehlercode, Suche, Filter, Sortierung und Export (HTML/CSV).
+- 🌍 Deutsch und Englisch.
+- 🛡️ Keine Adminrechte nötig.
+
+> **Status:** Stufe 1 (Erkennen und Links anzeigen). Versionsvergleich (Stufe 2) und Installation (Stufe 3) sind geplant, siehe [docs/roadmap.md](docs/roadmap.md).
+
+## Wie die Links entstehen
+
+Für jedes Gerät schlägt DriverCompass Quellen in dieser Reihenfolge vor:
+
+1. **PC- oder Mainboard-Hersteller** (Dell, HP, Lenovo, ASUS, MSI, GIGABYTE, ASRock, Acer, Surface). Wo möglich direkt mit Seriennummer oder Modell. Bei selbst gebauten PCs wird der Mainboard-Hersteller genutzt.
+2. **Chip-Hersteller** (NVIDIA, AMD, Intel, Realtek, Logitech …), ermittelt aus der Hardware-ID (`PCI\VEN_10DE…` → NVIDIA).
+3. **Microsoft Update Catalog** als Suche mit der Hardware-ID.
+
+Links öffnen sich erst beim Klick in deinem Browser. Jede URL muss HTTPS sein und auf einer für den Hersteller hinterlegten Domain liegen.
+
+## Voraussetzungen
+
+| Zum Benutzen | Zum Entwickeln |
+|---|---|
+| Windows 10 1809+ oder Windows 11 (x64/ARM64) | [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0) |
+| | optional: Visual Studio 2026 mit dem Workload „WinUI-Anwendungsentwicklung“ |
+
+Ein Windows SDK muss nicht separat installiert werden. Es kommt über das NuGet-Paket `Microsoft.Windows.SDK.BuildTools`.
+
+## Bauen und starten
+
+```powershell
+winget install Microsoft.DotNet.SDK.10        # einmalig
+dotnet build DriverCompass.slnx -p:Platform=x64
+dotnet test --solution DriverCompass.slnx -p:Platform=x64
+dotnet run --project src/DriverCompass.App -p:Platform=x64
+```
+
+**Demo ohne echte Problemgeräte:** Mit `--mock` zeigt die App typische Beispielgeräte, etwa eine Netzwerkkarte ohne Treiber, eine Grafikkarte mit Basic Display Adapter oder ein Bluetooth-Gerät mit Code 43:
+
+```powershell
+dotnet run --project src/DriverCompass.App -p:Platform=x64 -- --mock
+```
+
+**Release-Build als ZIP** (self-contained, ohne Installation lauffähig):
+
+```powershell
+dotnet publish src/DriverCompass.App -c Release -p:Platform=x64 -r win-x64 --self-contained -o publish/win-x64
+```
+
+## Projektstruktur
+
+```
+src/
+  DriverCompass.Core/              Modelle, Interfaces, Parser, Status-Logik, Link-Resolver, Export, Mock-Scanner
+  DriverCompass.Scanner.Windows/   WMI-Scanner (Win32_PnPEntity, Win32_PnPSignedDriver, …)
+  DriverCompass.Data/              Herstellerliste: Validator, Laden (Online → Cache → eingebettet), pci.ids
+  DriverCompass.Installer/         Platzhalter für Stufe 3 (getrennter, erhöhter Prozess)
+  DriverCompass.App/               WinUI-3-App (MVVM, CommunityToolkit.Mvvm, Serilog)
+tests/                             xUnit-Tests (Parser, Status, Resolver, Export, Validator, WMI-Mapping, Übersetzungen)
+data/
+  vendors.json                     Herstellerliste (versioniert)
+  vendors.schema.json              JSON-Schema
+  examples/                        Beispiel für einen neuen Eintrag
+  third-party/pci.ids              PCI-Namensdatenbank (BSD-3-Clause)
+docs/                              Architektur, Roadmap, Release-Checkliste, Hersteller eintragen
+```
+
+Den **Anzeigenamen** der App änderst du an genau einer Stelle: `<DriverCompassDisplayName>` in [Directory.Build.props](Directory.Build.props). Dort steht auch die URL der Online-Herstellerliste; `OWNER` wird durch den GitHub-Account ersetzt, sobald das Repo existiert.
+
+## Neue Hersteller eintragen
+
+Beiträge zur Herstellerliste sind sehr willkommen. Kurz gesagt:
+
+1. In [data/vendors.json](data/vendors.json) einen Eintrag nach dem Muster in [data/examples/new-vendor.example.json](data/examples/new-vendor.example.json) ergänzen.
+2. `dataVersion` erhöhen.
+3. `dotnet test --project tests/DriverCompass.Data.Tests` ausführen. Derselbe Validator läuft auch in der App und in der CI.
+4. Pull Request öffnen.
+
+Details stehen in [CONTRIBUTING.md](CONTRIBUTING.md) und [docs/adding-vendors.md](docs/adding-vendors.md).
+
+## Dateien auf deinem PC
+
+| Was | Wo |
+|---|---|
+| Einstellungen | `%LOCALAPPDATA%\DriverCompass\settings.json` |
+| Herstellerliste (Cache) | `%LOCALAPPDATA%\DriverCompass\cache\` |
+| Logs (14 Tage) | `%LOCALAPPDATA%\DriverCompass\logs\` |
+
+## Lizenz und Datenschutz
+
+[MIT](LICENSE). Drittanbieter: [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md). Datenschutz: [PRIVACY.md](PRIVACY.md). Sicherheitslücken bitte nach [SECURITY.md](SECURITY.md) melden.
+
+DriverCompass ist ein unabhängiges Projekt und steht in keiner Verbindung zu den genannten Herstellern. Alle Marken gehören ihren Inhabern.

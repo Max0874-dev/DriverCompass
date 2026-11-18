@@ -1,0 +1,33 @@
+name: Missing vendor / Hersteller fehlt
+description: Suggest a manufacturer or driver page for the vendor list. / Hersteller oder Treiberseite vorschlagen.
+labels: [vendor-list]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Pull requests are even better – see CONTRIBUTING.md. Only **official** manufacturer pages over **HTTPS** are accepted.
+        Pull Requests sind noch besser – siehe CONTRIBUTING.md. Nur **offizielle** Herstellerseiten über **HTTPS**.
+  - type: input
+    id: name
+    attributes:
+      label: Manufacturer / Hersteller
+    validations:
+      required: true
+  - type: input
+    id: ids
+    attributes:
+      label: Vendor IDs (PCI/USB/ACPI)
+      placeholder: "PCI 10EC, USB 0BDA"
+    validations:
+      required: true
+  - type: input
+    id: url
+    attributes:
+      label: Official driver page (HTTPS)
+      placeholder: https://www.example.com/support/drivers
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes / Hinweise

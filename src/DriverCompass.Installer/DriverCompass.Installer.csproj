@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Stage 3 (not implemented yet): separate, elevated helper process that installs ONE
+    user-confirmed, verified driver package via pnputil. The main app never runs elevated.
+    The manifest will switch to requireAdministrator when stage 3 is built.
+  -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <RootNamespace>DriverCompass.Installer</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DriverCompass.Core\DriverCompass.Core.csproj" />
+  </ItemGroup>
+
+</Project>

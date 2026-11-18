@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <!-- {AppName} is replaced with the central display name at runtime. -->
+  <data name="App_Tagline" xml:space="preserve"><value>Find missing and generic drivers</value></data>
+
+  <!-- Command bar -->
+  <data name="Cmd_Scan" xml:space="preserve"><value>Scan again</value></data>
+  <data name="Cmd_View" xml:space="preserve"><value>View</value></data>
+  <data name="Cmd_ViewSimple" xml:space="preserve"><value>Simple</value></data>
+  <data name="Cmd_ViewExpert" xml:space="preserve"><value>Expert</value></data>
+  <data name="Cmd_Export" xml:space="preserve"><value>Export</value></data>
+  <data name="Cmd_ExportHtml" xml:space="preserve"><value>HTML report</value></data>
+  <data name="Cmd_ExportCsv" xml:space="preserve"><value>CSV table</value></data>
+  <data name="Cmd_Settings" xml:space="preserve"><value>Settings</value></data>
+
+  <!-- Status / summary -->
+  <data name="Busy_Scanning" xml:space="preserve"><value>Scanning devices…</value></data>
+  <data name="Summary_AllGood" xml:space="preserve"><value>All devices have a working driver.</value></data>
+  <data name="Summary_Attention_One" xml:space="preserve"><value>1 device needs attention.</value></data>
+  <data name="Summary_Attention_Many" xml:space="preserve"><value>{0} devices need attention.</value></data>
+  <data name="Summary_Counts" xml:space="preserve"><value>{0} devices · {1} system devices hidden</value></data>
+  <data name="Status_PcLabel" xml:space="preserve"><value>PC: {0}</value></data>
+  <data name="Status_BoardLabel" xml:space="preserve"><value>Mainboard: {0}</value></data>
+  <data name="Status_CatalogLabel" xml:space="preserve"><value>Vendor list {0} ({1})</value></data>
+  <data name="Status_Unknown" xml:space="preserve"><value>unknown</value></data>
+  <data name="CatalogSource_Embedded" xml:space="preserve"><value>built-in</value></data>
+  <data name="CatalogSource_Cache" xml:space="preserve"><value>saved</value></data>
+  <data name="CatalogSource_Remote" xml:space="preserve"><value>updated online</value></data>
+  <data name="Mock_Banner" xml:space="preserve"><value>Demo mode: example devices are shown instead of your hardware (--mock).</value></data>
+  <data name="Catalog_RemoteUnavailable" xml:space="preserve"><value>The vendor list could not be updated (offline?). The saved version is used.</value></data>
+  <data name="Catalog_RemoteInvalid" xml:space="preserve"><value>The downloaded vendor list failed validation and was ignored.</value></data>
+  <data name="Catalog_RemoteOlder" xml:space="preserve"><value>The online vendor list is older than the built-in one and was ignored.</value></data>
+  <data name="Catalog_CacheInvalid" xml:space="preserve"><value>The saved vendor list was damaged and has been removed.</value></data>
+  <data name="Error_ScanFailed" xml:space="preserve"><value>The scan failed: {0}</value></data>
+  <data name="Export_Saved" xml:space="preserve"><value>Report saved: {0}</value></data>
+  <data name="Export_Open" xml:space="preserve"><value>Open</value></data>
+  <data name="Export_Failed" xml:space="preserve"><value>Export failed: {0}</value></data>
+  <data name="Export_FileType_Html" xml:space="preserve"><value>HTML report</value></data>
+  <data name="Export_FileType_Csv" xml:space="preserve"><value>CSV table</value></data>
+  <data name="Export_FileName" xml:space="preserve"><value>driver-report</value></data>
+
+  <!-- Status names -->
+  <data name="Status_Error" xml:space="preserve"><value>Problem</value></data>
+  <data name="Status_MissingDriver" xml:space="preserve"><value>Driver missing</value></data>
+  <data name="Status_GenericDriver" xml:space="preserve"><value>Only a generic driver</value></data>
+  <data name="Status_Disabled" xml:space="preserve"><value>Turned off</value></data>
+  <data name="Status_Ok" xml:space="preserve"><value>OK</value></data>
+
+  <!-- Simple view -->
+  <data name="Simple_GetDriver" xml:space="preserve"><value>Get driver</value></data>
+  <data name="Simple_MoreSources" xml:space="preserve"><value>More sources</value></data>
+  <data name="Simple_Sources" xml:space="preserve"><value>Driver sources</value></data>
+  <data name="Simple_NoLinks" xml:space="preserve"><value>No download source known</value></data>
+
+  <!-- Reasons (plain language) -->
+  <data name="Reason_VendorDriver" xml:space="preserve"><value>The manufacturer's driver is installed.</value></data>
+  <data name="Reason_InboxDriver" xml:space="preserve"><value>Uses a standard Windows driver – that is fine for this device.</value></data>
+  <data name="Reason_NoDriverInfo" xml:space="preserve"><value>Works without a driver of its own.</value></data>
+  <data name="Reason_NoDriverInstalled" xml:space="preserve"><value>No driver is installed, so the device does not work.</value></data>
+  <data name="Reason_DeviceError" xml:space="preserve"><value>Windows reports a problem (code {0}): {1}</value></data>
+  <data name="Reason_Disabled" xml:space="preserve"><value>The device is turned off in Windows.</value></data>
+  <data name="Reason_NotPresent" xml:space="preserve"><value>The device is currently not connected.</value></data>
+  <data name="Reason_Generic_Display" xml:space="preserve"><value>Runs on the basic Windows display driver: low resolution, no 3D acceleration. Install the graphics driver.</value></data>
+  <data name="Reason_Generic_Audio" xml:space="preserve"><value>Runs on the generic Windows audio driver. The manufacturer's driver adds features such as jack detection and sound settings.</value></data>
+  <data name="Reason_Generic_Network" xml:space="preserve"><value>Runs on a generic Windows network driver. The manufacturer's driver is usually faster and more reliable.</value></data>
+  <data name="Reason_Generic_Bluetooth" xml:space="preserve"><value>Runs on the generic Windows Bluetooth driver. The manufacturer's driver may fix connection problems.</value></data>
+  <data name="Reason_Generic_Storage" xml:space="preserve"><value>Runs on a generic Windows storage driver. The manufacturer's driver may be faster.</value></data>
+  <data name="Reason_Generic_Other" xml:space="preserve"><value>Runs on a generic Windows driver. A manufacturer driver is recommended.</value></data>
+
+  <!-- Configuration Manager error codes -->
+  <data name="CmError_Unknown" xml:space="preserve"><value>Error code {0}</value></data>
+  <data name="CmError_1" xml:space="preserve"><value>The device is not configured correctly.</value></data>
+  <data name="CmError_3" xml:space="preserve"><value>The driver may be damaged, or the PC is low on memory.</value></data>
+  <data name="CmError_10" xml:space="preserve"><value>The device cannot start.</value></data>
+  <data name="CmError_12" xml:space="preserve"><value>There are not enough free resources for this device.</value></data>
+  <data name="CmError_14" xml:space="preserve"><value>A restart is required.</value></data>
+  <data name="CmError_18" xml:space="preserve"><value>The drivers need to be reinstalled.</value></data>
+  <data name="CmError_19" xml:space="preserve"><value>The configuration in the registry is damaged.</value></data>
+  <data name="CmError_21" xml:space="preserve"><value>Windows is removing this device.</value></data>
+  <data name="CmError_22" xml:space="preserve"><value>The device is disabled.</value></data>
+  <data name="CmError_24" xml:space="preserve"><value>The device is missing or not working properly.</value></data>
+  <data name="CmError_28" xml:space="preserve"><value>No driver is installed.</value></data>
+  <data name="CmError_29" xml:space="preserve"><value>The device is disabled in the firmware (BIOS/UEFI).</value></data>
+  <data name="CmError_31" xml:space="preserve"><value>Windows cannot load the driver.</value></data>
+  <data name="CmError_32" xml:space="preserve"><value>The driver service is disabled.</value></data>
+  <data name="CmError_37" xml:space="preserve"><value>The driver reported an error while starting.</value></data>
+  <data name="CmError_39" xml:space="preserve"><value>The driver is missing or damaged.</value></data>
+  <data name="CmError_41" xml:space="preserve"><value>The driver loaded, but the hardware was not found.</value></data>
+  <data name="CmError_43" xml:space="preserve"><value>Windows stopped the device because it reported problems.</value></data>
+  <data name="CmError_45" xml:space="preserve"><value>The device is not connected.</value></data>
+  <data name="CmError_48" xml:space="preserve"><value>The driver was blocked because of known problems.</value></data>
+  <data name="CmError_52" xml:space="preserve"><value>The driver's digital signature could not be verified.</value></data>
+
+  <!-- Device classes (friendly categories) -->
+  <data name="Class_Unknown" xml:space="preserve"><value>Other device</value></data>
+  <data name="Class_Display" xml:space="preserve"><value>Graphics</value></data>
+  <data name="Class_Net" xml:space="preserve"><value>Network</value></data>
+  <data name="Class_MEDIA" xml:space="preserve"><value>Sound &amp; media</value></data>
+  <data name="Class_AudioEndpoint" xml:space="preserve"><value>Audio input/output</value></data>
+  <data name="Class_Bluetooth" xml:space="preserve"><value>Bluetooth</value></data>
+  <data name="Class_USB" xml:space="preserve"><value>USB controllers &amp; hubs</value></data>
+  <data name="Class_HIDClass" xml:space="preserve"><value>Input devices</value></data>
+  <data name="Class_Keyboard" xml:space="preserve"><value>Keyboard</value></data>
+  <data name="Class_Mouse" xml:space="preserve"><value>Mouse &amp; touchpad</value></data>
+  <data name="Class_DiskDrive" xml:space="preserve"><value>Drive</value></data>
+  <data name="Class_SCSIAdapter" xml:space="preserve"><value>Storage controller</value></data>
+  <data name="Class_HDC" xml:space="preserve"><value>Storage controller</value></data>
+  <data name="Class_System" xml:space="preserve"><value>System device</value></data>
+  <data name="Class_Camera" xml:space="preserve"><value>Camera</value></data>
+  <data name="Class_Image" xml:space="preserve"><value>Camera &amp; scanner</value></data>
+  <data name="Class_Monitor" xml:space="preserve"><value>Monitor</value></data>
+  <data name="Class_Printer" xml:space="preserve"><value>Printer</value></data>
+  <data name="Class_Processor" xml:space="preserve"><value>Processor</value></data>
+  <data name="Class_Battery" xml:space="preserve"><value>Battery &amp; power</value></data>
+  <data name="Class_Biometric" xml:space="preserve"><value>Fingerprint &amp; face sign-in</value></data>
+  <data name="Class_SmartCardReader" xml:space="preserve"><value>Card reader</value></data>
+  <data name="Class_Ports" xml:space="preserve"><value>Serial ports (COM)</value></data>
+  <data name="Class_Firmware" xml:space="preserve"><value>Firmware</value></data>
+  <data name="Class_SecurityDevices" xml:space="preserve"><value>Security chip (TPM)</value></data>
+  <data name="Class_Sensor" xml:space="preserve"><value>Sensor</value></data>
+  <data name="Class_WPD" xml:space="preserve"><value>Portable device</value></data>
+  <data name="Class_Extension" xml:space="preserve"><value>Extension</value></data>
+  <data name="Class_Computer" xml:space="preserve"><value>Computer</value></data>
+  <data name="Class_Volume" xml:space="preserve"><value>Volume</value></data>
+  <data name="Class_PrintQueue" xml:space="preserve"><value>Print queue</value></data>
+  <data name="Class_SoftwareDevice" xml:space="preserve"><value>Software device</value></data>
+  <data name="Class_SoftwareComponent" xml:space="preserve"><value>Software component</value></data>
+
+  <!-- Links -->
+  <data name="Link_OemSupport_Serial" xml:space="preserve"><value>{0} support for exactly this PC</value></data>
+  <data name="Link_OemSupport_Model" xml:space="preserve"><value>{0} support for your model</value></data>
+  <data name="Link_OemSupport_HardwareId" xml:space="preserve"><value>{0} driver downloads</value></data>
+  <data name="Link_OemSupport_Generic" xml:space="preserve"><value>{0} driver downloads</value></data>
+  <data name="Link_ChipVendor" xml:space="preserve"><value>Driver page of {0}</value></data>
+  <data name="Link_MicrosoftCatalog" xml:space="preserve"><value>Search the Microsoft Update Catalog</value></data>
+
+  <!-- Expert view -->
+  <data name="Expert_Search" xml:space="preserve"><value>Search name, vendor, hardware ID…</value></data>
+  <data name="Filter_AllStatuses" xml:space="preserve"><value>All statuses</value></data>
+  <data name="Filter_Problems" xml:space="preserve"><value>Problems only</value></data>
+  <data name="Filter_AllClasses" xml:space="preserve"><value>All classes</value></data>
+  <data name="Expert_ShowSystem" xml:space="preserve"><value>Show system devices</value></data>
+  <data name="Expert_Count" xml:space="preserve"><value>{0} of {1} devices</value></data>
+  <data name="Detail_None" xml:space="preserve"><value>Select a device to see its details.</value></data>
+  <data name="Detail_Copy" xml:space="preserve"><value>Copy</value></data>
+  <data name="Detail_SearchCatalog" xml:space="preserve"><value>Search catalog</value></data>
+  <data name="Detail_Note" xml:space="preserve"><value>Note</value></data>
+
+  <!-- Columns (also used in reports) -->
+  <data name="Col_Status" xml:space="preserve"><value>Status</value></data>
+  <data name="Col_Reason" xml:space="preserve"><value>Reason</value></data>
+  <data name="Col_Name" xml:space="preserve"><value>Device</value></data>
+  <data name="Col_Category" xml:space="preserve"><value>Category</value></data>
+  <data name="Col_DeviceClass" xml:space="preserve"><value>Device class</value></data>
+  <data name="Col_Vendor" xml:space="preserve"><value>Chip vendor</value></data>
+  <data name="Col_Manufacturer" xml:space="preserve"><value>Manufacturer (Windows)</value></data>
+  <data name="Col_Provider" xml:space="preserve"><value>Driver provider</value></data>
+  <data name="Col_Version" xml:space="preserve"><value>Version</value></data>
+  <data name="Col_Date" xml:space="preserve"><value>Date</value></data>
+  <data name="Col_Inf" xml:space="preserve"><value>INF file</value></data>
+  <data name="Col_ErrorCode" xml:space="preserve"><value>Code</value></data>
+  <data name="Col_HardwareId" xml:space="preserve"><value>Hardware ID</value></data>
+  <data name="Col_HardwareIds" xml:space="preserve"><value>Hardware IDs</value></data>
+  <data name="Col_CompatibleIds" xml:space="preserve"><value>Compatible IDs</value></data>
+  <data name="Col_InstanceId" xml:space="preserve"><value>Instance ID</value></data>
+  <data name="Col_Links" xml:space="preserve"><value>Driver sources</value></data>
+  <data name="Col_BestLink" xml:space="preserve"><value>Best source</value></data>
+  <data name="Col_Signer" xml:space="preserve"><value>Signed by</value></data>
+
+  <!-- Reports -->
+  <data name="Report_Title" xml:space="preserve"><value>{0} – driver report</value></data>
+  <data name="Report_GeneratedAt" xml:space="preserve"><value>Created {0}</value></data>
+  <data name="Report_CatalogVersion" xml:space="preserve"><value>vendor list {0}</value></data>
+  <data name="Report_System" xml:space="preserve"><value>System</value></data>
+  <data name="Report_Devices" xml:space="preserve"><value>Devices ({0})</value></data>
+  <data name="Report_Privacy" xml:space="preserve"><value>Created locally. This report contains hardware details of your PC – review it before sharing it.</value></data>
+  <data name="Sys_Manufacturer" xml:space="preserve"><value>PC manufacturer</value></data>
+  <data name="Sys_Model" xml:space="preserve"><value>Model</value></data>
+  <data name="Sys_BaseBoard" xml:space="preserve"><value>Mainboard</value></data>
+  <data name="Sys_Bios" xml:space="preserve"><value>BIOS/UEFI version</value></data>
+  <data name="Sys_OperatingSystem" xml:space="preserve"><value>Operating system</value></data>
+  <data name="Sys_SerialNumber" xml:space="preserve"><value>Serial number</value></data>
+
+  <!-- Settings -->
+  <data name="Settings_Title" xml:space="preserve"><value>Settings</value></data>
+  <data name="Settings_Save" xml:space="preserve"><value>Save</value></data>
+  <data name="Settings_Cancel" xml:space="preserve"><value>Cancel</value></data>
+  <data name="Settings_Language" xml:space="preserve"><value>Language</value></data>
+  <data name="Settings_Language_System" xml:space="preserve"><value>Same as Windows</value></data>
+  <data name="Settings_LanguageRestart" xml:space="preserve"><value>A language change takes effect after restarting {AppName}.</value></data>
+  <data name="Settings_StartView" xml:space="preserve"><value>Start view</value></data>
+  <data name="Settings_ShowSystem" xml:space="preserve"><value>Show system and software devices</value></data>
+  <data name="Settings_UseSerial" xml:space="preserve"><value>Use the serial number in manufacturer links</value></data>
+  <data name="Settings_UseSerial_Help" xml:space="preserve"><value>Opens the exact support page of your PC. The number is only sent to the manufacturer when you click the link.</value></data>
+  <data name="Settings_SerialInExports" xml:space="preserve"><value>Include the serial number in reports</value></data>
+  <data name="Settings_UpdateCatalog" xml:space="preserve"><value>Update the vendor list online at startup</value></data>
+  <data name="Settings_UpdateCatalog_Help" xml:space="preserve"><value>Downloads a public file from GitHub. No device data is sent.</value></data>
+  <data name="Settings_OpenLogs" xml:space="preserve"><value>Open log folder</value></data>
+  <data name="Settings_About" xml:space="preserve"><value>About</value></data>
+  <data name="Settings_AboutText" xml:space="preserve"><value>{0} {1} · MIT license · vendor list {2}</value></data>
+  <data name="Settings_Privacy" xml:space="preserve"><value>Everything runs locally on your PC. No telemetry. Driver links only open in your browser when you click them.</value></data>
+</root>

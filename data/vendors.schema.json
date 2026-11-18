@@ -1,0 +1,121 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DriverCompass vendor catalog",
+  "description": "Maps hardware vendor IDs to manufacturers and their official driver pages. Validated by the app before use and by CI on every pull request.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "dataVersion", "chipVendors", "oems", "genericDrivers"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "schemaVersion": { "type": "integer", "minimum": 1 },
+    "dataVersion": {
+      "description": "YYYY.M.D.N – increase on every change. The app rejects remote files older than its embedded copy.",
+      "type": "string",
+      "pattern": "^[0-9]{4}\\.[0-9]{1,2}\\.[0-9]{1,2}\\.[0-9]{1,4}$"
+    },
+    "chipVendors": { "type": "array", "maxItems": 2000, "items": { "$ref": "#/$defs/chipVendor" } },
+    "oems": { "type": "array", "maxItems": 500, "items": { "$ref": "#/$defs/oem" } },
+    "genericDrivers": { "type": "array", "maxItems": 200, "items": { "$ref": "#/$defs/genericDriver" } }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]{0,63}$" },
+    "name": { "type": "string", "minLength": 1, "maxLength": 100 },
+    "domain": { "type": "string", "maxLength": 253, "pattern": "^([a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?\\.)+[a-z]{2,63}$" },
+    "httpsUrl": { "type": "string", "maxLength": 2048, "pattern": "^https://[^\\s{}]+$" },
+    "urlTemplate": { "type": "string", "maxLength": 2048, "pattern": "^https://[^\\s]+$" },
+    "hex4": { "type": "string", "pattern": "^[0-9A-F]{4}$" },
+    "deviceClass": { "type": "string", "pattern": "^[A-Za-z0-9]{1,64}$" },
+    "regex": { "type": "string", "minLength": 1, "maxLength": 200 },
+    "localizedText": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": { "pattern": "^[a-z]{2}$" },
+      "additionalProperties": { "type": "string", "minLength": 1, "maxLength": 400 }
+    },
+    "chipVendor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "ids", "allowedDomains", "driverPages"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "name": { "$ref": "#/$defs/name" },
+        "ids": {
+          "type": "object",
+          "additionalProperties": false,
+          "minProperties": 1,
+          "properties": {
+            "pci": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/hex4" } },
+            "usb": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/hex4" } },
+            "acpi": { "type": "array", "uniqueItems": true, "items": { "type": "string", "pattern": "^[A-Z][A-Z0-9]{2,3}$" } },
+            "pnp": { "type": "array", "uniqueItems": true, "items": { "type": "string", "pattern": "^[A-Z]{3}$" } }
+          }
+        },
+        "allowedDomains": { "type": "array", "minItems": 1, "maxItems": 10, "uniqueItems": true, "items": { "$ref": "#/$defs/domain" } },
+        "driverPages": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 10,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["url"],
+            "properties": {
+              "url": { "$ref": "#/$defs/httpsUrl" },
+              "deviceClasses": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/deviceClass" } }
+            }
+          }
+        },
+        "note": { "$ref": "#/$defs/localizedText" }
+      }
+    },
+    "oem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "match", "allowedDomains", "supportUrls"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "name": { "$ref": "#/$defs/name" },
+        "match": { "type": "array", "minItems": 1, "maxItems": 10, "items": { "$ref": "#/$defs/regex" } },
+        "allowedDomains": { "type": "array", "minItems": 1, "maxItems": 10, "uniqueItems": true, "items": { "$ref": "#/$defs/domain" } },
+        "supportUrls": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 10,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["template", "requires"],
+            "properties": {
+              "template": { "$ref": "#/$defs/urlTemplate" },
+              "requires": {
+                "type": "array",
+                "uniqueItems": true,
+                "items": { "enum": ["serial", "model", "sku", "board", "family"] }
+              }
+            }
+          }
+        }
+      }
+    },
+    "genericDriver": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "category"],
+      "anyOf": [{ "required": ["infName"] }, { "required": ["deviceNamePattern"] }],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "infName": { "type": "string", "pattern": "^[A-Za-z0-9_.-]{1,64}\\.inf$" },
+        "deviceNamePattern": { "$ref": "#/$defs/regex" },
+        "deviceClass": { "$ref": "#/$defs/deviceClass" },
+        "enumerators": {
+          "description": "Only devices whose instance ID starts with one of these buses (e.g. USB, PCI).",
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "pattern": "^[A-Z0-9]{1,16}$" }
+        },
+        "providerPattern": { "$ref": "#/$defs/regex" },
+        "category": { "enum": ["display", "audio", "network", "bluetooth", "storage", "other"] }
+      }
+    }
+  }
+}
