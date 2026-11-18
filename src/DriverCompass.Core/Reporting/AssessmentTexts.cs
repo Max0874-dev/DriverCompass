@@ -47,6 +47,25 @@ public static class AssessmentTexts
         _ => t.Get("Link_MicrosoftCatalog"),
     };
 
+    /// <summary>Name of a version source ("Dell", "Windows Update"); empty when none.</summary>
+    public static string VersionSource(ITextProvider t, string? sourceId) =>
+        string.IsNullOrEmpty(sourceId) ? string.Empty : t.Get($"VersionSource_{sourceId}");
+
+    /// <summary>Honest, source-specific version verdict. Empty while no version check ran.</summary>
+    public static string VersionState(ITextProvider t, VersionCheckResult? result) => result?.State switch
+    {
+        null => string.Empty,
+        VersionCheckState.NewerAvailable => Format(t.Get("VersionState_NewerAvailable"), VersionSource(t, result.ProviderId)),
+        VersionCheckState.UpToDate when result.ProviderId == VersionSourceIds.WindowsUpdate => t.Get("VersionState_UpToDate_windowsupdate"),
+        VersionCheckState.UpToDate => Format(t.Get("VersionState_UpToDate"), VersionSource(t, result.ProviderId)),
+        VersionCheckState.Failed => t.Get("VersionState_Failed"),
+        _ => t.Get("VersionState_Unknown"),
+    };
+
+    /// <summary>Newest version a source knows, or its date when the source has no version number (Windows Update).</summary>
+    public static string LatestVersion(VersionCheckResult? result) =>
+        result?.LatestVersion ?? result?.LatestDate?.ToString("d", CultureInfo.CurrentCulture) ?? string.Empty;
+
     public static string Format(string template, params object?[] args)
     {
         try

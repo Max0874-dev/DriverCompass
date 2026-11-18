@@ -54,7 +54,7 @@ public sealed partial class MainWindow : Window, IShellService
     public async Task<bool> ShowSettingsAsync()
     {
         var settings = App.Services.GetRequiredService<Core.Abstractions.ISettingsService>();
-        var vm = new SettingsViewModel(settings, ViewModel.CatalogVersion);
+        var vm = new SettingsViewModel(settings, ViewModel.CatalogVersion, ViewModel.IsVersionSourceApplicable);
         var dialog = new SettingsDialog(vm) { XamlRoot = Root.XamlRoot };
         if (await dialog.ShowAsync() != ContentDialogResult.Primary)
         {

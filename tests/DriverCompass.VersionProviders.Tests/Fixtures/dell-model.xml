@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Shortened, hand-written sample in the structure of a Dell model catalog -->
+<Manifest baseLocation="downloads.dell.com" version="2026.11.15" xmlns="openmanage/cm/dm">
+  <SoftwareComponent releaseDate="March 12, 2025" vendorVersion="23.130.0.4" path="FOLDER1/1/Intel-WLAN.EXE">
+    <Name><Display lang="en"><![CDATA[Intel AX211/AX210 WiFi Driver]]></Display></Name>
+    <ComponentType value="DRVR"><Display lang="en"><![CDATA[Driver]]></Display></ComponentType>
+    <SupportedDCHDevices>
+      <Device componentID="1" componentType="DRVR" version="23.130.0.4">
+        <PCIInfo deviceID="2725" vendorID="8086" subDeviceID="0024" subVendorID="8086" />
+        <PCIInfo deviceID="51F0" vendorID="8086" subDeviceID="" subVendorID="" />
+      </Device>
+    </SupportedDCHDevices>
+    <SupportedOperatingSystems>
+      <OperatingSystem osCode="W21H4" osVendor="Microsoft" osArch="x64" />
+    </SupportedOperatingSystems>
+    <ImportantInfo URL="https://www.dell.com/support/home/drivers/driversdetails?driverId=ABC12" />
+  </SoftwareComponent>
+  <SoftwareComponent releaseDate="June 04, 2021" vendorVersion="6.3.9600.2330">
+    <Name><Display lang="en"><![CDATA[Realtek USB Audio Driver]]></Display></Name>
+    <ComponentType value="DRVR" />
+    <SupportedDCHDevices>
+      <Device componentType="DRVR" version="6.3.9600.2330">
+        <Generic>USB\VID_0BDA&amp;PID_4001&amp;REV_0001&amp;MI_00</Generic>
+      </Device>
+    </SupportedDCHDevices>
+    <ImportantInfo URL="https://evil.example.com/driver" />
+  </SoftwareComponent>
+  <SoftwareComponent releaseDate="May 01, 2025" vendorVersion="99.0">
+    <Name><Display lang="en"><![CDATA[ARM-only driver]]></Display></Name>
+    <ComponentType value="DRVR" />
+    <SupportedDCHDevices>
+      <Device version="99.0"><Generic>PCI\VEN_8086&amp;DEV_2725</Generic></Device>
+    </SupportedDCHDevices>
+    <SupportedOperatingSystems><OperatingSystem osArch="arm64" /></SupportedOperatingSystems>
+  </SoftwareComponent>
+  <SoftwareComponent releaseDate="May 01, 2025" vendorVersion="1.30.0">
+    <Name><Display lang="en"><![CDATA[BIOS]]></Display></Name>
+    <ComponentType value="BIOS" />
+    <SupportedDCHDevices><Device version="1.30.0"><Generic>PCI\VEN_8086&amp;DEV_2725</Generic></Device></SupportedDCHDevices>
+  </SoftwareComponent>
+</Manifest>

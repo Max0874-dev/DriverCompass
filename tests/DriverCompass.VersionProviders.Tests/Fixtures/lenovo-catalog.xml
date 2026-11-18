@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Shortened, hand-written sample in the structure of download.lenovo.com/catalog/<MT>_Win11.xml -->
+<packages count="3">
+  <package>
+    <location>https://download.lenovo.com/pccbbs/mobiles/n32li04w_2_.xml</location>
+    <category>Motherboard Devices</category>
+    <checksum type="sha256">{{SHA_SERIALIO}}</checksum>
+  </package>
+  <package>
+    <location>https://evil.example.com/pkg.xml</location>
+    <category>Other</category>
+    <checksum type="sha256">cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc</checksum>
+  </package>
+  <package>
+    <location>https://download.lenovo.com/pccbbs/mobiles/broken.xml</location>
+    <category>Other</category>
+    <checksum type="md5">00</checksum>
+  </package>
+</packages>

@@ -203,5 +203,48 @@
   <data name="Settings_OpenLogs" xml:space="preserve"><value>Log-Ordner öffnen</value></data>
   <data name="Settings_About" xml:space="preserve"><value>Info</value></data>
   <data name="Settings_AboutText" xml:space="preserve"><value>{0} {1} · MIT-Lizenz · Herstellerliste {2}</value></data>
-  <data name="Settings_Privacy" xml:space="preserve"><value>Alles läuft lokal auf Ihrem PC. Keine Telemetrie. Treiber-Links öffnen sich erst beim Klick in Ihrem Browser.</value></data>
+  <data name="Settings_Privacy" xml:space="preserve"><value>Alles läuft lokal auf Ihrem PC. Keine Telemetrie. Treiber-Links öffnen sich erst beim Klick in Ihrem Browser. Die Versionsprüfung nutzt nur die Quellen, die Sie oben einschalten.</value></data>
+  <data name="Cmd_CheckVersions" xml:space="preserve"><value>Versionen prüfen</value></data>
+  <data name="Cmd_CancelVersionCheck" xml:space="preserve"><value>Prüfung abbrechen</value></data>
+  <data name="Versions_NoSourceHint" xml:space="preserve"><value>Aktivieren Sie in den Einstellungen mindestens eine Versionsquelle, um nach neueren Treibern zu suchen.</value></data>
+  <data name="Busy_CheckingVersions" xml:space="preserve"><value>Prüfe Versionen: {0} …</value></data>
+  <data name="Versions_Summary" xml:space="preserve"><value>Versionsprüfung: {0} neuere Treiber gefunden · {1} ohne neuere Version · {2} unbekannt</value></data>
+  <data name="Versions_Cancelled" xml:space="preserve"><value>Versionsprüfung abgebrochen.</value></data>
+  <data name="Versions_Failed" xml:space="preserve"><value>Versionsprüfung fehlgeschlagen: {0}</value></data>
+  <data name="VersionSourceStatus_Ok" xml:space="preserve"><value>{0}: geprüft ({1})</value></data>
+  <data name="VersionSourceStatus_NotApplicable" xml:space="preserve"><value>{0}: trifft nicht zu ({1})</value></data>
+  <data name="VersionSourceStatus_Failed" xml:space="preserve"><value>{0}: Fehler – {1}</value></data>
+  <data name="VersionReason_WrongManufacturer" xml:space="preserve"><value>anderer PC-Hersteller</value></data>
+  <data name="VersionReason_ModelNotInCatalog" xml:space="preserve"><value>Modell nicht im Katalog</value></data>
+  <data name="VersionReason_Offline" xml:space="preserve"><value>keine Verbindung</value></data>
+  <data name="VersionReason_InvalidData" xml:space="preserve"><value>ungültige Daten</value></data>
+  <data name="VersionReason_SignatureInvalid" xml:space="preserve"><value>Signatur ungültig</value></data>
+  <data name="VersionReason_HashMismatch" xml:space="preserve"><value>Prüfsumme stimmt nicht</value></data>
+  <data name="VersionReason_AccessDenied" xml:space="preserve"><value>Zugriff verweigert</value></data>
+  <data name="VersionReason_Unexpected" xml:space="preserve"><value>unerwarteter Fehler, siehe Log</value></data>
+  <data name="VersionSource_windowsupdate" xml:space="preserve"><value>Windows Update</value></data>
+  <data name="VersionSource_dell" xml:space="preserve"><value>Dell</value></data>
+  <data name="VersionSource_lenovo" xml:space="preserve"><value>Lenovo</value></data>
+  <data name="VersionSource_hp" xml:space="preserve"><value>HP</value></data>
+  <data name="VersionSource_windowsupdate_Privacy" xml:space="preserve"><value>Fragt Windows Update nach neueren Treibern. Dabei werden die Hardware-IDs Ihrer Geräte an Microsoft übertragen – genau wie bei Windows Update selbst.</value></data>
+  <data name="VersionSource_dell_Privacy" xml:space="preserve"><value>Lädt den offiziellen Treiberkatalog für Ihr Modell von downloads.dell.com. Dell sieht dabei die Modellkennung, aber keine Seriennummer.</value></data>
+  <data name="VersionSource_lenovo_Privacy" xml:space="preserve"><value>Lädt den offiziellen Update-Katalog für Ihren Maschinentyp von download.lenovo.com. Lenovo sieht dabei den Maschinentyp, aber keine Seriennummer.</value></data>
+  <data name="VersionSource_hp_Privacy" xml:space="preserve"><value>Lädt die offizielle Referenzdatei für Ihre Plattform von hpia.hpcloud.hp.com. HP sieht dabei Plattform-ID und Windows-Version, aber keine Seriennummer.</value></data>
+  <data name="Settings_VersionCheck" xml:space="preserve"><value>Versionsprüfung</value></data>
+  <data name="Settings_VersionCheck_Help" xml:space="preserve"><value>Alle Quellen sind standardmäßig aus. Geprüft wird nur, wenn Sie auf „Versionen prüfen“ klicken. Webseiten ohne offizielle Schnittstelle (z. B. Intel, NVIDIA, AMD) werden nicht ausgelesen – dort bleibt es bei „Version unbekannt“.</value></data>
+  <data name="Settings_NotApplicable" xml:space="preserve"><value>Trifft auf diesen PC nicht zu.</value></data>
+  <data name="VersionState_NewerAvailable" xml:space="preserve"><value>Neuere Version verfügbar ({0})</value></data>
+  <data name="VersionState_UpToDate" xml:space="preserve"><value>Aktuell laut {0}</value></data>
+  <data name="VersionState_UpToDate_windowsupdate" xml:space="preserve"><value>Bei Windows Update nichts Neueres</value></data>
+  <data name="VersionState_Unknown" xml:space="preserve"><value>Version unbekannt – bitte Link prüfen</value></data>
+  <data name="VersionState_Failed" xml:space="preserve"><value>Prüfung fehlgeschlagen</value></data>
+  <data name="Version_Latest" xml:space="preserve"><value>Neueste Version: {0}</value></data>
+  <data name="Version_Package" xml:space="preserve"><value>Paket: {0}</value></data>
+  <data name="Version_OpenSource" xml:space="preserve"><value>Treiberseite öffnen</value></data>
+  <data name="Version_OpenWindowsUpdate" xml:space="preserve"><value>Windows Update öffnen</value></data>
+  <data name="Col_Latest" xml:space="preserve"><value>Neueste Version</value></data>
+  <data name="Col_VersionState" xml:space="preserve"><value>Versionsstatus</value></data>
+  <data name="Col_VersionSource" xml:space="preserve"><value>Versionsquelle</value></data>
+  <data name="Filter_NewerAvailable" xml:space="preserve"><value>Neuere Version verfügbar</value></data>
+  <data name="VersionSourceStatus_Ok_windowsupdate" xml:space="preserve"><value>{0}: geprüft ({1} Treiber-Updates angeboten)</value></data>
 </root>

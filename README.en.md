@@ -4,13 +4,14 @@
 
 DriverCompass is a free, open-source app for Windows 10 and 11. It detects every device in your PC, shows which drivers are **missing**, **reporting errors** or **only generic** (e.g. "Microsoft Basic Display Adapter"), and takes you to the manufacturer's **official driver page**.
 
-- 🔒 **Everything stays local.** No telemetry, no device data leaves the PC. The only network connection downloads the public vendor list from GitHub (can be turned off).
+- 🔒 **Everything stays local.** No telemetry, no device data leaves the PC. The only automatic download is the public vendor list from GitHub (can be turned off). The optional version check only connects once you turn it on and start it.
 - 🚦 **Simple view** with a traffic light, plain names and one "Get driver" button.
 - 🔬 **Expert mode** with hardware IDs, INF file, driver provider, version, date, error code, search, filters, sorting and export (HTML/CSV).
+- 🔄 **Version check** (optional): "Check versions" compares installed drivers with official sources: Windows Update plus the Dell, Lenovo and HP catalogs. Without an official source it honestly says "Version unknown – please check the link". Every source is off by default, see [PRIVACY.md](PRIVACY.md).
 - 🌍 English and German.
 - 🛡️ No administrator rights needed.
 
-> **Status:** stage 1 (detect and link). Version comparison (stage 2) and installation (stage 3) are planned, see [docs/roadmap.md](docs/roadmap.md).
+> **Status:** stage 1 (detect and link) and stage 2 (version comparison) are done. Installation (stage 3) is planned, see [docs/roadmap.md](docs/roadmap.md).
 
 ## How links are chosen
 
@@ -59,6 +60,7 @@ src/
   DriverCompass.Core/              models, interfaces, parser, status logic, link resolver, export, mock scanner
   DriverCompass.Scanner.Windows/   WMI scanner (Win32_PnPEntity, Win32_PnPSignedDriver, …)
   DriverCompass.Data/              vendor list: validator, loading (online → cache → embedded), pci.ids
+  DriverCompass.VersionProviders/  stage 2: Windows Update, Dell, Lenovo, HP catalogs (HTTPS, signature, checksum)
   DriverCompass.Installer/         stage 3 placeholder (separate elevated process)
   DriverCompass.App/               WinUI 3 app (MVVM, CommunityToolkit.Mvvm, Serilog)
 tests/                             xUnit tests

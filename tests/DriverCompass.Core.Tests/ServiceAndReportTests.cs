@@ -127,6 +127,31 @@ public class ReportTests
     }
 
     [Fact]
+    public async Task Version_results_appear_in_both_reports()
+    {
+        var result = await Analyze();
+        var run = await new DriverCompass.Core.Versions.VersionCheckService([new DriverCompass.Core.Versions.MockVersionProvider(VersionSourceIds.Dell)])
+            .CheckAllAsync(result.Devices, result.Scan.System, new HashSet<string> { VersionSourceIds.Dell }, cancellationToken: TestContext.Current.CancellationToken);
+        var checkedResult = result with { Devices = run.Devices };
+
+        var csv = CsvReportExporter.Build(checkedResult, new ReportOptions { CsvSeparator = ";" }, KeyTextProvider.Instance);
+        var html = HtmlReportExporter.Build(checkedResult, new ReportOptions(), KeyTextProvider.Instance);
+
+        Assert.Contains("Col_Latest;Col_VersionState;Col_VersionSource", csv, StringComparison.Ordinal);
+        Assert.Contains("23.130.0.4;VersionState_NewerAvailable;VersionSource_dell", csv, StringComparison.Ordinal);
+        Assert.Contains("VersionState_UpToDate", csv, StringComparison.Ordinal);
+        Assert.Contains("VersionState_Unknown", csv, StringComparison.Ordinal);
+        Assert.Contains("<td>23.130.0.4</td><td>VersionState_NewerAvailable</td>", html, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task Without_version_check_the_version_columns_stay_empty()
+    {
+        var csv = CsvReportExporter.Build(await Analyze(), new ReportOptions { CsvSeparator = ";" }, KeyTextProvider.Instance);
+        Assert.DoesNotContain("VersionState_", csv, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public async Task Csv_has_header_and_one_row_per_device()
     {
         var result = await Analyze();
@@ -265,12 +290,26 @@ public class SettingsServiceTests
             var service = new JsonSettingsService(path);
             Assert.Equal(AppSettings.Default, service.Current);
 
-            var changed = service.Current with { StartView = ViewMode.Expert, Language = "en-US", UseSerialNumberInLinks = false };
+            Assert.Empty(service.Current.EnabledVersionSources);
+
+            var changed = service.Current with
+            {
+                StartView = ViewMode.Expert,
+                Language = "en-US",
+                UseSerialNumberInLinks = false,
+                EnabledVersionSources = [VersionSourceIds.WindowsUpdate, VersionSourceIds.Dell],
+            };
             await service.SaveAsync(changed, TestContext.Current.CancellationToken);
             Assert.Equal(changed, new JsonSettingsService(path).Current);
 
             await File.WriteAllTextAsync(path, "{ not json", TestContext.Current.CancellationToken);
             Assert.Equal(AppSettings.Default, new JsonSettingsService(path).Current);
+
+            // A settings file from stage 1 (without the new field) still loads – with every version source off.
+            await File.WriteAllTextAsync(path, """{ "language": "de-DE", "startView": "Expert" }""", TestContext.Current.CancellationToken);
+            var old = new JsonSettingsService(path).Current;
+            Assert.Equal("de-DE", old.Language);
+            Assert.Empty(old.EnabledVersionSources);
         }
         finally
         {

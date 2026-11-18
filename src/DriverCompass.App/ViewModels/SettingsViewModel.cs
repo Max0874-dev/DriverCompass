@@ -13,10 +13,13 @@ public sealed partial class SettingsViewModel : ObservableObject
 
     private readonly ISettingsService _settings;
 
-    public SettingsViewModel(ISettingsService settings, string catalogVersion)
+    public SettingsViewModel(ISettingsService settings, string catalogVersion, Func<string, bool?>? isSourceApplicable = null)
     {
         _settings = settings;
         var s = settings.Current;
+        VersionSources = VersionSourceIds.All
+            .Select(id => new VersionSourceToggle(id, s.EnabledVersionSources.Contains(id, StringComparer.Ordinal), isSourceApplicable?.Invoke(id)))
+            .ToList();
         LanguageIndex = Math.Max(0, Array.FindIndex(LanguageValues, v => v.Equals(s.Language, StringComparison.OrdinalIgnoreCase)));
         IsExpertStart = s.StartView == ViewMode.Expert;
         ShowSystemDevices = s.ShowSystemDevices;
@@ -29,6 +32,9 @@ public sealed partial class SettingsViewModel : ObservableObject
     public IReadOnlyList<string> LanguageOptions { get; } = [Localizer.T("Settings_Language_System"), "Deutsch", "English"];
 
     public IReadOnlyList<string> StartViewOptions { get; } = [Localizer.T("Cmd_ViewSimple"), Localizer.T("Cmd_ViewExpert")];
+
+    /// <summary>One switch per version source, each with a plain statement of what it sends where.</summary>
+    public IReadOnlyList<VersionSourceToggle> VersionSources { get; }
 
     public string AboutText { get; }
 
@@ -55,6 +61,7 @@ public sealed partial class SettingsViewModel : ObservableObject
         UseSerialNumberInLinks = UseSerialNumberInLinks,
         IncludeSerialNumberInExports = IncludeSerialNumberInExports,
         UpdateCatalogOnline = UpdateCatalogOnline,
+        EnabledVersionSources = [.. VersionSources.Where(v => v.IsEnabled).Select(v => v.Id)],
     });
 
     [RelayCommand]
@@ -64,4 +71,18 @@ public sealed partial class SettingsViewModel : ObservableObject
         Directory.CreateDirectory(logs);
         Launcher.OpenLocal(logs);
     }
+}
+
+public sealed partial class VersionSourceToggle(string id, bool isEnabled, bool? isApplicable) : ObservableObject
+{
+    public string Id { get; } = id;
+
+    public string Title { get; } = Localizer.T($"VersionSource_{id}");
+
+    public string Privacy { get; } = Localizer.T($"VersionSource_{id}_Privacy");
+
+    /// <summary>Shown when the last scan says this source does not cover the PC (e.g. Dell catalog on an MSI board).</summary>
+    public string ApplicabilityText { get; } = isApplicable == false ? Localizer.T("Settings_NotApplicable") : string.Empty;
+
+    [ObservableProperty] public partial bool IsEnabled { get; set; } = isEnabled;
 }

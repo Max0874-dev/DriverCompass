@@ -42,6 +42,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 The USB ID list (linux-usb.org) does not state a license in its header, so its redistribution terms are unclear. It is therefore **not** bundled. USB vendors come from DriverCompass's own MIT-licensed `data/vendors.json`.
 
+## Data downloaded at runtime (not bundled)
+
+The optional version check (stage 2) reads official catalogs directly from the vendors (Microsoft Windows Update, Dell, Lenovo, HP) when the user turns a source on and clicks "Check versions". These files are not part of DriverCompass and are not redistributed; they are cached locally for the user only.
+
 ## NuGet packages
 
 | Package | License |
@@ -54,8 +58,7 @@ The USB ID list (linux-usb.org) does not state a license in its header, so its r
 | System.Management | MIT |
 | Serilog, Serilog.Extensions.Logging, Serilog.Sinks.File | Apache-2.0 |
 | JsonSchema.Net (json-everything) | MIT |
-| xunit.v3, xunit.runner.visualstudio (tests only) | Apache-2.0 |
-| Microsoft.NET.Test.Sdk (tests only) | MIT |
+| xunit.v3 (tests only) | Apache-2.0 |
 
 The full license texts are available on nuget.org and in each package. Release archives must include them, see [docs/release-checklist.md](docs/release-checklist.md).
 

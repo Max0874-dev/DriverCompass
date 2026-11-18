@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Shortened, hand-written sample in the structure of Dell's CatalogIndexPC.xml -->
+<ManifestIndex baseLocation="downloads.dell.com" version="2026.11.17" schemaVersion="3.0" xmlns="openmanage/cm/dm">
+  <InventoryComponent schemaVersion="3.0" path="FOLDER1/1/InvColPC_x64.exe" />
+  <GroupManifest type="MTPDK" id="a">
+    <Display lang="en"><![CDATA[ PDK Catalog for Latitude 7440]]></Display>
+    <SupportedSystems>
+      <Brand key="28" prefix="LAT">
+        <Model systemID="0C08" systemIDType="BIOS"><Display lang="en"><![CDATA[Latitude 7440]]></Display></Model>
+      </Brand>
+    </SupportedSystems>
+    <ManifestInformation id="m1" version="2026.11.15" path="FOLDER15243183M/1/Latitude_0C08.cab" size="423654">
+      <Cryptography>
+        <Hash algorithm="MD5">00000000000000000000000000000000</Hash>
+        <Hash algorithm="SHA256">aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</Hash>
+      </Cryptography>
+    </ManifestInformation>
+  </GroupManifest>
+  <GroupManifest type="MTPDK" id="b">
+    <SupportedSystems>
+      <Brand key="33" prefix="OP"><Model systemID="0bd0" /></Brand>
+    </SupportedSystems>
+    <ManifestInformation id="m2" version="2026.11.14" path="../../etc/evil.cab">
+      <Cryptography><Hash algorithm="SHA256">bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb</Hash></Cryptography>
+    </ManifestInformation>
+  </GroupManifest>
+</ManifestIndex>

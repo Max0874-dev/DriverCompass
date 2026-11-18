@@ -33,6 +33,7 @@
     <ProjectReference Include="..\DriverCompass.Core\DriverCompass.Core.csproj" />
     <ProjectReference Include="..\DriverCompass.Data\DriverCompass.Data.csproj" />
     <ProjectReference Include="..\DriverCompass.Scanner.Windows\DriverCompass.Scanner.Windows.csproj" />
+    <ProjectReference Include="..\DriverCompass.VersionProviders\DriverCompass.VersionProviders.csproj" />
   </ItemGroup>
 
   <ItemGroup>

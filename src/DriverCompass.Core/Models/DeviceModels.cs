@@ -67,6 +67,16 @@ public sealed record SystemInfo
     public string? OperatingSystem { get; init; }
     public string? OperatingSystemVersion { get; init; }
 
+    /// <summary>Windows feature update, e.g. "24H2" (registry <c>DisplayVersion</c>).</summary>
+    public string? OperatingSystemDisplayVersion { get; init; }
+
+    /// <summary>Windows build number from <see cref="OperatingSystemVersion"/> ("10.0.26100" → 26100).</summary>
+    public int? OperatingSystemBuild =>
+        OperatingSystemVersion?.Split('.') is { Length: >= 3 } parts && int.TryParse(parts[2], out var build) ? build : null;
+
+    /// <summary>Windows 11 reports itself as 10.0 – build 22000 and later is Windows 11.</summary>
+    public bool IsWindows11 => OperatingSystemBuild >= 22000;
+
     public static SystemInfo Empty { get; } = new();
 }
 

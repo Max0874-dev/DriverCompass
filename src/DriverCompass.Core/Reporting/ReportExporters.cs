@@ -76,7 +76,7 @@ public sealed class HtmlReportExporter : IReportExporter
         var rows = ReportRows.Select(result, options).ToList();
         sb.Append("<h2>").Append(E(AssessmentTexts.Format(t.Get("Report_Devices"), rows.Count))).Append("</h2>\n");
         sb.Append("<table class=\"devices\">\n<thead><tr>");
-        foreach (var col in new[] { "Col_Status", "Col_Name", "Col_Category", "Col_Vendor", "Col_Provider", "Col_Version", "Col_Date", "Col_Inf", "Col_ErrorCode", "Col_HardwareId", "Col_Links" })
+        foreach (var col in new[] { "Col_Status", "Col_Name", "Col_Category", "Col_Vendor", "Col_Provider", "Col_Version", "Col_Date", "Col_Latest", "Col_VersionState", "Col_Inf", "Col_ErrorCode", "Col_HardwareId", "Col_Links" })
         {
             sb.Append("<th>").Append(E(t.Get(col))).Append("</th>");
         }
@@ -93,6 +93,8 @@ public sealed class HtmlReportExporter : IReportExporter
               .Append("<td>").Append(E(drv?.ProviderName)).Append("</td>")
               .Append("<td>").Append(E(drv?.Version)).Append("</td>")
               .Append("<td>").Append(E(ReportRows.Date(drv?.Date))).Append("</td>")
+              .Append("<td>").Append(E(AssessmentTexts.LatestVersion(d.VersionCheck))).Append("</td>")
+              .Append("<td>").Append(E(AssessmentTexts.VersionState(t, d.VersionCheck))).Append("</td>")
               .Append("<td>").Append(E(drv?.InfName)).Append("</td>")
               .Append("<td>").Append(d.Device.ConfigManagerErrorCode == 0 ? string.Empty : d.Device.ConfigManagerErrorCode.ToString(CultureInfo.InvariantCulture)).Append("</td>")
               .Append("<td class=\"mono\">").Append(E(d.Device.HardwareIds.FirstOrDefault())).Append("</td><td>");
@@ -158,7 +160,7 @@ public sealed class CsvReportExporter : IReportExporter
 
         void Row(IEnumerable<string?> fields) => sb.Append(string.Join(sep, fields.Select(f => Escape(f, sep)))).Append("\r\n");
 
-        Row(new[] { "Col_Status", "Col_Reason", "Col_Name", "Col_Category", "Col_DeviceClass", "Col_Vendor", "Col_Manufacturer", "Col_Provider", "Col_Version", "Col_Date", "Col_Inf", "Col_ErrorCode", "Col_HardwareIds", "Col_CompatibleIds", "Col_InstanceId", "Col_BestLink" }
+        Row(new[] { "Col_Status", "Col_Reason", "Col_Name", "Col_Category", "Col_DeviceClass", "Col_Vendor", "Col_Manufacturer", "Col_Provider", "Col_Version", "Col_Date", "Col_Latest", "Col_VersionState", "Col_VersionSource", "Col_Inf", "Col_ErrorCode", "Col_HardwareIds", "Col_CompatibleIds", "Col_InstanceId", "Col_BestLink" }
             .Select(t.Get));
 
         foreach (var d in ReportRows.Select(result, options))
@@ -176,6 +178,9 @@ public sealed class CsvReportExporter : IReportExporter
                 drv?.ProviderName,
                 drv?.Version,
                 ReportRows.Date(drv?.Date),
+                AssessmentTexts.LatestVersion(d.VersionCheck),
+                AssessmentTexts.VersionState(t, d.VersionCheck),
+                AssessmentTexts.VersionSource(t, d.VersionCheck?.ProviderId),
                 drv?.InfName,
                 d.Device.ConfigManagerErrorCode.ToString(CultureInfo.InvariantCulture),
                 string.Join(" | ", d.Device.HardwareIds),

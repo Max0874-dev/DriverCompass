@@ -1,6 +1,6 @@
 # Roadmap
 
-## Stage 1 – detect & link ✅ (current)
+## Stage 1 – detect & link ✅
 
 - WMI scan of all PnP devices, driver data, PC/mainboard identity
 - Hardware ID parser (PCI, USB, HDAUDIO, ACPI, HID, Bluetooth, MONITOR …)
@@ -9,16 +9,17 @@
 - Simple view and expert view, HTML/CSV export, German/English
 - Vendor list: JSON + schema, online update with validation, cache, embedded fallback
 
-## Stage 2 – compare versions (planned, not started)
+## Stage 2 – compare versions ✅
 
-- Each source is an `IVersionProvider` plugin (`DriverCompass.Core/Abstractions/IStage2VersionCheck.cs`).
-- Only official, machine-readable sources. Candidates, each to be verified first:
-  - Dell Command Update catalog (signed CAB/XML)
-  - Lenovo System Update catalog (XML per machine type)
-  - HP SoftPaq / HP Image Assistant reference files
-  - Windows Update Agent API (driver search)
-- No HTML scraping. Without a reliable source the app says "Version unknown, please check the link".
-- ⚠ Windows Update and the per-model Lenovo catalog transmit device or model data. These providers set `TransmitsDeviceData = true` and must be **opt-in** per source.
+- "Check versions" button; every source is opt-in in the settings and off by default.
+- Sources (official, machine-readable, verified 2026-11-18):
+  - Windows Update Agent API (driver search, no admin rights needed)
+  - Dell Command | Update catalogs (signed CAB index + per-model CAB with SHA-256)
+  - Lenovo System Update catalogs (per machine type, descriptors with SHA-256)
+  - HP Image Assistant reference files (signed CABs per platform and Windows release)
+- No HTML scraping. Without a source the app says "Version unknown – please check the link". Chip vendors (Intel, NVIDIA, AMD, Realtek …) have no official public interface, so they stay "unknown".
+- Results in both views, a filter "Newer version available", detail pane and HTML/CSV export.
+- Possible later: more OEMs with official catalogs, optional automatic check after the scan.
 
 ## Stage 3 – download & install (planned, not started)
 

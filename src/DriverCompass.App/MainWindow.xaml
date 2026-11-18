@@ -17,6 +17,14 @@
 
       <CommandBar Grid.Column="1" DefaultLabelPosition="Right" Background="Transparent" VerticalAlignment="Center" OverflowButtonVisibility="Collapsed">
         <AppBarButton Icon="Refresh" Label="{x:Bind svc:Localizer.T('Cmd_Scan')}" Command="{x:Bind ViewModel.ScanCommand}" />
+        <AppBarButton Label="{x:Bind svc:Localizer.T('Cmd_CheckVersions')}" Command="{x:Bind ViewModel.CheckVersionsCommand}"
+                      Visibility="{x:Bind svc:StatusVisuals.VisibleIfNot(ViewModel.IsCheckingVersions), Mode=OneWay}">
+          <AppBarButton.Icon>
+            <FontIcon Glyph="&#xE895;" />
+          </AppBarButton.Icon>
+        </AppBarButton>
+        <AppBarButton Icon="Cancel" Label="{x:Bind svc:Localizer.T('Cmd_CancelVersionCheck')}" Command="{x:Bind ViewModel.CheckVersionsCancelCommand}"
+                      Visibility="{x:Bind svc:StatusVisuals.VisibleIf(ViewModel.IsCheckingVersions), Mode=OneWay}" />
         <AppBarToggleButton Label="{x:Bind svc:Localizer.T('Cmd_ViewExpert')}" IsChecked="{x:Bind ViewModel.IsExpertMode, Mode=TwoWay}">
           <AppBarToggleButton.Icon>
             <FontIcon Glyph="&#xE8FD;" />
@@ -37,6 +45,11 @@
     <InfoBar Grid.Row="1" Margin="24,0,24,4" IsClosable="False" Severity="Informational"
              IsOpen="{x:Bind ViewModel.IsMockMode}"
              Message="{x:Bind svc:Localizer.T('Mock_Banner')}" />
+
+    <StackPanel Grid.Row="2" Margin="24,0,24,4" Spacing="4" Visibility="{x:Bind svc:StatusVisuals.VisibleIf(ViewModel.IsCheckingVersions), Mode=OneWay}">
+      <TextBlock Text="{x:Bind ViewModel.VersionProgressText, Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}" />
+      <ProgressBar IsIndeterminate="{x:Bind ViewModel.IsCheckingVersions, Mode=OneWay}" />
+    </StackPanel>
 
     <InfoBar Grid.Row="2" Margin="24,0,24,4"
              IsOpen="{x:Bind ViewModel.IsInfoOpen, Mode=TwoWay}"
@@ -59,9 +72,11 @@
     <Border Grid.Row="4" Padding="24,6" BorderThickness="0,1,0,0"
             BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
             Background="{ThemeResource LayerFillColorDefaultBrush}">
-      <Grid ColumnDefinitions="*,Auto">
+      <Grid ColumnDefinitions="*,Auto,Auto">
         <TextBlock Text="{x:Bind ViewModel.SystemText, Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}" TextTrimming="CharacterEllipsis" />
-        <TextBlock Grid.Column="1" Text="{x:Bind ViewModel.CatalogText, Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}" Margin="16,0,0,0" />
+        <TextBlock Grid.Column="1" Text="{x:Bind ViewModel.VersionText, Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}" Margin="16,0,0,0"
+                   MaxWidth="520" TextTrimming="CharacterEllipsis" ToolTipService.ToolTip="{x:Bind ViewModel.VersionText, Mode=OneWay}" />
+        <TextBlock Grid.Column="2" Text="{x:Bind ViewModel.CatalogText, Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}" Margin="16,0,0,0" />
       </Grid>
     </Border>
   </Grid>

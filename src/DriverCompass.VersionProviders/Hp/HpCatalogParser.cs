@@ -1,0 +1,126 @@
+using System.Globalization;
+using DriverCompass.Core.Links;
+using DriverCompass.Core.Versions;
+using DriverCompass.VersionProviders.Xml;
+
+namespace DriverCompass.VersionProviders.Hp;
+
+/// <summary>A Windows release for which HP publishes a reference file for one platform.</summary>
+public sealed record HpPlatformOs(bool IsWindows11, string ReleaseIdFilename, int Build);
+
+/// <summary>
+/// Parses HP Image Assistant data: <c>platformList.xml</c> (platform ID → supported Windows releases)
+/// and the per-platform reference file (devices with driver version + SoftPaq).
+/// </summary>
+public static class HpCatalogParser
+{
+    public static IReadOnlyList<HpPlatformOs> ParsePlatformList(Stream stream, string platformId)
+    {
+        foreach (var platform in SafeXml.ReadChildren(stream, n => n == "Platform"))
+        {
+            if (!string.Equals(platform.Kid("SystemID").Text(), platformId, StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            return platform.Kids("OS")
+                .Select(os => new HpPlatformOs(
+                    string.Equals(os.Kid("IsWindows11").Text(), "true", StringComparison.OrdinalIgnoreCase),
+                    os.Kid("OSReleaseIdFilename").Text() ?? string.Empty,
+                    int.TryParse(os.Kid("OSBuildId").Text(), NumberStyles.None, CultureInfo.InvariantCulture, out var b) ? b : 0))
+                .Where(os => os.ReleaseIdFilename.Length > 0 && os.ReleaseIdFilename.All(char.IsAsciiLetterOrDigit))
+                .ToList();
+        }
+
+        return [];
+    }
+
+    /// <summary>Picks the reference file closest to the installed Windows: same generation, same release, else newest not newer than this build.</summary>
+    public static HpPlatformOs? ChooseOs(IReadOnlyList<HpPlatformOs> available, bool isWindows11, string? displayVersion, int? build)
+    {
+        var sameGeneration = available.Where(o => o.IsWindows11 == isWindows11).ToList();
+        if (sameGeneration.Count == 0)
+        {
+            return null;
+        }
+
+        return sameGeneration.FirstOrDefault(o => string.Equals(o.ReleaseIdFilename, displayVersion, StringComparison.OrdinalIgnoreCase))
+            ?? sameGeneration.Where(o => build is null || o.Build <= build).OrderByDescending(o => o.Build).FirstOrDefault()
+            ?? sameGeneration.OrderByDescending(o => o.Build).First();
+    }
+
+    public static Uri ReferenceUri(string platformId, HpPlatformOs os)
+    {
+        var id = platformId.ToLowerInvariant();
+        var generation = os.IsWindows11 ? "11.0" : "10.0";
+        return new Uri($"https://hpia.hpcloud.hp.com/ref/{id}/{id}_64_{generation}.{os.ReleaseIdFilename.ToLowerInvariant()}.cab");
+    }
+
+    /// <summary>
+    /// Devices of HP's reference image that have a SoftPaq solution. The device's <c>DriverVersion</c> is the
+    /// version that SoftPaq installs; IDs come from <c>HardwareId</c> or a hardware-ID-shaped <c>DeviceId</c>.
+    /// </summary>
+    public static IReadOnlyList<CatalogDriverEntry> ParseReference(Stream stream)
+    {
+        var devices = new List<(List<string> Ids, string? Version, DateOnly? Date, string Ref)>();
+        var solutions = new Dictionary<string, (string? Name, Uri? Notes)>(StringComparer.OrdinalIgnoreCase);
+
+        foreach (var section in SafeXml.ReadChildren(stream, n => n is "Devices" or "Solutions"))
+        {
+            if (section.Name.LocalName == "Devices")
+            {
+                foreach (var device in section.Kids("Device"))
+                {
+                    var solutionRef = device.Kid("Solutions")?.Kids("UpdateInfo").Select(u => u.Attr("IdRef")).OfType<string>().FirstOrDefault();
+                    if (solutionRef is null)
+                    {
+                        continue;
+                    }
+
+                    var ids = new List<string>();
+                    if (device.Kid("HardwareId").Text() is { } hardwareId)
+                    {
+                        ids.Add(hardwareId);
+                    }
+
+                    // DeviceId is either a hardware ID ("PCI\VEN_…&DEV_…&REV_60") or an instance path (two or more '\').
+                    if (device.Kid("DeviceId").Text() is { } deviceId && deviceId.Count(c => c == '\\') == 1)
+                    {
+                        ids.Add(deviceId);
+                    }
+
+                    if (ids.Count > 0)
+                    {
+                        devices.Add((ids, device.Kid("DriverVersion").Text(), SafeXml.ParseDate(device.Kid("DriverDate").Text(), "MM/dd/yyyy"), solutionRef));
+                    }
+                }
+            }
+            else
+            {
+                foreach (var update in section.Kids("UpdateInfo"))
+                {
+                    if (update.Kid("Id").Text() is not { } id)
+                    {
+                        continue;
+                    }
+
+                    var notes = update.Kid("ReleaseNotesUrl").Text();
+                    var uri = notes is not null && Uri.TryCreate(notes.Contains("://", StringComparison.Ordinal) ? notes : "https://" + notes, UriKind.Absolute, out var u) &&
+                              UrlSafety.IsAllowedHttps(u, ["hp.com"])
+                        ? u
+                        : null;
+                    solutions[id] = (update.Kid("Name").Text(), uri);
+                }
+            }
+        }
+
+        return devices
+            .Where(d => d.Version is not null || d.Date is not null)
+            .Select(d =>
+            {
+                var solution = solutions.GetValueOrDefault(d.Ref);
+                return new CatalogDriverEntry(d.Ids, d.Version, d.Date, solution.Name, solution.Notes);
+            })
+            .ToList();
+    }
+}

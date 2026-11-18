@@ -18,6 +18,7 @@ public sealed partial class MainViewModel : ObservableObject
         [null, null, DeviceStatus.Error, DeviceStatus.MissingDriver, DeviceStatus.GenericDriver, DeviceStatus.Disabled, DeviceStatus.Ok];
 
     private readonly IDeviceAnalysisService _analysis;
+    private readonly IVersionCheckService _versions;
     private readonly ISettingsService _settings;
     private readonly IReadOnlyDictionary<string, IReportExporter> _exporters;
     private readonly ILogger<MainViewModel> _logger;
@@ -26,12 +27,14 @@ public sealed partial class MainViewModel : ObservableObject
 
     public MainViewModel(
         IDeviceAnalysisService analysis,
+        IVersionCheckService versions,
         ISettingsService settings,
         IEnumerable<IReportExporter> exporters,
         ILogger<MainViewModel> logger,
         bool isMockMode)
     {
         _analysis = analysis;
+        _versions = versions;
         _settings = settings;
         _exporters = exporters.ToDictionary(e => e.FormatId, StringComparer.OrdinalIgnoreCase);
         _logger = logger;
@@ -44,6 +47,7 @@ public sealed partial class MainViewModel : ObservableObject
             Localizer.T("Filter_AllStatuses"),
             Localizer.T("Filter_Problems"),
             .. StatusFilterValues.Skip(2).Select(s => Core.Reporting.AssessmentTexts.Status(Localizer.Current, s!.Value)),
+            Localizer.T("Filter_NewerAvailable"),
         ];
         StatusFilterIndex = 0;
         ClassOptions.Add(Localizer.T("Filter_AllClasses"));
@@ -81,10 +85,94 @@ public sealed partial class MainViewModel : ObservableObject
     [ObservableProperty] public partial DeviceItemViewModel? SelectedItem { get; set; }
     [ObservableProperty] public partial string SortColumn { get; set; } = "Status";
     [ObservableProperty] public partial bool SortAscending { get; set; } = true;
+    [ObservableProperty] public partial bool IsCheckingVersions { get; set; }
+    [ObservableProperty] public partial string VersionProgressText { get; set; } = string.Empty;
+    [ObservableProperty] public partial string VersionText { get; set; } = string.Empty;
 
     public bool HasInfoAction => !string.IsNullOrEmpty(InfoActionPath);
 
     public string CatalogVersion => _result?.Catalog.DataVersion ?? "–";
+
+    /// <summary>For the settings page: does a version source cover this PC? <c>null</c> before the first scan.</summary>
+    public bool? IsVersionSourceApplicable(string sourceId) =>
+        _result is null ? null : _versions.IsApplicable(sourceId, _result.Scan.System);
+
+    /// <summary>
+    /// "Check versions": runs only the sources the user switched on in the settings. Nothing is sent before this click.
+    /// </summary>
+    [RelayCommand(IncludeCancelCommand = true)]
+    private async Task CheckVersionsAsync(CancellationToken cancellationToken)
+    {
+        if (_result is null || IsBusy || IsCheckingVersions)
+        {
+            return;
+        }
+
+        var enabled = _settings.Current.EnabledVersionSources.ToHashSet(StringComparer.Ordinal);
+        if (enabled.Count == 0)
+        {
+            ShowInfo(Localizer.T("Versions_NoSourceHint"), InfoBarSeverity.Informational);
+            return;
+        }
+
+        IsCheckingVersions = true;
+        IsInfoOpen = false;
+        var progress = new Progress<VersionCheckProgress>(p =>
+            VersionProgressText = Localizer.F("Busy_CheckingVersions", Core.Reporting.AssessmentTexts.VersionSource(Localizer.Current, p.SourceId)));
+
+        try
+        {
+            var run = await _versions.CheckAllAsync(_result.Devices, _result.Scan.System, enabled, progress, cancellationToken);
+            ApplyVersions(run);
+        }
+        catch (OperationCanceledException)
+        {
+            ShowInfo(Localizer.T("Versions_Cancelled"), InfoBarSeverity.Informational);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Version check failed");
+            ShowInfo(Localizer.F("Versions_Failed", ex.Message), InfoBarSeverity.Error);
+        }
+        finally
+        {
+            IsCheckingVersions = false;
+            VersionProgressText = string.Empty;
+        }
+    }
+
+    private void ApplyVersions(VersionCheckRun run)
+    {
+        if (_result is null)
+        {
+            return;
+        }
+
+        var selectedId = SelectedItem?.InstanceId;
+        _result = _result with { Devices = run.Devices };
+        BuildItems(_result);
+        RebuildSimpleGroups();
+        ApplyExpertFilter();
+        SelectedItem = selectedId is null ? null : ExpertItems.FirstOrDefault(i => i.InstanceId == selectedId);
+
+        var t = Localizer.Current;
+        VersionText = string.Join("  ·  ", run.Sources.Select(s =>
+        {
+            var name = Core.Reporting.AssessmentTexts.VersionSource(t, s.SourceId);
+            return s.Outcome switch
+            {
+                VersionSourceOutcome.Ok when s.SourceId == VersionSourceIds.WindowsUpdate => Localizer.F("VersionSourceStatus_Ok_windowsupdate", name, s.Detail),
+                VersionSourceOutcome.Ok => Localizer.F("VersionSourceStatus_Ok", name, s.Detail),
+                VersionSourceOutcome.NotApplicable => Localizer.F("VersionSourceStatus_NotApplicable", name, Localizer.T($"VersionReason_{s.Detail}")),
+                _ => Localizer.F("VersionSourceStatus_Failed", name, Localizer.T($"VersionReason_{s.Detail}")),
+            };
+        }));
+
+        var failed = run.Sources.Any(s => s.Outcome == VersionSourceOutcome.Failed);
+        ShowInfo(
+            Localizer.F("Versions_Summary", run.NewerCount, run.UpToDateCount, run.UnknownCount) + (failed ? "  ·  " + VersionText : string.Empty),
+            failed ? InfoBarSeverity.Warning : run.NewerCount > 0 ? InfoBarSeverity.Informational : InfoBarSeverity.Success);
+    }
 
     partial void OnSearchTextChanged(string value) => ApplyExpertFilter();
     partial void OnStatusFilterIndexChanged(int value) => ApplyExpertFilter();
@@ -106,7 +194,7 @@ public sealed partial class MainViewModel : ObservableObject
     [RelayCommand]
     private async Task ScanAsync()
     {
-        if (IsBusy)
+        if (IsBusy || IsCheckingVersions)
         {
             return;
         }
@@ -230,11 +318,18 @@ public sealed partial class MainViewModel : ObservableObject
         }
     }
 
-    private void Apply(AnalysisResult result)
+    private void BuildItems(AnalysisResult result)
     {
-        _result = result;
         var lang = Localizer.Current.Language;
         _all = result.Devices.Select(d => new DeviceItemViewModel(d, Localizer.Current, lang)).ToList();
+    }
+
+    private void Apply(AnalysisResult result)
+    {
+        // A new scan starts without version results – they belong to the previous device list.
+        _result = result;
+        VersionText = string.Empty;
+        BuildItems(result);
 
         var sys = result.Scan.System;
         var pc = string.Join(' ', new[] { SystemInfoSanitizer.Clean(sys.Manufacturer), SystemInfoSanitizer.Clean(sys.Model) }.Where(s => s is not null));
@@ -271,7 +366,7 @@ public sealed partial class MainViewModel : ObservableObject
                      .GroupBy(d => d.Status)
                      .OrderBy(g => g.Key))
         {
-            SimpleGroups.Add(new DeviceGroupViewModel(group.Key, Core.Reporting.AssessmentTexts.Status(Localizer.Current, group.Key), group));
+            SimpleGroups.Add(new DeviceGroupViewModel(group.Key, Core.Reporting.AssessmentTexts.Status(Localizer.Current, group.Key), group.OrderByDescending(d => d.IsNewerAvailable)));
         }
     }
 
@@ -298,6 +393,10 @@ public sealed partial class MainViewModel : ObservableObject
         if (StatusFilterIndex == 1)
         {
             items = items.Where(d => d.NeedsAttention);
+        }
+        else if (StatusFilterIndex == StatusFilterValues.Length)
+        {
+            items = items.Where(d => d.IsNewerAvailable);
         }
         else if (StatusFilterIndex > 1 && StatusFilterIndex < StatusFilterValues.Length)
         {
@@ -344,6 +443,15 @@ public sealed partial class MainViewModel : ObservableObject
             "Inf" => Order(items, d => d.Inf, cmp),
             "Code" => Order(items, d => d.ErrorCode, Comparer<int>.Default),
             "HardwareId" => Order(items, d => d.HardwareId, cmp),
+            "Latest" => Order(items, d => d.LatestVersionText, cmp),
+            "VersionState" => Order(items, d => d.VersionState switch
+            {
+                VersionCheckState.NewerAvailable => 0,
+                VersionCheckState.Failed => 1,
+                VersionCheckState.Unknown => 2,
+                VersionCheckState.UpToDate => 3,
+                _ => 4,
+            }, Comparer<int>.Default),
             _ => Order(items, d => d.Status, Comparer<DeviceStatus>.Default),
         };
 

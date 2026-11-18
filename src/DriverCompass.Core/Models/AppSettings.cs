@@ -25,5 +25,25 @@ public sealed record AppSettings
     /// <summary>Load the newest vendor list from GitHub at startup.</summary>
     public bool UpdateCatalogOnline { get; init; } = true;
 
+    /// <summary>
+    /// Version sources the user switched on (ids from <see cref="VersionSourceIds"/>).
+    /// Empty by default: every source sends model or device data to a third party, so each one is opt-in.
+    /// </summary>
+    public IReadOnlyList<string> EnabledVersionSources { get; init; } = [];
+
     public static AppSettings Default { get; } = new();
+
+    // Value equality including the list contents (records compare collections by reference).
+    public bool Equals(AppSettings? other) =>
+        other is not null &&
+        Language == other.Language &&
+        StartView == other.StartView &&
+        ShowSystemDevices == other.ShowSystemDevices &&
+        UseSerialNumberInLinks == other.UseSerialNumberInLinks &&
+        IncludeSerialNumberInExports == other.IncludeSerialNumberInExports &&
+        UpdateCatalogOnline == other.UpdateCatalogOnline &&
+        EnabledVersionSources.SequenceEqual(other.EnabledVersionSources, StringComparer.Ordinal);
+
+    public override int GetHashCode() =>
+        HashCode.Combine(Language, StartView, ShowSystemDevices, UseSerialNumberInLinks, IncludeSerialNumberInExports, UpdateCatalogOnline, EnabledVersionSources.Count);
 }

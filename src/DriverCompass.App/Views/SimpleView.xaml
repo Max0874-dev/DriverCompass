@@ -58,6 +58,12 @@
               <TextBlock Text="{x:Bind Note}" TextWrapping="Wrap" Style="{StaticResource CaptionTextBlockStyle}"
                          Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                          Visibility="{x:Bind svc:StatusVisuals.VisibleIfText(Note)}" />
+              <!-- Stage 2: version verdict, only after "Check versions" -->
+              <StackPanel Orientation="Horizontal" Spacing="6" Margin="0,4,0,0" Visibility="{x:Bind svc:StatusVisuals.VisibleIf(HasVersionCheck)}">
+                <FontIcon Glyph="{x:Bind VersionGlyph}" Foreground="{x:Bind VersionBrush}" FontSize="12" />
+                <TextBlock Text="{x:Bind VersionStatusText}" Foreground="{x:Bind VersionBrush}" Style="{StaticResource CaptionTextBlockStyle}" TextWrapping="Wrap" />
+                <TextBlock Text="{x:Bind LatestVersionText}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+              </StackPanel>
             </StackPanel>
 
             <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">

@@ -6,9 +6,12 @@ using DriverCompass.Core.Evaluation;
 using DriverCompass.Core.Links;
 using DriverCompass.Core.Reporting;
 using DriverCompass.Core.Scanning;
+using DriverCompass.Core.Models;
 using DriverCompass.Core.Services;
+using DriverCompass.Core.Versions;
 using DriverCompass.Data;
 using DriverCompass.Scanner.Windows;
+using DriverCompass.VersionProviders;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Xaml;
@@ -86,8 +89,28 @@ public partial class App : Application
         services.AddSingleton<IDeviceAnalysisService>(sp => sp.GetRequiredService<DeviceAnalysisService>());
         services.AddSingleton<IReportExporter, HtmlReportExporter>();
         services.AddSingleton<IReportExporter, CsvReportExporter>();
+
+        // Stage 2: version sources. Nothing is contacted until the user enables a source and clicks "Check versions".
+        if (isMock)
+        {
+            foreach (var id in VersionSourceIds.All)
+            {
+                services.AddSingleton<IVersionProvider>(_ => new MockVersionProvider(id));
+            }
+        }
+        else
+        {
+            services.AddSingleton(_ => new VersionCatalogHttp(VersionProviderFactory.CreateHttpClient()));
+            services.AddSingleton<IEnumerable<IVersionProvider>>(sp =>
+                VersionProviderFactory.CreateAll(sp.GetRequiredService<VersionCatalogHttp>().Client, sp.GetRequiredService<ILoggerFactory>()));
+        }
+
+        services.AddSingleton<IVersionCheckService>(sp =>
+            new VersionCheckService(sp.GetRequiredService<IEnumerable<IVersionProvider>>(), sp.GetRequiredService<ILogger<VersionCheckService>>()));
+
         services.AddSingleton(sp => new MainViewModel(
             sp.GetRequiredService<IDeviceAnalysisService>(),
+            sp.GetRequiredService<IVersionCheckService>(),
             sp.GetRequiredService<ISettingsService>(),
             sp.GetServices<IReportExporter>(),
             sp.GetRequiredService<ILogger<MainViewModel>>(),
@@ -95,4 +118,7 @@ public partial class App : Application
 
         return services.BuildServiceProvider();
     }
+
+    /// <summary>Separate HttpClient for vendor catalogs (no automatic redirects – each hop is checked against the allow-list).</summary>
+    private sealed record VersionCatalogHttp(HttpClient Client);
 }

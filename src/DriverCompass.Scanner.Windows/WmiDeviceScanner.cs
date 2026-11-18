@@ -47,7 +47,8 @@ public sealed class WmiDeviceScanner(IWmiQuery wmi, ILogger<WmiDeviceScanner>? l
             SafeQuery("SELECT Manufacturer, Model, SystemFamily, SystemSKUNumber FROM Win32_ComputerSystem").FirstOrDefault(),
             SafeQuery("SELECT Manufacturer, Product, Version FROM Win32_BaseBoard").FirstOrDefault(),
             SafeQuery("SELECT SerialNumber, SMBIOSBIOSVersion FROM Win32_BIOS").FirstOrDefault(),
-            SafeQuery("SELECT Caption, Version FROM Win32_OperatingSystem").FirstOrDefault());
+            SafeQuery("SELECT Caption, Version FROM Win32_OperatingSystem").FirstOrDefault())
+            with { OperatingSystemDisplayVersion = ReadDisplayVersion() };
 
         var devices = WmiMapper.MapDevices(entities, drivers);
         _logger.LogInformation("WMI scan: {Devices} devices, {Drivers} driver entries in {Ms} ms",
@@ -67,6 +68,21 @@ public sealed class WmiDeviceScanner(IWmiQuery wmi, ILogger<WmiDeviceScanner>? l
             // Older builds may not know every property (e.g. PNPClass/Present) – fall back to all properties.
             _logger.LogWarning(ex, "Win32_PnPEntity property query failed, retrying with SELECT *");
             return wmi.Query(EntityFallbackQuery);
+        }
+    }
+
+    /// <summary>Feature update name such as "24H2" (read-only registry access, no admin needed).</summary>
+    private string? ReadDisplayVersion()
+    {
+        try
+        {
+            using var key = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
+            return (key?.GetValue("DisplayVersion") ?? key?.GetValue("ReleaseId")) is string s && !string.IsNullOrWhiteSpace(s) ? s.Trim() : null;
+        }
+        catch (Exception ex) when (ex is System.Security.SecurityException or UnauthorizedAccessException or IOException)
+        {
+            _logger.LogWarning(ex, "Windows display version not readable");
+            return null;
         }
     }
 

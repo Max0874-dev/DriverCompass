@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Shortened, hand-written sample in the structure of HP's platformList.xml -->
+<ImagePal>
+  <Platform>
+    <ProductName Id="1">HP ProBook Example</ProductName>
+    <OS><OSVersion>10.0</OSVersion><OSReleaseIdFilename>21H2</OSReleaseIdFilename><OSBuildId>19044</OSBuildId><IsWindows11>false</IsWindows11></OS>
+    <OS><OSVersion>10.0</OSVersion><OSReleaseIdFilename>23H2</OSReleaseIdFilename><OSBuildId>22631</OSBuildId><IsWindows11>true</IsWindows11></OS>
+    <OS><OSVersion>10.0</OSVersion><OSReleaseIdFilename>24H2</OSReleaseIdFilename><OSBuildId>26100</OSBuildId><IsWindows11>true</IsWindows11></OS>
+    <SystemFamily>HP EliteBook</SystemFamily>
+    <SystemID>8B41</SystemID>
+  </Platform>
+  <Platform>
+    <OS><OSReleaseIdFilename>../x</OSReleaseIdFilename><OSBuildId>1</OSBuildId><IsWindows11>true</IsWindows11></OS>
+    <SystemID>0000</SystemID>
+  </Platform>
+</ImagePal>

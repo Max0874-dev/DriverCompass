@@ -1,25 +1,6 @@
 namespace DriverCompass.Core.Models;
 
-// ---------- Stage 2 ----------
-
-public enum VersionCheckState
-{
-    /// <summary>No reliable source – UI shows "Version unknown, please check the link".</summary>
-    Unknown = 0,
-    UpToDate,
-    NewerAvailable,
-    Failed,
-}
-
-public sealed record VersionCheckResult(
-    string ProviderId,
-    VersionCheckState State,
-    string? LatestVersion = null,
-    DateOnly? LatestDate = null,
-    Uri? SourceUri = null,
-    string? Note = null);
-
-// ---------- Stage 3 ----------
+// ---------- Stage 3 (download & install) – models only, not implemented yet ----------
 
 public sealed record DriverPackageRef(
     string DeviceInstanceId,

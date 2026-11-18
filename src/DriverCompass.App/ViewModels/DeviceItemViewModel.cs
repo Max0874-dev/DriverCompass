@@ -40,6 +40,14 @@ public sealed partial class DeviceItemViewModel
         CompatibleIds = device.CompatibleIds.Select(h => new HardwareIdItem(h)).ToList();
         Note = assessment.ChipVendor?.Note?.Get(language[..2]) ?? string.Empty;
 
+        var check = assessment.VersionCheck;
+        VersionState = check?.State;
+        LatestVersionText = AssessmentTexts.LatestVersion(check);
+        VersionStatusText = AssessmentTexts.VersionState(t, check);
+        VersionPackageText = string.IsNullOrWhiteSpace(check?.PackageName) ? string.Empty : AssessmentTexts.Format(t.Get("Version_Package"), check.PackageName);
+        VersionSourceUri = check?.SourceUri;
+        IsWindowsUpdateSource = check?.ProviderId == VersionSourceIds.WindowsUpdate;
+
         Links = assessment.Links.Select(l => new LinkViewModel(l, AssessmentTexts.LinkLabel(t, l))).ToList();
         PrimaryLink = Links.FirstOrDefault();
         SecondaryLinks = Links.Skip(1).ToList();
@@ -75,6 +83,29 @@ public sealed partial class DeviceItemViewModel
     public IReadOnlyList<HardwareIdItem> CompatibleIds { get; }
     public string Note { get; }
 
+    public VersionCheckState? VersionState { get; }
+    public string LatestVersionText { get; }
+    public string VersionStatusText { get; }
+    public string VersionPackageText { get; }
+    public Uri? VersionSourceUri { get; }
+    public bool IsWindowsUpdateSource { get; }
+    public bool HasVersionCheck => VersionState is not null;
+    public bool IsNewerAvailable => VersionState == VersionCheckState.NewerAvailable;
+
+    /// <summary>Where a newer driver can be fetched: Windows Update settings or the official driver page.</summary>
+    public bool ShowVersionAction => IsNewerAvailable && (IsWindowsUpdateSource || VersionSourceUri is not null);
+
+    public string VersionActionText => Localizer.T(IsWindowsUpdateSource ? "Version_OpenWindowsUpdate" : "Version_OpenSource");
+
+    public string VersionGlyph => VersionState switch
+    {
+        VersionCheckState.NewerAvailable => "", // Download
+        VersionCheckState.UpToDate => "",       // CheckMark
+        _ => "",                                // Unknown
+    };
+
+    public Brush VersionBrush => StatusVisuals.VersionBrush(VersionState);
+
     public IReadOnlyList<LinkViewModel> Links { get; }
     public LinkViewModel? PrimaryLink { get; }
     public IReadOnlyList<LinkViewModel> SecondaryLinks { get; }
@@ -82,9 +113,9 @@ public sealed partial class DeviceItemViewModel
     public bool HasSecondaryLinks => SecondaryLinks.Count > 0;
 
     /// <summary>The prominent "Get driver" button is shown for problem devices only.</summary>
-    public bool ShowGetDriver => NeedsAttention && HasLinks;
+    public bool ShowGetDriver => (NeedsAttention && HasLinks) || ShowVersionAction;
 
-    public bool ShowNoLinks => NeedsAttention && !HasLinks;
+    public bool ShowNoLinks => NeedsAttention && !HasLinks && !ShowVersionAction;
 
     /// <summary>"More sources" next to the primary button, "Driver sources" when it stands alone.</summary>
     public string SourcesLabel => Localizer.T(ShowGetDriver ? "Simple_MoreSources" : "Simple_Sources");
@@ -96,7 +127,20 @@ public sealed partial class DeviceItemViewModel
     internal string SearchIndex { get; }
 
     [RelayCommand]
-    private Task GetDriverAsync() => PrimaryLink is null ? Task.CompletedTask : Launcher.OpenAsync(PrimaryLink.Uri);
+    private Task GetDriverAsync()
+    {
+        // A newer driver from a version source wins over the generic link list.
+        if (ShowVersionAction)
+        {
+            return OpenVersionSourceAsync();
+        }
+
+        return PrimaryLink is null ? Task.CompletedTask : Launcher.OpenAsync(PrimaryLink.Uri);
+    }
+
+    [RelayCommand]
+    private Task OpenVersionSourceAsync() =>
+        IsWindowsUpdateSource ? Launcher.OpenWindowsUpdateAsync() : Launcher.OpenAsync(VersionSourceUri);
 
     [RelayCommand]
     private void CopyInstanceId() => Launcher.CopyText(InstanceId);

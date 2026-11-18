@@ -4,6 +4,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:svc="using:DriverCompass.App.Services"
+    xmlns:vm="using:DriverCompass.App.ViewModels"
     Style="{StaticResource DefaultContentDialogStyle}"
     DefaultButton="Primary">
 
@@ -36,6 +37,27 @@
         <ToggleSwitch Header="{x:Bind svc:Localizer.T('Settings_UpdateCatalog')}" IsOn="{x:Bind ViewModel.UpdateCatalogOnline, Mode=TwoWay}" />
         <TextBlock Text="{x:Bind svc:Localizer.T('Settings_UpdateCatalog_Help')}" Style="{StaticResource CaptionTextBlockStyle}"
                    Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
+      </StackPanel>
+
+      <!-- Stage 2: every version source is opt-in and says what it sends where -->
+      <StackPanel Spacing="6">
+        <TextBlock Text="{x:Bind svc:Localizer.T('Settings_VersionCheck')}" Style="{StaticResource BodyStrongTextBlockStyle}" />
+        <TextBlock Text="{x:Bind svc:Localizer.T('Settings_VersionCheck_Help')}" Style="{StaticResource CaptionTextBlockStyle}"
+                   Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
+        <ItemsControl ItemsSource="{x:Bind ViewModel.VersionSources}">
+          <ItemsControl.ItemTemplate>
+            <DataTemplate x:DataType="vm:VersionSourceToggle">
+              <StackPanel Spacing="2" Margin="0,4,0,10">
+                <ToggleSwitch Header="{x:Bind Title}" IsOn="{x:Bind IsEnabled, Mode=TwoWay}" />
+                <TextBlock Text="{x:Bind Privacy}" Style="{StaticResource CaptionTextBlockStyle}"
+                           Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
+                <TextBlock Text="{x:Bind ApplicabilityText}" Style="{StaticResource CaptionTextBlockStyle}"
+                           Foreground="{ThemeResource SystemFillColorCautionBrush}" TextWrapping="Wrap"
+                           Visibility="{x:Bind svc:StatusVisuals.VisibleIfText(ApplicabilityText)}" />
+              </StackPanel>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
       </StackPanel>
 
       <StackPanel Orientation="Horizontal" Spacing="12">

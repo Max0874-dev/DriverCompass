@@ -8,7 +8,7 @@
 ┌───────────────────────────▼──────────── DriverCompass.Core (net10.0, no Windows deps) ──────────────────────────┐
 │ DeviceAnalysisService:  IDeviceScanner ─► IDeviceStatusEvaluator ─► ILinkResolver ─► sort (problems first)       │
 │ HardwareIdParser · SystemDeviceFilter · SystemInfoSanitizer · VendorCatalog · UrlSafety · Html/Csv exporters     │
-│ MockDeviceScanner · JsonSettingsService · interfaces for stage 2 (IVersionProvider) and 3 (installer, verifier) │
+│ MockDeviceScanner · JsonSettingsService · VersionCheckService (stage 2) · stage-3 interfaces (installer, verifier)│
 └──────────▲────────────────────────────────────────▲───────────────────────────────────────────────────────────────┘
            │ IDeviceScanner                         │ IVendorCatalogProvider / IDeviceNameLookup
 ┌──────────┴──────────────────┐        ┌────────────┴───────────────────────────────────────────────┐
@@ -18,6 +18,7 @@
 │ Win32_PnPSignedDriver, …     │        │ embedded vendors.json, vendors.schema.json, pci.ids          │
 └──────────────────────────────┘        └─────────────────────────────────────────────────────────────┘
 
+DriverCompass.VersionProviders (stage 2): IVersionProvider plugins – Windows Update (WUA COM), Dell, Lenovo, HP catalogs.
 DriverCompass.Installer (stage 3): separate elevated process – not used yet.
 ```
 
@@ -46,3 +47,24 @@ DriverCompass.Installer (stage 3): separate elevated process – not used yet.
 | Everything else | OK (vendor driver, Windows standard driver, or no driver needed) |
 
 ROOT\, SWD\, HTREE\, UMB\ and software classes (SoftwareDevice, Volume, AudioEndpoint …) are system devices. They are hidden by default.
+
+## Stage 2 – version check
+
+- `IVersionCheckService` (Core) runs only the sources the user switched on (`AppSettings.EnabledVersionSources`, empty by default) and only when "Check versions" is clicked.
+- Each source is an `IVersionProvider` and answers for **all devices at once** (one catalog download or one Windows Update search per run). Results are merged per device: newer version (highest wins) → nothing newer → unknown. A failing source is reported in the status bar; the others still run.
+- Matching: catalog hardware IDs against the device's hardware IDs plus vendor-specific compatible IDs (`PCI\VEN_x&DEV_y`). Class-only IDs such as `PCI\CC_0200` are never used.
+- Comparison: INF driver versions as four numbers (`DriverVersion`); the date only if no version is comparable. Windows Update reports no version number, so an offered driver counts as "newer" (Windows Update only offers better-ranked drivers).
+
+| Source | Data | Trust |
+|---|---|---|
+| Windows Update | WUA COM `IsInstalled=0 and Type='Driver'`, works without admin rights | Windows' own channel |
+| Dell | `downloads.dell.com/catalog/CatalogIndexPC.cab` → model CAB (systemID = `SystemSKUNumber`) | Authenticode (Dell) on both CABs, SHA-256 of the model CAB from the index |
+| Lenovo | `download.lenovo.com/catalog/<MT>_Win11.xml` → package descriptors (`DetectInstall/_Driver`) | HTTPS + SHA-256 of every descriptor from the catalog |
+| HP | `hpia.hpcloud.hp.com/ref/platformList.cab` → `ref/<id>/<id>_64_<10.0/11.0>.<release>.cab` (platform ID = `Win32_BaseBoard.Product`) | Authenticode (HP Inc.) on both CABs |
+
+Safety rules in `DriverCompass.VersionProviders`:
+
+- `CatalogDownloader`: HTTPS only, exact host allow-list hard-coded per provider (not in `vendors.json`), redirects checked hop by hop, size limits, cache with ETag/24 h.
+- `ExpandCabExtractor`: checks the Authenticode signature and signer **before** extracting with `%SystemRoot%\System32\expand.exe` into a fresh temp folder; exactly one file is accepted, nothing is executed.
+- `SafeXml`: no DTDs, no external resolution, size cap, streaming reads.
+- Links shown to the user (Dell driver page, HP release notes) are checked with `UrlSafety` against `dell.com` / `hp.com`.

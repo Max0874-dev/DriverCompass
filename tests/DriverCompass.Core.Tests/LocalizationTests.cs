@@ -38,6 +38,13 @@ public class LocalizationTests
         expected.AddRange(["Link_ChipVendor", "Link_MicrosoftCatalog", "CmError_Unknown", "Class_Unknown",
             "Catalog_RemoteUnavailable", "Catalog_RemoteInvalid", "Catalog_RemoteOlder", "Catalog_CacheInvalid"]);
 
+        // Stage 2: source names, privacy notes, verdicts and reason codes are built from ids at runtime.
+        expected.AddRange(VersionSourceIds.All.SelectMany(id => new[] { $"VersionSource_{id}", $"VersionSource_{id}_Privacy" }));
+        expected.AddRange(Enum.GetNames<VersionCheckState>().Select(s => $"VersionState_{s}"));
+        expected.Add("VersionState_UpToDate_windowsupdate");
+        expected.AddRange(typeof(VersionSourceReasons).GetFields().Select(f => $"VersionReason_{f.GetValue(null)}"));
+        expected.AddRange(["Col_Latest", "Col_VersionState", "Col_VersionSource", "Version_Package"]);
+
         var missing = expected.Where(k => !keys.ContainsKey(k)).ToList();
         Assert.True(missing.Count == 0, "Missing keys: " + string.Join(", ", missing));
     }

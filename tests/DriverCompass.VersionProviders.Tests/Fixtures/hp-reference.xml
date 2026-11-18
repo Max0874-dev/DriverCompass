@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!-- Shortened, hand-written sample in the structure of an HP Image Assistant reference file -->
+<ImagePal>
+  <Version>3</Version>
+  <SystemInfo><System><SystemID>8B41</SystemID></System></SystemInfo>
+  <Devices>
+    <Device>
+      <FriendlyName>AMD Bluetooth Audio Device</FriendlyName>
+      <DeviceId>PCI\VEN_1022&amp;DEV_15E2&amp;REV_60</DeviceId>
+      <HardwareId />
+      <DriverProvider>AMD</DriverProvider>
+      <DriverDate>08/26/2025</DriverDate>
+      <DriverVersion>6.0.2.114</DriverVersion>
+      <Solutions><UpdateInfo IdRef="sp174175" /></Solutions>
+    </Device>
+    <Device>
+      <FriendlyName>Microsoft AC Adapter</FriendlyName>
+      <DeviceId>ACPI\ACPI0003\2&amp;DABA3FF&amp;1</DeviceId>
+      <HardwareId>acpi\acpi0003</HardwareId>
+      <DriverVersion>10.0.26100.1150</DriverVersion>
+    </Device>
+    <Device>
+      <FriendlyName>Realtek Audio</FriendlyName>
+      <DeviceId>HDAUDIO\FUNC_01&amp;VEN_10EC&amp;DEV_0236\4&amp;1&amp;0&amp;0001</DeviceId>
+      <HardwareId>HDAUDIO\FUNC_01&amp;VEN_10EC&amp;DEV_0236&amp;SUBSYS_103C8B41</HardwareId>
+      <DriverDate>02/10/2026</DriverDate>
+      <DriverVersion>6.0.9800.1</DriverVersion>
+      <Solutions><UpdateInfo IdRef="sp170000" /></Solutions>
+    </Device>
+  </Devices>
+  <Solutions>
+    <UpdateInfo><Id>sp174175</Id><Name>AMD Audio Driver</Name><Version>6.0.2.114 Rev.A</Version><ReleaseNotesUrl>ftp.hp.com/pub/softpaq/sp174001-174500/sp174175.html</ReleaseNotesUrl></UpdateInfo>
+    <UpdateInfo><Id>sp170000</Id><Name>Realtek Audio Driver</Name><ReleaseNotesUrl>evil.example.com/notes.html</ReleaseNotesUrl></UpdateInfo>
+  </Solutions>
+</ImagePal>

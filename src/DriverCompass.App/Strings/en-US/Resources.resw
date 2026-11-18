@@ -203,5 +203,48 @@
   <data name="Settings_OpenLogs" xml:space="preserve"><value>Open log folder</value></data>
   <data name="Settings_About" xml:space="preserve"><value>About</value></data>
   <data name="Settings_AboutText" xml:space="preserve"><value>{0} {1} · MIT license · vendor list {2}</value></data>
-  <data name="Settings_Privacy" xml:space="preserve"><value>Everything runs locally on your PC. No telemetry. Driver links only open in your browser when you click them.</value></data>
+  <data name="Settings_Privacy" xml:space="preserve"><value>Everything runs locally on your PC. No telemetry. Driver links only open in your browser when you click them. The version check only uses the sources you turn on above.</value></data>
+  <data name="Cmd_CheckVersions" xml:space="preserve"><value>Check versions</value></data>
+  <data name="Cmd_CancelVersionCheck" xml:space="preserve"><value>Cancel check</value></data>
+  <data name="Versions_NoSourceHint" xml:space="preserve"><value>Turn on at least one version source in the settings to look for newer drivers.</value></data>
+  <data name="Busy_CheckingVersions" xml:space="preserve"><value>Checking versions: {0} …</value></data>
+  <data name="Versions_Summary" xml:space="preserve"><value>Version check: {0} newer drivers found · {1} with nothing newer · {2} unknown</value></data>
+  <data name="Versions_Cancelled" xml:space="preserve"><value>Version check cancelled.</value></data>
+  <data name="Versions_Failed" xml:space="preserve"><value>Version check failed: {0}</value></data>
+  <data name="VersionSourceStatus_Ok" xml:space="preserve"><value>{0}: checked ({1})</value></data>
+  <data name="VersionSourceStatus_NotApplicable" xml:space="preserve"><value>{0}: not applicable ({1})</value></data>
+  <data name="VersionSourceStatus_Failed" xml:space="preserve"><value>{0}: error – {1}</value></data>
+  <data name="VersionReason_WrongManufacturer" xml:space="preserve"><value>different PC manufacturer</value></data>
+  <data name="VersionReason_ModelNotInCatalog" xml:space="preserve"><value>model not in catalog</value></data>
+  <data name="VersionReason_Offline" xml:space="preserve"><value>no connection</value></data>
+  <data name="VersionReason_InvalidData" xml:space="preserve"><value>invalid data</value></data>
+  <data name="VersionReason_SignatureInvalid" xml:space="preserve"><value>invalid signature</value></data>
+  <data name="VersionReason_HashMismatch" xml:space="preserve"><value>checksum mismatch</value></data>
+  <data name="VersionReason_AccessDenied" xml:space="preserve"><value>access denied</value></data>
+  <data name="VersionReason_Unexpected" xml:space="preserve"><value>unexpected error, see log</value></data>
+  <data name="VersionSource_windowsupdate" xml:space="preserve"><value>Windows Update</value></data>
+  <data name="VersionSource_dell" xml:space="preserve"><value>Dell</value></data>
+  <data name="VersionSource_lenovo" xml:space="preserve"><value>Lenovo</value></data>
+  <data name="VersionSource_hp" xml:space="preserve"><value>HP</value></data>
+  <data name="VersionSource_windowsupdate_Privacy" xml:space="preserve"><value>Asks Windows Update for newer drivers. This sends the hardware IDs of your devices to Microsoft – just like Windows Update itself.</value></data>
+  <data name="VersionSource_dell_Privacy" xml:space="preserve"><value>Downloads the official driver catalog for your model from downloads.dell.com. Dell sees the model ID, but no serial number.</value></data>
+  <data name="VersionSource_lenovo_Privacy" xml:space="preserve"><value>Downloads the official update catalog for your machine type from download.lenovo.com. Lenovo sees the machine type, but no serial number.</value></data>
+  <data name="VersionSource_hp_Privacy" xml:space="preserve"><value>Downloads the official reference file for your platform from hpia.hpcloud.hp.com. HP sees the platform ID and Windows version, but no serial number.</value></data>
+  <data name="Settings_VersionCheck" xml:space="preserve"><value>Version check</value></data>
+  <data name="Settings_VersionCheck_Help" xml:space="preserve"><value>All sources are off by default. A check only runs when you click "Check versions". Websites without an official interface (e.g. Intel, NVIDIA, AMD) are not scraped – those devices stay "Version unknown".</value></data>
+  <data name="Settings_NotApplicable" xml:space="preserve"><value>Does not apply to this PC.</value></data>
+  <data name="VersionState_NewerAvailable" xml:space="preserve"><value>Newer version available ({0})</value></data>
+  <data name="VersionState_UpToDate" xml:space="preserve"><value>Up to date according to {0}</value></data>
+  <data name="VersionState_UpToDate_windowsupdate" xml:space="preserve"><value>Nothing newer on Windows Update</value></data>
+  <data name="VersionState_Unknown" xml:space="preserve"><value>Version unknown – please check the link</value></data>
+  <data name="VersionState_Failed" xml:space="preserve"><value>Check failed</value></data>
+  <data name="Version_Latest" xml:space="preserve"><value>Newest version: {0}</value></data>
+  <data name="Version_Package" xml:space="preserve"><value>Package: {0}</value></data>
+  <data name="Version_OpenSource" xml:space="preserve"><value>Open driver page</value></data>
+  <data name="Version_OpenWindowsUpdate" xml:space="preserve"><value>Open Windows Update</value></data>
+  <data name="Col_Latest" xml:space="preserve"><value>Newest version</value></data>
+  <data name="Col_VersionState" xml:space="preserve"><value>Version status</value></data>
+  <data name="Col_VersionSource" xml:space="preserve"><value>Version source</value></data>
+  <data name="Filter_NewerAvailable" xml:space="preserve"><value>Newer version available</value></data>
+  <data name="VersionSourceStatus_Ok_windowsupdate" xml:space="preserve"><value>{0}: checked ({1} driver updates offered)</value></data>
 </root>

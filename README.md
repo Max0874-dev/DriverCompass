@@ -4,13 +4,14 @@
 
 DriverCompass ist eine kostenlose Open-Source-App für Windows 10 und 11. Sie erkennt alle Geräte in deinem PC, zeigt dir, welche Treiber **fehlen**, **Fehler melden** oder **nur generisch** sind (z. B. „Microsoft Basic Display Adapter“), und führt dich zur **offiziellen Treiberseite** des Herstellers.
 
-- 🔒 **Alles lokal.** Keine Telemetrie, keine Gerätedaten verlassen den PC. Die einzige Netzwerkverbindung ist das Laden der öffentlichen Herstellerliste von GitHub. Das lässt sich abschalten.
+- 🔒 **Alles lokal.** Keine Telemetrie, keine Gerätedaten verlassen den PC. Automatisch lädt die App nur die öffentliche Herstellerliste von GitHub (abschaltbar). Die optionale Versionsprüfung fragt erst, wenn du sie einschaltest und startest.
 - 🚦 **Einfache Ansicht** mit Ampel, verständlichen Namen und einem Button „Treiber holen“.
 - 🔬 **Expertenmodus** mit Hardware-IDs, INF-Datei, Treiberanbieter, Version, Datum, Fehlercode, Suche, Filter, Sortierung und Export (HTML/CSV).
+- 🔄 **Versionsprüfung** (optional): „Versionen prüfen“ vergleicht installierte Treiber mit offiziellen Quellen: Windows Update sowie die Kataloge von Dell, Lenovo und HP. Ohne offizielle Quelle steht ehrlich „Version unbekannt – bitte Link prüfen“. Jede Quelle ist standardmäßig aus, siehe [PRIVACY.md](PRIVACY.md).
 - 🌍 Deutsch und Englisch.
 - 🛡️ Keine Adminrechte nötig.
 
-> **Status:** Stufe 1 (Erkennen und Links anzeigen). Versionsvergleich (Stufe 2) und Installation (Stufe 3) sind geplant, siehe [docs/roadmap.md](docs/roadmap.md).
+> **Status:** Stufe 1 (Erkennen und Links) und Stufe 2 (Versionsvergleich) sind fertig. Die Installation (Stufe 3) ist geplant, siehe [docs/roadmap.md](docs/roadmap.md).
 
 ## Wie die Links entstehen
 
@@ -59,6 +60,7 @@ src/
   DriverCompass.Core/              Modelle, Interfaces, Parser, Status-Logik, Link-Resolver, Export, Mock-Scanner
   DriverCompass.Scanner.Windows/   WMI-Scanner (Win32_PnPEntity, Win32_PnPSignedDriver, …)
   DriverCompass.Data/              Herstellerliste: Validator, Laden (Online → Cache → eingebettet), pci.ids
+  DriverCompass.VersionProviders/  Stufe 2: Windows Update, Dell-, Lenovo-, HP-Kataloge (HTTPS, Signatur, Prüfsumme)
   DriverCompass.Installer/         Platzhalter für Stufe 3 (getrennter, erhöhter Prozess)
   DriverCompass.App/               WinUI-3-App (MVVM, CommunityToolkit.Mvvm, Serilog)
 tests/                             xUnit-Tests (Parser, Status, Resolver, Export, Validator, WMI-Mapping, Übersetzungen)

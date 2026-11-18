@@ -36,6 +36,7 @@ public sealed class MockDeviceScanner(MockProfile profile = MockProfile.WhiteBox
                 BiosVersion = "1.12.0",
                 OperatingSystem = "Microsoft Windows 11 Pro",
                 OperatingSystemVersion = "10.0.26100",
+                OperatingSystemDisplayVersion = "24H2",
             },
             _ => new SystemInfo
             {
@@ -49,6 +50,7 @@ public sealed class MockDeviceScanner(MockProfile profile = MockProfile.WhiteBox
                 BiosVersion = "3611",
                 OperatingSystem = "Microsoft Windows 11 Pro",
                 OperatingSystemVersion = "10.0.26100",
+                OperatingSystemDisplayVersion = "24H2",
             },
         };
 

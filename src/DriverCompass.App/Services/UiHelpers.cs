@@ -22,6 +22,13 @@ public static class Launcher
         return await Windows.System.Launcher.LaunchUriAsync(uri);
     }
 
+    /// <summary>Opens Windows' own "Optional updates" page, where Windows Update lists driver updates. Fixed URI.</summary>
+    public static async Task<bool> OpenWindowsUpdateAsync()
+    {
+        Serilog.Log.Information("Opening Windows Update optional updates");
+        return await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings:windowsupdate-optionalupdates"));
+    }
+
     /// <summary>Opens a local file or folder with the default app (reports, log folder).</summary>
     public static void OpenLocal(string path)
     {
@@ -63,6 +70,14 @@ public static class StatusVisuals
         DeviceStatus.Ok => "",
         _ => "",
     };
+
+    /// <summary>Full-contrast text for "newer version" (the accent colour can be grey), green for "nothing newer", muted for unknown/failed.</summary>
+    public static Brush VersionBrush(VersionCheckState? state) => Resource(state switch
+    {
+        VersionCheckState.NewerAvailable => "TextFillColorPrimaryBrush",
+        VersionCheckState.UpToDate => "SystemFillColorSuccessBrush",
+        _ => "TextFillColorSecondaryBrush",
+    });
 
     public static Visibility VisibleIf(bool value) => value ? Visibility.Visible : Visibility.Collapsed;
 
