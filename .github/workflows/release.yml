@@ -42,6 +42,8 @@ jobs:
           dotnet publish src/DriverCompass.App/DriverCompass.App.csproj -c Release `
             -p:Platform=${{ matrix.platform }} -r $rid --self-contained true `
             -p:Version=$env:VERSION -o publish/$rid
+          # Licence and notices travel with the binaries (MIT licence, third-party notices, privacy, security).
+          Copy-Item LICENSE, THIRD-PARTY-NOTICES.md, PRIVACY.md, SECURITY.md, CHANGELOG.md, README.md, README.en.md -Destination publish/$rid
           Compress-Archive -Path publish/$rid/* -DestinationPath "DriverCompass-$env:VERSION-$rid.zip"
 
       # MSIX only when a signing certificate is configured (secrets SIGNING_CERT = base64 PFX, SIGNING_CERT_PASSWORD).
@@ -67,10 +69,22 @@ jobs:
             "$((Get-FileHash $_.FullName -Algorithm SHA256).Hash.ToLower())  $($_.Name)"
           } | Out-File -Encoding ascii "SHA256SUMS-${{ matrix.platform }}.txt"
 
+      # Release notes = the section of CHANGELOG.md for this version.
+      - name: Release notes
+        shell: pwsh
+        run: |
+          $lines = Get-Content -Encoding utf8 CHANGELOG.md
+          $start = [Array]::FindIndex($lines, [Predicate[string]]{ param($l) $l.StartsWith("## [$env:VERSION]") })
+          if ($start -lt 0) { "Release $env:VERSION" | Out-File -Encoding utf8 RELEASE_NOTES.md; return }
+          $end = [Array]::FindIndex($lines, $start + 1, [Predicate[string]]{ param($l) $l.StartsWith("## ") })
+          if ($end -lt 0) { $end = $lines.Length }
+          $lines[($start + 1)..($end - 1)] | Out-File -Encoding utf8 RELEASE_NOTES.md
+
       - name: Upload to release
         uses: softprops/action-gh-release@v2
         with:
           draft: true
+          body_path: RELEASE_NOTES.md
           files: |
             *.zip
             *.msix
