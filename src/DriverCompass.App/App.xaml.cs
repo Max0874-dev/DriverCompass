@@ -3,6 +3,7 @@ using DriverCompass.App.ViewModels;
 using DriverCompass.Core;
 using DriverCompass.Core.Abstractions;
 using DriverCompass.Core.Evaluation;
+using DriverCompass.Core.Installation;
 using DriverCompass.Core.Links;
 using DriverCompass.Core.Reporting;
 using DriverCompass.Core.Scanning;
@@ -12,6 +13,7 @@ using DriverCompass.Core.Versions;
 using DriverCompass.Data;
 using DriverCompass.Scanner.Windows;
 using DriverCompass.VersionProviders;
+using DriverCompass.Installer.Client;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Xaml;
@@ -108,9 +110,27 @@ public partial class App : Application
         services.AddSingleton<IVersionCheckService>(sp =>
             new VersionCheckService(sp.GetRequiredService<IEnumerable<IVersionProvider>>(), sp.GetRequiredService<ILogger<VersionCheckService>>()));
 
+        // Stage 3: installation runs in a separate, UAC-elevated process ("DriverCompass.exe --elevated ...").
+        // The demo mode only simulates it – no UAC prompt, no change to Windows.
+        if (isMock)
+        {
+            var mockInstaller = new MockInstallerClient();
+            services.AddSingleton<IElevatedInstallerClient>(mockInstaller);
+            services.AddSingleton<IInstallLog>(mockInstaller);
+        }
+        else
+        {
+            services.AddSingleton<IProcessLauncher, UacProcessLauncher>();
+            services.AddSingleton<IElevatedInstallerClient>(sp =>
+                new ElevatedInstallerClient(sp.GetRequiredService<IProcessLauncher>(), sp.GetRequiredService<ILogger<ElevatedInstallerClient>>()));
+            services.AddSingleton<IInstallLog>(_ => new InstallLogFile());
+        }
+
         services.AddSingleton(sp => new MainViewModel(
             sp.GetRequiredService<IDeviceAnalysisService>(),
             sp.GetRequiredService<IVersionCheckService>(),
+            sp.GetRequiredService<IElevatedInstallerClient>(),
+            sp.GetRequiredService<IInstallLog>(),
             sp.GetRequiredService<ISettingsService>(),
             sp.GetServices<IReportExporter>(),
             sp.GetRequiredService<ILogger<MainViewModel>>(),

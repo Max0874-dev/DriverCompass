@@ -19,7 +19,7 @@
 └──────────────────────────────┘        └─────────────────────────────────────────────────────────────┘
 
 DriverCompass.VersionProviders (stage 2): IVersionProvider plugins – Windows Update (WUA COM), Dell, Lenovo, HP catalogs.
-DriverCompass.Installer (stage 3): separate elevated process – not used yet.
+DriverCompass.Installer (stage 3): installer engine, hosted by "DriverCompass.exe --elevated" in a separate UAC-elevated process.
 ```
 
 ## Key decisions
@@ -68,3 +68,22 @@ Safety rules in `DriverCompass.VersionProviders`:
 - `ExpandCabExtractor`: checks the Authenticode signature and signer **before** extracting with `%SystemRoot%\System32\expand.exe` into a fresh temp folder; exactly one file is accepted, nothing is executed.
 - `SafeXml`: no DTDs, no external resolution, size cap, streaming reads.
 - Links shown to the user (Dell driver page, HP release notes) are checked with `UrlSafety` against `dell.com` / `hp.com`.
+
+## Stage 3 – installation (Windows Update drivers)
+
+```
+App (unelevated)                                   DriverCompass.exe --elevated (UAC, no UI)
+────────────────                                   ─────────────────────────────────────────
+"Install …" → confirmation (+ disclaimer once)
+write request (IDs only) to %LOCALAPPDATA%  ──►    read + validate request (size, strict JSON)
+start self via runas, wait                         WMI: read the device again
+                                                   WUA: search UpdateID, check Type=Driver + hardware ID + EULA
+                                                   restore point (or stop unless allowed)
+                                                   snapshot C:\Windows\INF\oem*.inf → WUA download + install → snapshot
+read result from %ProgramData%\DriverCompass ◄──   write result + log (admin-only folder, ACL checked)
+rescan, show outcome; history → rollback          rollback: entry from own log, SHA-256 must match, pnputil /delete-driver
+```
+
+- `Program.Main` (custom entry, `DISABLE_XAML_GENERATED_MAIN`) branches on `--elevated` before any WinUI code runs; the same self-contained runtime is reused, so no second ~70 MB EXE is shipped.
+- Engine (`DriverCompass.Installer/InstallerEngine.cs`) depends only on small interfaces (`IDeviceQuery`, `IWindowsUpdateInstaller`, `IRestorePointCreator`, `IDriverStore`, `IInstallStore`) and is unit-tested with fakes.
+- `--mock` uses `MockInstallerClient`: no UAC, no change to Windows; the first attempt simulates a missing restore point.

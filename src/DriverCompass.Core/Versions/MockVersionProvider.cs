@@ -21,15 +21,24 @@ public sealed class MockVersionProvider(string sourceId, IReadOnlyList<CatalogDr
         // Feels like a real check in the demo.
         await Task.Delay(400, cancellationToken).ConfigureAwait(false);
         var results = VersionMatching.Match(devices, entries ?? DefaultEntries(sourceId), sourceId);
-        return new VersionProviderResult(results, VersionSourceOutcome.Ok, "demo");
+
+        // Windows Update reports the number of offered drivers as detail; catalogs report a catalog version.
+        var detail = sourceId == VersionSourceIds.WindowsUpdate
+            ? results.Values.Count(r => r.State == VersionCheckState.NewerAvailable).ToString(System.Globalization.CultureInfo.InvariantCulture)
+            : "demo";
+        return new VersionProviderResult(results, VersionSourceOutcome.Ok, detail);
     }
+
+    public const string MockUpdateId = "6f1c2b7e-0d1a-4c5e-9b0a-3e2d1c4b5a69";
 
     private static IReadOnlyList<CatalogDriverEntry> DefaultEntries(string sourceId) => sourceId switch
     {
         VersionSourceIds.WindowsUpdate =>
         [
             // Intel Bluetooth (installed 22.240.0.2) – Windows Update reports only a date.
-            new([@"USB\VID_8087&PID_0029&REV_0001"], null, new DateOnly(2025, 9, 18), "Intel Corporation - Bluetooth - 23.150.0.3"),
+            // The UpdateID makes it installable in the demo (stage 3, simulated – nothing is installed with --mock).
+            new([@"USB\VID_8087&PID_0029&REV_0001"], null, new DateOnly(2025, 9, 18), "Intel Corporation - Bluetooth - 23.150.0.3",
+                PackageId: MockUpdateId),
         ],
         _ =>
         [

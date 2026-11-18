@@ -8,7 +8,8 @@ public sealed record CatalogDriverEntry(
     string? Version,
     DateOnly? Date,
     string? PackageName = null,
-    Uri? SourceUri = null);
+    Uri? SourceUri = null,
+    string? PackageId = null);
 
 /// <summary>Shared helpers for all version providers: hardware-ID matching and version comparison.</summary>
 public static class VersionMatching
@@ -89,7 +90,7 @@ public static class VersionMatching
     public static VersionCheckResult Evaluate(DriverInfo? installed, CatalogDriverEntry entry, string providerId)
     {
         var state = Compare(installed, entry.Version, entry.Date);
-        return new VersionCheckResult(providerId, state, Clean(entry.Version), entry.Date, entry.SourceUri, entry.PackageName);
+        return new VersionCheckResult(providerId, state, Clean(entry.Version), entry.Date, entry.SourceUri, entry.PackageName) { PackageId = entry.PackageId };
     }
 
     public static VersionCheckState Compare(DriverInfo? installed, string? latestVersion, DateOnly? latestDate)

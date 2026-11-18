@@ -1,18 +1,27 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <!--
-    Stage 3 (not implemented yet): separate, elevated helper process that installs ONE
-    user-confirmed, verified driver package via pnputil. The main app never runs elevated.
-    The manifest will switch to requireAdministrator when stage 3 is built.
+    Stage 3 installer engine. Runs ONLY inside a separate, elevated process
+    (DriverCompass.exe with the elevated switch, started via UAC). The normal app never runs elevated.
+    It is a library rather than its own EXE so the self-contained app does not ship a second .NET runtime.
   -->
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
     <TargetFramework>net10.0-windows</TargetFramework>
     <RootNamespace>DriverCompass.Installer</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\DriverCompass.Core\DriverCompass.Core.csproj" />
+    <ProjectReference Include="..\DriverCompass.Scanner.Windows\DriverCompass.Scanner.Windows.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Management" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="DriverCompass.Installer.Tests" />
   </ItemGroup>
 
 </Project>

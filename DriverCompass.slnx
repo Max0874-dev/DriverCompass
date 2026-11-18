@@ -21,6 +21,7 @@
     <Project Path="tests/DriverCompass.Data.Tests/DriverCompass.Data.Tests.csproj" />
     <Project Path="tests/DriverCompass.Scanner.Windows.Tests/DriverCompass.Scanner.Windows.Tests.csproj" />
     <Project Path="tests/DriverCompass.VersionProviders.Tests/DriverCompass.VersionProviders.Tests.csproj" />
+    <Project Path="tests/DriverCompass.Installer.Tests/DriverCompass.Installer.Tests.csproj" />
   </Folder>
   <Folder Name="/data/">
     <File Path="data/vendors.json" />

@@ -3,11 +3,27 @@ using DriverCompass.Core.Models;
 namespace DriverCompass.Core.Abstractions;
 
 // =====================================================================
-// Stage 3 – download & installation. Interfaces only, NOT implemented.
-// Rules: one driver at a time, explicit user confirmation, HTTPS from
-// allow-listed domains only, signature + hash check, restore point,
-// elevation only in the separate DriverCompass.Installer process.
+// Stage 3 – installation.
+// Rules: one driver at a time, explicit user confirmation, restore point
+// (or the user's explicit OK without one), elevation only in a separate
+// process ("DriverCompass.exe --elevated") that re-checks everything itself,
+// install log + rollback via pnputil.
+// Part 1 (implemented): Windows Update drivers.
 // =====================================================================
+
+/// <summary>Unelevated side: hands ONE request to the elevated process (UAC prompt) and returns its result.</summary>
+public interface IElevatedInstallerClient
+{
+    Task<InstallResult> RunAsync(InstallRequest request, CancellationToken cancellationToken = default);
+}
+
+/// <summary>Read access to the install log (written only by the elevated process).</summary>
+public interface IInstallLog
+{
+    IReadOnlyList<InstallLogEntry> ReadAll();
+}
+
+// ---------- Later: OEM packages (Dell/Lenovo/HP) – interfaces only, not implemented ----------
 
 public interface IDriverDownloader
 {
@@ -18,28 +34,4 @@ public interface IDriverDownloader
 public interface IPackageVerifier
 {
     VerificationResult Verify(DownloadedPackage package);
-}
-
-public interface IRestorePointService
-{
-    Task<RestorePointResult> CreateAsync(string description, CancellationToken cancellationToken = default);
-}
-
-/// <summary>Unelevated client that starts DriverCompass.Installer.exe via UAC ("runas") for ONE confirmed driver.</summary>
-public interface IElevatedInstallerClient
-{
-    Task<InstallResult> InstallAsync(InstallRequest request, CancellationToken cancellationToken = default);
-}
-
-public interface IInstallLog
-{
-    Task AppendAsync(InstallLogEntry entry, CancellationToken cancellationToken = default);
-
-    IAsyncEnumerable<InstallLogEntry> ReadAllAsync(CancellationToken cancellationToken = default);
-}
-
-/// <summary>Rollback via <c>pnputil /delete-driver oemNN.inf /uninstall</c>.</summary>
-public interface IRollbackService
-{
-    Task<InstallResult> RollbackAsync(InstallLogEntry entry, CancellationToken cancellationToken = default);
 }

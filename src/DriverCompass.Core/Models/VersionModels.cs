@@ -32,6 +32,15 @@ public sealed record VersionCheckResult(
     Uri? SourceUri = null,
     string? PackageName = null)
 {
+    /// <summary>Stage 3: ID the source uses for the package (Windows Update: UpdateID). Set only where DriverCompass can install it.</summary>
+    public string? PackageId { get; init; }
+
+    /// <summary>Stage 3: Windows Update revision number belonging to <see cref="PackageId"/>.</summary>
+    public int PackageRevision { get; init; }
+
+    /// <summary>True if DriverCompass can install this newer driver itself (stage 3, Windows Update only).</summary>
+    public bool IsInstallable => State == VersionCheckState.NewerAvailable && ProviderId == VersionSourceIds.WindowsUpdate && PackageId is not null;
+
     public static VersionCheckResult None { get; } = new(string.Empty, VersionCheckState.Unknown);
 }
 

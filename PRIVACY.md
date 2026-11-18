@@ -19,6 +19,7 @@ DriverCompass läuft vollständig lokal auf deinem PC.
   - **HP:** Lädt `hpia.hpcloud.hp.com/ref/platformList.cab` (keine Gerätedaten) und die Referenzdatei für deine Plattform. HP sieht Plattform-ID und Windows-Version.
 
   Die Seriennummer wird dabei nie verwendet. Die Kataloge werden unter `%LOCALAPPDATA%DriverCompasscheversions` zwischengespeichert. Die Downloads laufen nur über HTTPS, nur von diesen fest eingetragenen Adressen, mit Signatur- bzw. Prüfsummen-Kontrolle.
+- **Treiberinstallation (optional):** Wenn du bei einem von Windows Update gefundenen Treiber auf „Installieren …“ klickst und bestätigst, lädt Windows Update genau dieses Paket von Microsoft und installiert es. Dabei gilt dasselbe wie bei Windows Update selbst. Protokoll und Ergebnis liegen lokal unter `%ProgramData%DriverCompass`.
 - **Logs** (`%LOCALAPPDATA%\DriverCompass\logs`, 14 Tage) enthalten Geräteanzahlen und Fehlermeldungen, aber keine Seriennummern.
 - **Berichte** (HTML/CSV) entstehen nur, wenn du exportierst. Die Seriennummer ist standardmäßig nicht enthalten. Prüfe Berichte, bevor du sie weitergibst.
 
@@ -41,5 +42,6 @@ DriverCompass runs entirely on your PC.
   - **HP:** downloads `hpia.hpcloud.hp.com/ref/platformList.cab` (no device data), then the reference file for your platform. HP sees the platform ID and Windows version.
 
   The serial number is never used. Catalogs are cached in `%LOCALAPPDATA%DriverCompasscheversions`. Downloads use HTTPS only, only from these hard-coded addresses, with signature or checksum checks.
+- **Driver installation (optional):** when you click "Install …" for a driver found on Windows Update and confirm, Windows Update downloads exactly this package from Microsoft and installs it – the same as Windows Update itself. Log and result stay local in `%ProgramData%DriverCompass`.
 - **Logs** (`%LOCALAPPDATA%\DriverCompass\logs`, 14 days) contain device counts and error messages, but no serial numbers.
 - **Reports** (HTML/CSV) are only created when you export them. The serial number is excluded by default. Review reports before sharing them.

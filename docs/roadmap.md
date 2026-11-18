@@ -21,12 +21,20 @@
 - Results in both views, a filter "Newer version available", detail pane and HTML/CSV export.
 - Possible later: more OEMs with official catalogs, optional automatic check after the scan.
 
-## Stage 3 – download & install (planned, not started)
+## Stage 3 – install (part 1 ✅: Windows Update drivers)
+
+Done:
+
+- "Install …" for drivers that the version check found on Windows Update; one driver per confirmation, disclaimer on first use.
+- Separate UAC-elevated process (`DriverCompass.exe --elevated`) that re-checks device and update, creates a restore point (or asks again), installs via the Windows Update Agent, and logs the new `oemNN.inf` packages.
+- History with rollback (`pnputil /delete-driver oemNN.inf /uninstall`), bound to the protected log and SHA-256.
+
+Part 2 (open): OEM packages from Dell/Lenovo/HP – download over HTTPS with SHA-256 and Authenticode check, extract, install INF drivers with pnputil. Original plan for reference:
 
 - Exactly one driver per user confirmation; no bulk installation.
 - Download only via HTTPS from allow-listed domains.
 - Afterwards: SHA-256 check (where the source provides a hash) and Authenticode/catalog signature check.
-- `DriverCompass.Installer.exe` runs elevated (UAC "runas") only for this step.
+- The elevated helper (`DriverCompass.exe --elevated`, UAC "runas") runs only for this step.
   - It re-verifies everything itself instead of trusting the unelevated app.
   - It creates a restore point. If that fails (System Restore off, or only one point per 24 h), it shows a clear warning with an option to cancel.
   - It installs with `pnputil /add-driver <inf> /install`.

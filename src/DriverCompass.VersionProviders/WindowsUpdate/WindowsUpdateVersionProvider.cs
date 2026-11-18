@@ -8,7 +8,13 @@ using Microsoft.Extensions.Logging.Abstractions;
 namespace DriverCompass.VersionProviders.WindowsUpdate;
 
 /// <summary>A driver update Windows Update offers for this PC.</summary>
-public sealed record WindowsUpdateDriver(string? Title, string? HardwareId, DateOnly? Date, string? Provider, string? Model);
+public sealed record WindowsUpdateDriver(string? Title, string? HardwareId, DateOnly? Date, string? Provider, string? Model)
+{
+    /// <summary>Windows Update UpdateID (GUID) – what stage 3 hands to the elevated installer.</summary>
+    public string? UpdateId { get; init; }
+
+    public int Revision { get; init; }
+}
 
 public interface IWindowsUpdateSearcher
 {
@@ -58,7 +64,11 @@ public sealed class WindowsUpdateVersionProvider(IWindowsUpdateSearcher searcher
             {
                 matched.Add(offer);
                 results[assessment.Device.InstanceId] = new VersionCheckResult(
-                    Source.Id, VersionCheckState.NewerAvailable, VersionFromTitle(offer.Title), offer.Date, null, offer.Title);
+                    Source.Id, VersionCheckState.NewerAvailable, VersionFromTitle(offer.Title), offer.Date, null, offer.Title)
+                {
+                    PackageId = Guid.TryParseExact(offer.UpdateId, "D", out _) ? offer.UpdateId : null,
+                    PackageRevision = offer.Revision,
+                };
             }
             else if (assessment.Device.Driver is { HasData: true })
             {
@@ -149,12 +159,20 @@ public sealed class ComWindowsUpdateSearcher : IWindowsUpdateSearcher
             {
                 dynamic update = updates.Item(i);
                 DateTime? date = update.DriverVerDate is DateTime d ? d : null;
+                dynamic identity = update.Identity;
+                string? updateId = identity.UpdateID;
+                int revision = identity.RevisionNumber;
+                Release(identity);
                 list.Add(new WindowsUpdateDriver(
                     (string?)update.Title,
                     (string?)update.DriverHardwareID,
                     date is { } dt ? DateOnly.FromDateTime(dt) : null,
                     (string?)update.DriverProvider,
-                    (string?)update.DriverModel));
+                    (string?)update.DriverModel)
+                {
+                    UpdateId = updateId,
+                    Revision = revision,
+                });
             }
 
             return list;

@@ -8,10 +8,11 @@ DriverCompass is a free, open-source app for Windows 10 and 11. It detects every
 - 🚦 **Simple view** with a traffic light, plain names and one "Get driver" button.
 - 🔬 **Expert mode** with hardware IDs, INF file, driver provider, version, date, error code, search, filters, sorting and export (HTML/CSV).
 - 🔄 **Version check** (optional): "Check versions" compares installed drivers with official sources: Windows Update plus the Dell, Lenovo and HP catalogs. Without an official source it honestly says "Version unknown – please check the link". Every source is off by default, see [PRIVACY.md](PRIVACY.md).
+- 🛠️ **Installation** (Windows Update drivers): "Install …" installs exactly one confirmed driver, with restore point, log and "Undo" in the history. Admin rights only for this step (UAC). **No warranty** – drivers come from third parties, back up important data first.
 - 🌍 English and German.
-- 🛡️ No administrator rights needed.
+- 🛡️ No administrator rights needed – except for a confirmed driver installation.
 
-> **Status:** stage 1 (detect and link) and stage 2 (version comparison) are done. Installation (stage 3) is planned, see [docs/roadmap.md](docs/roadmap.md).
+> **Status:** stage 1 (detect and link), stage 2 (version comparison) and stage 3 part 1 (installing Windows Update drivers) are done. Installing Dell, Lenovo and HP packages is planned, see [docs/roadmap.md](docs/roadmap.md).
 
 ## How links are chosen
 
@@ -61,7 +62,7 @@ src/
   DriverCompass.Scanner.Windows/   WMI scanner (Win32_PnPEntity, Win32_PnPSignedDriver, …)
   DriverCompass.Data/              vendor list: validator, loading (online → cache → embedded), pci.ids
   DriverCompass.VersionProviders/  stage 2: Windows Update, Dell, Lenovo, HP catalogs (HTTPS, signature, checksum)
-  DriverCompass.Installer/         stage 3 placeholder (separate elevated process)
+  DriverCompass.Installer/         stage 3: installer engine (runs only in "DriverCompass.exe --elevated" via UAC)
   DriverCompass.App/               WinUI 3 app (MVVM, CommunityToolkit.Mvvm, Serilog)
 tests/                             xUnit tests
 data/                              vendors.json, JSON schema, example entry, pci.ids
@@ -88,6 +89,8 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/adding-vendors.md](docs/adding-
 | Settings | `%LOCALAPPDATA%\DriverCompass\settings.json` |
 | Vendor list cache | `%LOCALAPPDATA%\DriverCompass\cache\` |
 | Logs (14 days) | `%LOCALAPPDATA%\DriverCompass\logs\` |
+| Version catalogs (cache) | `%LOCALAPPDATA%\DriverCompass\cache\versions\` |
+| Install log, results, log of the elevated process (writable by admins only) | `%ProgramData%\DriverCompass\` |
 
 ## License & privacy
 

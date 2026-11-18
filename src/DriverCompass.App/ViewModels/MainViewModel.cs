@@ -5,6 +5,7 @@ using DriverCompass.App.Services;
 using DriverCompass.Core;
 using DriverCompass.Core.Abstractions;
 using DriverCompass.Core.Evaluation;
+using DriverCompass.Core.Installation;
 using DriverCompass.Core.Models;
 using DriverCompass.Core.Services;
 using Microsoft.Extensions.Logging;
@@ -22,12 +23,16 @@ public sealed partial class MainViewModel : ObservableObject
     private readonly ISettingsService _settings;
     private readonly IReadOnlyDictionary<string, IReportExporter> _exporters;
     private readonly ILogger<MainViewModel> _logger;
+    private readonly IElevatedInstallerClient _installer;
+    private readonly IInstallLog _installLog;
     private List<DeviceItemViewModel> _all = [];
     private AnalysisResult? _result;
 
     public MainViewModel(
         IDeviceAnalysisService analysis,
         IVersionCheckService versions,
+        IElevatedInstallerClient installer,
+        IInstallLog installLog,
         ISettingsService settings,
         IEnumerable<IReportExporter> exporters,
         ILogger<MainViewModel> logger,
@@ -35,6 +40,8 @@ public sealed partial class MainViewModel : ObservableObject
     {
         _analysis = analysis;
         _versions = versions;
+        _installer = installer;
+        _installLog = installLog;
         _settings = settings;
         _exporters = exporters.ToDictionary(e => e.FormatId, StringComparer.OrdinalIgnoreCase);
         _logger = logger;
@@ -88,6 +95,8 @@ public sealed partial class MainViewModel : ObservableObject
     [ObservableProperty] public partial bool IsCheckingVersions { get; set; }
     [ObservableProperty] public partial string VersionProgressText { get; set; } = string.Empty;
     [ObservableProperty] public partial string VersionText { get; set; } = string.Empty;
+    [ObservableProperty] public partial bool IsInstalling { get; set; }
+    [ObservableProperty] public partial string InstallProgressText { get; set; } = string.Empty;
 
     public bool HasInfoAction => !string.IsNullOrEmpty(InfoActionPath);
 
@@ -103,7 +112,7 @@ public sealed partial class MainViewModel : ObservableObject
     [RelayCommand(IncludeCancelCommand = true)]
     private async Task CheckVersionsAsync(CancellationToken cancellationToken)
     {
-        if (_result is null || IsBusy || IsCheckingVersions)
+        if (_result is null || IsBusy || IsCheckingVersions || IsInstalling)
         {
             return;
         }
@@ -194,7 +203,7 @@ public sealed partial class MainViewModel : ObservableObject
     [RelayCommand]
     private async Task ScanAsync()
     {
-        if (IsBusy || IsCheckingVersions)
+        if (IsBusy || IsCheckingVersions || IsInstalling)
         {
             return;
         }
@@ -321,7 +330,134 @@ public sealed partial class MainViewModel : ObservableObject
     private void BuildItems(AnalysisResult result)
     {
         var lang = Localizer.Current.Language;
-        _all = result.Devices.Select(d => new DeviceItemViewModel(d, Localizer.Current, lang)).ToList();
+        _all = result.Devices.Select(d => new DeviceItemViewModel(d, Localizer.Current, lang, InstallAsync)).ToList();
+    }
+
+    // ===================== Stage 3: install ONE driver (Windows Update) =====================
+
+    /// <summary>Confirm → (disclaimer once) → elevated process via UAC → result → rescan. Exactly one driver per click.</summary>
+    public async Task InstallAsync(DeviceItemViewModel item)
+    {
+        var check = item.Assessment.VersionCheck;
+        if (Shell is null || IsBusy || IsCheckingVersions || IsInstalling || check is not { IsInstallable: true })
+        {
+            return;
+        }
+
+        var needsDisclaimer = !_settings.Current.InstallDisclaimerAccepted;
+        if (!await Shell.ConfirmInstallAsync(new InstallConfirmation(item.Name, check.PackageName ?? check.PackageId!, item.LatestVersionText, needsDisclaimer)))
+        {
+            return;
+        }
+
+        if (needsDisclaimer)
+        {
+            await _settings.SaveAsync(_settings.Current with { InstallDisclaimerAccepted = true });
+        }
+
+        var request = new InstallRequest
+        {
+            RequestId = Guid.NewGuid(),
+            Action = InstallAction.Install,
+            DeviceInstanceId = item.InstanceId,
+            UpdateId = check.PackageId,
+            Revision = check.PackageRevision,
+        };
+
+        var result = await RunInstallerAsync(request, Localizer.F("Busy_Installing", item.Name));
+        if (result.Outcome == InstallOutcome.RestorePointFailed)
+        {
+            var reason = result.RestorePoint?.Reason ?? "Failed";
+            var reasonText = Localizer.T("RestoreReason_" + (reason.StartsWith("Failed", StringComparison.Ordinal) ? "Failed" : reason));
+            var last = result.RestorePoint?.LastRestorePoint is { } when
+                ? Localizer.F("Install_LastRestorePoint", when.LocalDateTime.ToString("g", System.Globalization.CultureInfo.CurrentCulture))
+                : string.Empty;
+
+            if (!await Shell.ConfirmAsync(Localizer.T("Install_NoRestorePoint_Title"), Localizer.F("Install_NoRestorePoint_Message", reasonText, last), Localizer.T("Install_ContinueWithout")))
+            {
+                ShowInstallResult(result);
+                return;
+            }
+
+            result = await RunInstallerAsync(request with { RequestId = Guid.NewGuid(), AllowWithoutRestorePoint = true }, Localizer.F("Busy_Installing", item.Name));
+        }
+
+        await FinishInstallAsync(result);
+    }
+
+    [RelayCommand]
+    private async Task ShowHistoryAsync()
+    {
+        if (Shell is null || IsInstalling)
+        {
+            return;
+        }
+
+        var entries = _installLog.ReadAll();
+        var items = entries.OrderByDescending(e => e.Timestamp)
+            .Select(e => new InstallHistoryItem(e, InstallProtocol.CanRollBack(e, entries)))
+            .ToList();
+
+        if (await Shell.ShowInstallHistoryAsync(items) is not { } id || entries.FirstOrDefault(e => e.Id == id) is not { } entry)
+        {
+            return;
+        }
+
+        var packages = string.Join(", ", entry.PublishedInfs.Select(p => p.Name));
+        if (!await Shell.ConfirmAsync(Localizer.T("Rollback_Title"), Localizer.F("Rollback_Message", entry.Title, packages), Localizer.T("Rollback_Confirm")))
+        {
+            return;
+        }
+
+        var request = new InstallRequest { RequestId = Guid.NewGuid(), Action = InstallAction.Rollback, LogEntryId = entry.Id };
+        await FinishInstallAsync(await RunInstallerAsync(request, Localizer.F("Busy_RollingBack", entry.Title)));
+    }
+
+    private async Task<InstallResult> RunInstallerAsync(InstallRequest request, string progressText)
+    {
+        IsInstalling = true;
+        IsInfoOpen = false;
+        InstallProgressText = progressText;
+        try
+        {
+            return await _installer.RunAsync(request);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Installer request {Action} failed", request.Action);
+            return new InstallResult { RequestId = request.RequestId, Outcome = InstallOutcome.Failed, Message = ex.GetType().Name };
+        }
+        finally
+        {
+            IsInstalling = false;
+            InstallProgressText = string.Empty;
+        }
+    }
+
+    private async Task FinishInstallAsync(InstallResult result)
+    {
+        _logger.LogInformation("Installer result: {Outcome} {Message}", result.Outcome, result.Message);
+        if (result.Succeeded)
+        {
+            // The driver changed – show the new state.
+            await ScanAsync();
+        }
+
+        ShowInstallResult(result);
+    }
+
+    private void ShowInstallResult(InstallResult result)
+    {
+        var severity = result.Outcome switch
+        {
+            InstallOutcome.Installed or InstallOutcome.RolledBack => InfoBarSeverity.Success,
+            InstallOutcome.RebootRequired => InfoBarSeverity.Warning,
+            InstallOutcome.Cancelled => InfoBarSeverity.Informational,
+            InstallOutcome.Failed => InfoBarSeverity.Error,
+            _ => InfoBarSeverity.Warning,
+        };
+
+        ShowInfo(Localizer.F($"Install_Outcome_{result.Outcome}", result.Title ?? string.Empty, result.Message ?? string.Empty), severity);
     }
 
     private void Apply(AnalysisResult result)

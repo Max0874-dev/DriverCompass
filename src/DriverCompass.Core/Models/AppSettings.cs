@@ -31,6 +31,9 @@ public sealed record AppSettings
     /// </summary>
     public IReadOnlyList<string> EnabledVersionSources { get; init; } = [];
 
+    /// <summary>Stage 3: the user acknowledged the installation disclaimer (asked once, before the first install).</summary>
+    public bool InstallDisclaimerAccepted { get; init; }
+
     public static AppSettings Default { get; } = new();
 
     // Value equality including the list contents (records compare collections by reference).
@@ -42,6 +45,7 @@ public sealed record AppSettings
         UseSerialNumberInLinks == other.UseSerialNumberInLinks &&
         IncludeSerialNumberInExports == other.IncludeSerialNumberInExports &&
         UpdateCatalogOnline == other.UpdateCatalogOnline &&
+        InstallDisclaimerAccepted == other.InstallDisclaimerAccepted &&
         EnabledVersionSources.SequenceEqual(other.EnabledVersionSources, StringComparer.Ordinal);
 
     public override int GetHashCode() =>

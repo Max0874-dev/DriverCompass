@@ -45,6 +45,11 @@ public class LocalizationTests
         expected.AddRange(typeof(VersionSourceReasons).GetFields().Select(f => $"VersionReason_{f.GetValue(null)}"));
         expected.AddRange(["Col_Latest", "Col_VersionState", "Col_VersionSource", "Version_Package"]);
 
+        // Stage 3: outcome texts, history labels and restore point reasons are built from enum names.
+        expected.AddRange(Enum.GetNames<InstallOutcome>().SelectMany(o => new[] { $"Install_Outcome_{o}", $"InstallOutcomeShort_{o}" }));
+        expected.AddRange(Enum.GetNames<InstallAction>().Select(a => $"History_Action_{a}"));
+        expected.AddRange(["RestoreReason_Disabled", "RestoreReason_FrequencyLimit", "RestoreReason_Failed"]);
+
         var missing = expected.Where(k => !keys.ContainsKey(k)).ToList();
         Assert.True(missing.Count == 0, "Missing keys: " + string.Join(", ", missing));
     }

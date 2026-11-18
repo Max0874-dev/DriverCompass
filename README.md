@@ -8,10 +8,11 @@ DriverCompass ist eine kostenlose Open-Source-App für Windows 10 und 11. Sie er
 - 🚦 **Einfache Ansicht** mit Ampel, verständlichen Namen und einem Button „Treiber holen“.
 - 🔬 **Expertenmodus** mit Hardware-IDs, INF-Datei, Treiberanbieter, Version, Datum, Fehlercode, Suche, Filter, Sortierung und Export (HTML/CSV).
 - 🔄 **Versionsprüfung** (optional): „Versionen prüfen“ vergleicht installierte Treiber mit offiziellen Quellen: Windows Update sowie die Kataloge von Dell, Lenovo und HP. Ohne offizielle Quelle steht ehrlich „Version unbekannt – bitte Link prüfen“. Jede Quelle ist standardmäßig aus, siehe [PRIVACY.md](PRIVACY.md).
+- 🛠️ **Installation** (Windows-Update-Treiber): „Installieren …“ installiert genau einen bestätigten Treiber, mit Wiederherstellungspunkt, Protokoll und „Rückgängig machen“ im Verlauf. Adminrechte nur für diesen Schritt (UAC). **Ohne Gewähr** – Treiber stammen von Drittanbietern, sichere vorher wichtige Daten.
 - 🌍 Deutsch und Englisch.
-- 🛡️ Keine Adminrechte nötig.
+- 🛡️ Keine Adminrechte nötig – außer für eine bestätigte Treiberinstallation.
 
-> **Status:** Stufe 1 (Erkennen und Links) und Stufe 2 (Versionsvergleich) sind fertig. Die Installation (Stufe 3) ist geplant, siehe [docs/roadmap.md](docs/roadmap.md).
+> **Status:** Stufe 1 (Erkennen und Links), Stufe 2 (Versionsvergleich) und Stufe 3 Teil 1 (Installation von Windows-Update-Treibern) sind fertig. Installation von Dell-, Lenovo- und HP-Paketen ist geplant, siehe [docs/roadmap.md](docs/roadmap.md).
 
 ## Wie die Links entstehen
 
@@ -61,7 +62,7 @@ src/
   DriverCompass.Scanner.Windows/   WMI-Scanner (Win32_PnPEntity, Win32_PnPSignedDriver, …)
   DriverCompass.Data/              Herstellerliste: Validator, Laden (Online → Cache → eingebettet), pci.ids
   DriverCompass.VersionProviders/  Stufe 2: Windows Update, Dell-, Lenovo-, HP-Kataloge (HTTPS, Signatur, Prüfsumme)
-  DriverCompass.Installer/         Platzhalter für Stufe 3 (getrennter, erhöhter Prozess)
+  DriverCompass.Installer/         Stufe 3: Installer-Engine (läuft nur in „DriverCompass.exe --elevated“ per UAC)
   DriverCompass.App/               WinUI-3-App (MVVM, CommunityToolkit.Mvvm, Serilog)
 tests/                             xUnit-Tests (Parser, Status, Resolver, Export, Validator, WMI-Mapping, Übersetzungen)
 data/
@@ -92,6 +93,8 @@ Details stehen in [CONTRIBUTING.md](CONTRIBUTING.md) und [docs/adding-vendors.md
 | Einstellungen | `%LOCALAPPDATA%\DriverCompass\settings.json` |
 | Herstellerliste (Cache) | `%LOCALAPPDATA%\DriverCompass\cache\` |
 | Logs (14 Tage) | `%LOCALAPPDATA%\DriverCompass\logs\` |
+| Versionskataloge (Cache) | `%LOCALAPPDATA%\DriverCompass\cache\versions\` |
+| Installationsprotokoll, Ergebnisse, Log des erhöhten Prozesses (nur für Admins schreibbar) | `%ProgramData%\DriverCompass\` |
 
 ## Lizenz und Datenschutz
 

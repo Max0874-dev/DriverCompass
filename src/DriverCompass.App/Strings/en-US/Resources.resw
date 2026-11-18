@@ -247,4 +247,53 @@
   <data name="Col_VersionSource" xml:space="preserve"><value>Version source</value></data>
   <data name="Filter_NewerAvailable" xml:space="preserve"><value>Newer version available</value></data>
   <data name="VersionSourceStatus_Ok_windowsupdate" xml:space="preserve"><value>{0}: checked ({1} driver updates offered)</value></data>
+  <data name="Cmd_History" xml:space="preserve"><value>History</value></data>
+  <data name="Simple_Install" xml:space="preserve"><value>Install …</value></data>
+  <data name="Busy_Installing" xml:space="preserve"><value>Installing the driver for "{0}" … Please confirm the Windows prompt for administrator rights.</value></data>
+  <data name="Busy_RollingBack" xml:space="preserve"><value>Rolling back "{0}" … Please confirm the Windows prompt for administrator rights.</value></data>
+  <data name="Install_Title" xml:space="preserve"><value>Install driver</value></data>
+  <data name="Install_Intro" xml:space="preserve"><value>DriverCompass installs exactly this one driver via Windows Update:</value></data>
+  <data name="Install_Device" xml:space="preserve"><value>Device: {0}</value></data>
+  <data name="Install_Driver" xml:space="preserve"><value>Driver: {0}</value></data>
+  <data name="Install_Version" xml:space="preserve"><value>Version/date: {0}</value></data>
+  <data name="Install_Steps" xml:space="preserve"><value>A restore point is created first. Then Windows asks for administrator rights – for this one step only. The driver comes from Windows Update and is signed by Microsoft. You can undo the installation under "History".</value></data>
+  <data name="Install_Disclaimer" xml:space="preserve"><value>Disclaimer: DriverCompass is provided without warranty. Drivers come from third parties; changing a driver can make a device stop working for a while. Back up important data before installing drivers.</value></data>
+  <data name="Install_DisclaimerAccept" xml:space="preserve"><value>I have read this note and install at my own risk.</value></data>
+  <data name="Install_Confirm" xml:space="preserve"><value>Install</value></data>
+  <data name="Install_Cancel" xml:space="preserve"><value>Cancel</value></data>
+  <data name="Install_NoRestorePoint_Title" xml:space="preserve"><value>No restore point</value></data>
+  <data name="Install_NoRestorePoint_Message" xml:space="preserve"><value>Windows could not create a new restore point: {0}. {1} Without a restore point you can only undo the driver via "History" (pnputil). Install anyway?</value></data>
+  <data name="Install_LastRestorePoint" xml:space="preserve"><value>Last restore point: {0}.</value></data>
+  <data name="Install_ContinueWithout" xml:space="preserve"><value>Install anyway</value></data>
+  <data name="RestoreReason_Disabled" xml:space="preserve"><value>System Restore is turned off</value></data>
+  <data name="RestoreReason_FrequencyLimit" xml:space="preserve"><value>Windows creates at most one restore point per 24 hours</value></data>
+  <data name="RestoreReason_Failed" xml:space="preserve"><value>creating it failed</value></data>
+  <data name="Install_Outcome_Installed" xml:space="preserve"><value>"{0}" was installed.</value></data>
+  <data name="Install_Outcome_RebootRequired" xml:space="preserve"><value>"{0}": done. Please restart Windows to finish.</value></data>
+  <data name="Install_Outcome_Cancelled" xml:space="preserve"><value>Cancelled. Nothing was changed.</value></data>
+  <data name="Install_Outcome_RestorePointFailed" xml:space="preserve"><value>Cancelled because no restore point could be created. Nothing was changed.</value></data>
+  <data name="Install_Outcome_NotOffered" xml:space="preserve"><value>Windows Update no longer offers this driver. Nothing was changed. Please check the versions again.</value></data>
+  <data name="Install_Outcome_DeviceMismatch" xml:space="preserve"><value>The update does not (or no longer) match this device. Nothing was changed.</value></data>
+  <data name="Install_Outcome_Failed" xml:space="preserve"><value>The operation failed ({1}). See the history and the log for details.</value></data>
+  <data name="Install_Outcome_RolledBack" xml:space="preserve"><value>"{0}" was rolled back. Windows uses the previous driver again.</value></data>
+  <data name="InstallOutcomeShort_Installed" xml:space="preserve"><value>installed</value></data>
+  <data name="InstallOutcomeShort_RebootRequired" xml:space="preserve"><value>restart needed</value></data>
+  <data name="InstallOutcomeShort_Cancelled" xml:space="preserve"><value>cancelled</value></data>
+  <data name="InstallOutcomeShort_RestorePointFailed" xml:space="preserve"><value>no restore point</value></data>
+  <data name="InstallOutcomeShort_NotOffered" xml:space="preserve"><value>no longer offered</value></data>
+  <data name="InstallOutcomeShort_DeviceMismatch" xml:space="preserve"><value>does not match the device</value></data>
+  <data name="InstallOutcomeShort_Failed" xml:space="preserve"><value>failed</value></data>
+  <data name="InstallOutcomeShort_RolledBack" xml:space="preserve"><value>rolled back</value></data>
+  <data name="History_Title" xml:space="preserve"><value>Install history</value></data>
+  <data name="History_Empty" xml:space="preserve"><value>No installations yet.</value></data>
+  <data name="History_Rollback" xml:space="preserve"><value>Undo</value></data>
+  <data name="History_Close" xml:space="preserve"><value>Close</value></data>
+  <data name="History_Action_Install" xml:space="preserve"><value>Installation</value></data>
+  <data name="History_Action_Rollback" xml:space="preserve"><value>Rollback</value></data>
+  <data name="History_Packages" xml:space="preserve"><value>Packages: {0}</value></data>
+  <data name="History_Versions" xml:space="preserve"><value>Before: {0} · After: {1}</value></data>
+  <data name="History_NoRestorePoint" xml:space="preserve"><value>without restore point</value></data>
+  <data name="Rollback_Title" xml:space="preserve"><value>Undo this installation?</value></data>
+  <data name="Rollback_Message" xml:space="preserve"><value>DriverCompass removes the driver packages installed with "{0}" ({1}) using pnputil. Windows then uses the previous driver again. Windows will ask for administrator rights.</value></data>
+  <data name="Rollback_Confirm" xml:space="preserve"><value>Undo</value></data>
 </root>

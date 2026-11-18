@@ -12,9 +12,12 @@ namespace DriverCompass.App.ViewModels;
 /// <summary>One device row/card. All texts are computed once when the scan result arrives.</summary>
 public sealed partial class DeviceItemViewModel
 {
-    public DeviceItemViewModel(DeviceAssessment assessment, ITextProvider t, string language)
+    private readonly Func<DeviceItemViewModel, Task>? _install;
+
+    public DeviceItemViewModel(DeviceAssessment assessment, ITextProvider t, string language, Func<DeviceItemViewModel, Task>? install = null)
     {
         Assessment = assessment;
+        _install = install;
         var device = assessment.Device;
         var driver = device.Driver;
 
@@ -113,12 +116,15 @@ public sealed partial class DeviceItemViewModel
     public bool HasSecondaryLinks => SecondaryLinks.Count > 0;
 
     /// <summary>The prominent "Get driver" button is shown for problem devices only.</summary>
-    public bool ShowGetDriver => (NeedsAttention && HasLinks) || ShowVersionAction;
+    /// <summary>Stage 3: DriverCompass can install this newer Windows Update driver itself (one click = one driver, with confirmation).</summary>
+    public bool CanInstall => _install is not null && Assessment.VersionCheck?.IsInstallable == true;
+
+    public bool ShowGetDriver => ((NeedsAttention && HasLinks) || ShowVersionAction) && !CanInstall;
 
     public bool ShowNoLinks => NeedsAttention && !HasLinks && !ShowVersionAction;
 
     /// <summary>"More sources" next to the primary button, "Driver sources" when it stands alone.</summary>
-    public string SourcesLabel => Localizer.T(ShowGetDriver ? "Simple_MoreSources" : "Simple_Sources");
+    public string SourcesLabel => Localizer.T(ShowGetDriver || CanInstall ? "Simple_MoreSources" : "Simple_Sources");
 
     public Brush StatusBrush => StatusVisuals.Brush(Status);
     public string StatusGlyph => StatusVisuals.Glyph(Status);
@@ -137,6 +143,9 @@ public sealed partial class DeviceItemViewModel
 
         return PrimaryLink is null ? Task.CompletedTask : Launcher.OpenAsync(PrimaryLink.Uri);
     }
+
+    [RelayCommand]
+    private Task InstallAsync() => CanInstall ? _install!(this) : Task.CompletedTask;
 
     [RelayCommand]
     private Task OpenVersionSourceAsync() =>

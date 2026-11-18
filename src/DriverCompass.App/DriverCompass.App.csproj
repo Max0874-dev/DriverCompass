@@ -18,6 +18,9 @@
     <WindowsPackageType>None</WindowsPackageType>
     <EnableMsixTooling>true</EnableMsixTooling>
     <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
+
+    <!-- Own Main in Program.cs: the "elevated" switch runs the stage-3 installer engine without any UI. -->
+    <DefineConstants>$(DefineConstants);DISABLE_XAML_GENERATED_MAIN</DefineConstants>
   </PropertyGroup>
 
   <!-- WinUI needs a concrete architecture; default to x64 when built as AnyCPU. -->
@@ -34,6 +37,7 @@
     <ProjectReference Include="..\DriverCompass.Data\DriverCompass.Data.csproj" />
     <ProjectReference Include="..\DriverCompass.Scanner.Windows\DriverCompass.Scanner.Windows.csproj" />
     <ProjectReference Include="..\DriverCompass.VersionProviders\DriverCompass.VersionProviders.csproj" />
+    <ProjectReference Include="..\DriverCompass.Installer\DriverCompass.Installer.csproj" />
   </ItemGroup>
 
   <ItemGroup>

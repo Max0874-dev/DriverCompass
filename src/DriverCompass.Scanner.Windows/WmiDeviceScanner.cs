@@ -24,6 +24,30 @@ public sealed class WmiDeviceScanner(IWmiQuery wmi, ILogger<WmiDeviceScanner>? l
 
     private readonly ILogger _logger = logger ?? NullLogger<WmiDeviceScanner>.Instance;
 
+    /// <summary>
+    /// Reads ONE device fresh from Windows (used by the elevated installer, which must not trust device data from the app).
+    /// Returns <c>null</c> if the device does not exist.
+    /// </summary>
+    public DeviceInfo? FindDevice(string instanceId)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(instanceId);
+        if (instanceId.Contains('\'', StringComparison.Ordinal) || instanceId.Contains('"', StringComparison.Ordinal))
+        {
+            return null;
+        }
+
+        var escaped = instanceId.Replace(@"\", @"\\", StringComparison.Ordinal);
+        var entities = wmi.Query($"{EntityQuery} WHERE DeviceID = '{escaped}'");
+        if (entities.Count == 0)
+        {
+            return null;
+        }
+
+        var drivers = SafeQuery($"{DriverQuery} WHERE DeviceID = '{escaped}'");
+        return WmiMapper.MapDevices(entities, drivers)
+            .FirstOrDefault(d => string.Equals(d.InstanceId, instanceId, StringComparison.OrdinalIgnoreCase));
+    }
+
     public WmiDeviceScanner()
         : this(new WmiQueryRunner())
     {

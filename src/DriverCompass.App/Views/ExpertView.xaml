@@ -159,6 +159,9 @@
               <TextBlock Text="{x:Bind ViewModel.SelectedItem.LatestVersionText, Mode=OneWay}" IsTextSelectionEnabled="True" />
               <TextBlock Text="{x:Bind ViewModel.SelectedItem.VersionPackageText, Mode=OneWay}" TextWrapping="Wrap" Style="{StaticResource CaptionTextBlockStyle}"
                          Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+              <Button Style="{StaticResource AccentButtonStyle}" Margin="0,4,0,0" Content="{x:Bind svc:Localizer.T('Simple_Install')}"
+                      Command="{x:Bind ViewModel.SelectedItem.InstallCommand, Mode=OneWay}"
+                      Visibility="{x:Bind svc:StatusVisuals.VisibleIf(ViewModel.SelectedItem.CanInstall), Mode=OneWay}" />
               <HyperlinkButton Content="{x:Bind ViewModel.SelectedItem.VersionActionText, Mode=OneWay}" Padding="0,4"
                                Command="{x:Bind ViewModel.SelectedItem.OpenVersionSourceCommand, Mode=OneWay}"
                                Visibility="{x:Bind svc:StatusVisuals.VisibleIf(ViewModel.SelectedItem.ShowVersionAction), Mode=OneWay}" />

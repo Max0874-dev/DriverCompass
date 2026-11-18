@@ -247,4 +247,53 @@
   <data name="Col_VersionSource" xml:space="preserve"><value>Versionsquelle</value></data>
   <data name="Filter_NewerAvailable" xml:space="preserve"><value>Neuere Version verfügbar</value></data>
   <data name="VersionSourceStatus_Ok_windowsupdate" xml:space="preserve"><value>{0}: geprüft ({1} Treiber-Updates angeboten)</value></data>
+  <data name="Cmd_History" xml:space="preserve"><value>Verlauf</value></data>
+  <data name="Simple_Install" xml:space="preserve"><value>Installieren …</value></data>
+  <data name="Busy_Installing" xml:space="preserve"><value>Installiere Treiber für „{0}“ … Bitte bestätigen Sie die Windows-Abfrage nach Administratorrechten.</value></data>
+  <data name="Busy_RollingBack" xml:space="preserve"><value>Nehme „{0}“ zurück … Bitte bestätigen Sie die Windows-Abfrage nach Administratorrechten.</value></data>
+  <data name="Install_Title" xml:space="preserve"><value>Treiber installieren</value></data>
+  <data name="Install_Intro" xml:space="preserve"><value>DriverCompass installiert genau diesen einen Treiber über Windows Update:</value></data>
+  <data name="Install_Device" xml:space="preserve"><value>Gerät: {0}</value></data>
+  <data name="Install_Driver" xml:space="preserve"><value>Treiber: {0}</value></data>
+  <data name="Install_Version" xml:space="preserve"><value>Version/Datum: {0}</value></data>
+  <data name="Install_Steps" xml:space="preserve"><value>Vorher wird ein Wiederherstellungspunkt angelegt. Danach fragt Windows nach Administratorrechten – nur für diesen einen Schritt. Der Treiber kommt von Windows Update und ist von Microsoft signiert. Rückgängig machen können Sie die Installation über „Verlauf“.</value></data>
+  <data name="Install_Disclaimer" xml:space="preserve"><value>Haftungsausschluss: DriverCompass wird ohne Gewähr bereitgestellt. Treiber stammen von Drittanbietern; ein Treiberwechsel kann ein Gerät vorübergehend außer Betrieb setzen. Sichern Sie wichtige Daten, bevor Sie Treiber installieren.</value></data>
+  <data name="Install_DisclaimerAccept" xml:space="preserve"><value>Ich habe den Hinweis gelesen und installiere auf eigene Verantwortung.</value></data>
+  <data name="Install_Confirm" xml:space="preserve"><value>Installieren</value></data>
+  <data name="Install_Cancel" xml:space="preserve"><value>Abbrechen</value></data>
+  <data name="Install_NoRestorePoint_Title" xml:space="preserve"><value>Kein Wiederherstellungspunkt</value></data>
+  <data name="Install_NoRestorePoint_Message" xml:space="preserve"><value>Windows konnte keinen neuen Wiederherstellungspunkt anlegen: {0}. {1} Ohne Wiederherstellungspunkt können Sie den Treiber nur über „Verlauf“ (pnputil) zurücknehmen. Trotzdem installieren?</value></data>
+  <data name="Install_LastRestorePoint" xml:space="preserve"><value>Letzter Wiederherstellungspunkt: {0}.</value></data>
+  <data name="Install_ContinueWithout" xml:space="preserve"><value>Trotzdem installieren</value></data>
+  <data name="RestoreReason_Disabled" xml:space="preserve"><value>die Systemwiederherstellung ist ausgeschaltet</value></data>
+  <data name="RestoreReason_FrequencyLimit" xml:space="preserve"><value>Windows legt höchstens einen Wiederherstellungspunkt pro 24 Stunden an</value></data>
+  <data name="RestoreReason_Failed" xml:space="preserve"><value>Fehler beim Anlegen</value></data>
+  <data name="Install_Outcome_Installed" xml:space="preserve"><value>„{0}“ wurde installiert.</value></data>
+  <data name="Install_Outcome_RebootRequired" xml:space="preserve"><value>„{0}“: fertig. Bitte starten Sie Windows neu, um den Vorgang abzuschließen.</value></data>
+  <data name="Install_Outcome_Cancelled" xml:space="preserve"><value>Abgebrochen. Es wurde nichts geändert.</value></data>
+  <data name="Install_Outcome_RestorePointFailed" xml:space="preserve"><value>Abgebrochen, weil kein Wiederherstellungspunkt angelegt werden konnte. Es wurde nichts geändert.</value></data>
+  <data name="Install_Outcome_NotOffered" xml:space="preserve"><value>Windows Update bietet diesen Treiber nicht mehr an. Es wurde nichts geändert. Bitte prüfen Sie die Versionen erneut.</value></data>
+  <data name="Install_Outcome_DeviceMismatch" xml:space="preserve"><value>Das Update passt nicht (mehr) zu diesem Gerät. Es wurde nichts geändert.</value></data>
+  <data name="Install_Outcome_Failed" xml:space="preserve"><value>Der Vorgang ist fehlgeschlagen ({1}). Details stehen im Verlauf und im Log.</value></data>
+  <data name="Install_Outcome_RolledBack" xml:space="preserve"><value>„{0}“ wurde zurückgenommen. Windows verwendet wieder den vorherigen Treiber.</value></data>
+  <data name="InstallOutcomeShort_Installed" xml:space="preserve"><value>installiert</value></data>
+  <data name="InstallOutcomeShort_RebootRequired" xml:space="preserve"><value>Neustart nötig</value></data>
+  <data name="InstallOutcomeShort_Cancelled" xml:space="preserve"><value>abgebrochen</value></data>
+  <data name="InstallOutcomeShort_RestorePointFailed" xml:space="preserve"><value>kein Wiederherstellungspunkt</value></data>
+  <data name="InstallOutcomeShort_NotOffered" xml:space="preserve"><value>nicht mehr angeboten</value></data>
+  <data name="InstallOutcomeShort_DeviceMismatch" xml:space="preserve"><value>passt nicht zum Gerät</value></data>
+  <data name="InstallOutcomeShort_Failed" xml:space="preserve"><value>fehlgeschlagen</value></data>
+  <data name="InstallOutcomeShort_RolledBack" xml:space="preserve"><value>zurückgenommen</value></data>
+  <data name="History_Title" xml:space="preserve"><value>Installationsverlauf</value></data>
+  <data name="History_Empty" xml:space="preserve"><value>Noch keine Installationen.</value></data>
+  <data name="History_Rollback" xml:space="preserve"><value>Rückgängig machen</value></data>
+  <data name="History_Close" xml:space="preserve"><value>Schließen</value></data>
+  <data name="History_Action_Install" xml:space="preserve"><value>Installation</value></data>
+  <data name="History_Action_Rollback" xml:space="preserve"><value>Rücknahme</value></data>
+  <data name="History_Packages" xml:space="preserve"><value>Pakete: {0}</value></data>
+  <data name="History_Versions" xml:space="preserve"><value>Vorher: {0} · Nachher: {1}</value></data>
+  <data name="History_NoRestorePoint" xml:space="preserve"><value>ohne Wiederherstellungspunkt</value></data>
+  <data name="Rollback_Title" xml:space="preserve"><value>Installation rückgängig machen?</value></data>
+  <data name="Rollback_Message" xml:space="preserve"><value>DriverCompass entfernt die mit „{0}“ installierten Treiberpakete ({1}) per pnputil. Windows verwendet danach wieder den vorherigen Treiber. Dafür fragt Windows nach Administratorrechten.</value></data>
+  <data name="Rollback_Confirm" xml:space="preserve"><value>Rückgängig machen</value></data>
 </root>
