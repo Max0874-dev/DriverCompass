@@ -1,7 +1,7 @@
 {
   "$schema": "./vendors.schema.json",
   "schemaVersion": 1,
-  "dataVersion": "2026.11.18.1",
+  "dataVersion": "2026.11.18.2",
   "chipVendors": [
     {
       "id": "nvidia",
@@ -227,7 +227,7 @@
     {
       "id": "dell",
       "name": "Dell",
-      "match": ["^Dell"],
+      "match": ["^Dell", "^Alienware"],
       "allowedDomains": ["dell.com"],
       "supportUrls": [
         { "template": "https://www.dell.com/support/home/product-support/servicetag/{serial}/drivers", "requires": ["serial"] },
@@ -268,7 +268,7 @@
     {
       "id": "gigabyte",
       "name": "GIGABYTE",
-      "match": ["^Gigabyte"],
+      "match": ["^Gigabyte", "^GIGA-BYTE"],
       "allowedDomains": ["gigabyte.com"],
       "supportUrls": [{ "template": "https://www.gigabyte.com/Support", "requires": [] }]
     },
@@ -292,6 +292,62 @@
       "match": ["^Microsoft Corporation$"],
       "allowedDomains": ["microsoft.com"],
       "supportUrls": [{ "template": "https://support.microsoft.com/en-us/surface/drivers-firmware/download-drivers-and-firmware-for-surface", "requires": [] }]
+    },
+    {
+      "id": "fujitsu",
+      "name": "Fujitsu",
+      "match": ["^FUJITSU", "^Fsas Technologies"],
+      "allowedDomains": ["fujitsu.com"],
+      "supportUrls": [{ "template": "https://support.ts.fujitsu.com/downloads/product-downloads?lng=en", "requires": [] }]
+    },
+    {
+      "id": "dynabook",
+      "name": "Dynabook (Toshiba)",
+      "match": ["^Dynabook", "^TOSHIBA"],
+      "allowedDomains": ["dynabook.com"],
+      "supportUrls": [{ "template": "https://support.dynabook.com/drivers", "requires": [] }]
+    },
+    {
+      "id": "medion",
+      "name": "MEDION",
+      "match": ["^MEDION"],
+      "allowedDomains": ["medion.com"],
+      "supportUrls": [{ "template": "https://service.medion.com/", "requires": [] }]
+    },
+    {
+      "id": "samsung",
+      "name": "Samsung",
+      "match": ["^SAMSUNG ELECTRONICS"],
+      "allowedDomains": ["samsung.com"],
+      "supportUrls": [{ "template": "https://www.samsung.com/support/", "requires": [] }]
+    },
+    {
+      "id": "razer",
+      "name": "Razer",
+      "match": ["^Razer"],
+      "allowedDomains": ["razer.com"],
+      "supportUrls": [{ "template": "https://mysupport.razer.com/", "requires": [] }]
+    },
+    {
+      "id": "huawei",
+      "name": "Huawei",
+      "match": ["^HUAWEI"],
+      "allowedDomains": ["huawei.com"],
+      "supportUrls": [{ "template": "https://consumer.huawei.com/en/support/", "requires": [] }]
+    },
+    {
+      "id": "framework",
+      "name": "Framework",
+      "match": ["^Framework"],
+      "allowedDomains": ["frame.work"],
+      "supportUrls": [{ "template": "https://knowledgebase.frame.work/", "requires": [] }]
+    },
+    {
+      "id": "panasonic",
+      "name": "Panasonic",
+      "match": ["^Panasonic"],
+      "allowedDomains": ["panasonic.com"],
+      "supportUrls": [{ "template": "https://dl-pc-support.connect.panasonic.com/itn/drivers/", "requires": [] }]
     }
   ],
   "genericDrivers": [

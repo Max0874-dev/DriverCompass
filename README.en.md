@@ -18,7 +18,7 @@ DriverCompass is a free, open-source app for Windows 10 and 11. It detects every
 
 For every device DriverCompass suggests sources in this order:
 
-1. **PC or mainboard manufacturer** (Dell, HP, Lenovo, ASUS, MSI, GIGABYTE, ASRock, Acer, Surface), using the serial number or model where possible. Self-built PCs use the mainboard vendor.
+1. **PC or mainboard manufacturer** (Dell/Alienware, HP, Lenovo, ASUS, MSI, GIGABYTE, ASRock, Acer, Surface, Fujitsu, Dynabook/Toshiba, MEDION, Samsung, Razer, Huawei, Framework, Panasonic), using the serial number or model where possible. Self-built PCs use the mainboard vendor.
 2. **Chip vendor** (NVIDIA, AMD, Intel, Realtek, Logitech …), derived from the hardware ID (`PCI\VEN_10DE…` → NVIDIA).
 3. **Microsoft Update Catalog** search for the hardware ID.
 

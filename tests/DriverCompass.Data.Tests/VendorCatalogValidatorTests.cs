@@ -40,6 +40,26 @@ public class VendorCatalogValidatorTests
         Assert.True(result.Catalog.ChipVendors.Count >= 20);
     }
 
+    [Theory]
+    [InlineData("Dell Inc.", "dell")]
+    [InlineData("Alienware", "dell")]
+    [InlineData("GIGA-BYTE TECHNOLOGY CO., LTD.", "gigabyte")]
+    [InlineData("FUJITSU CLIENT COMPUTING LIMITED", "fujitsu")]
+    [InlineData("TOSHIBA", "dynabook")]
+    [InlineData("Dynabook Inc.", "dynabook")]
+    [InlineData("MEDION", "medion")]
+    [InlineData("SAMSUNG ELECTRONICS CO., LTD.", "samsung")]
+    [InlineData("Razer", "razer")]
+    [InlineData("HUAWEI", "huawei")]
+    [InlineData("Framework", "framework")]
+    [InlineData("Panasonic Connect Co., Ltd.", "panasonic")]
+    [InlineData("Micro-Star International Co., Ltd.", "msi")]
+    public void Repository_catalog_recognises_pc_manufacturers(string smbiosManufacturer, string expectedOem)
+    {
+        var catalog = _validator.Validate(RepoFile("vendors.json")).Catalog!;
+        Assert.Equal(expectedOem, catalog.FindOem(new SystemInfo { Manufacturer = smbiosManufacturer })?.Vendor.Id);
+    }
+
     [Fact]
     public void Embedded_catalog_equals_repository_file()
     {
