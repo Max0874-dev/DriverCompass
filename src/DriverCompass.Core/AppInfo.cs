@@ -26,7 +26,7 @@ public static class AppInfo
     /// <summary>URL of the online vendor catalog (raw GitHub file).</summary>
     public static string CatalogUrl => Get("DriverCompass.CatalogUrl", string.Empty);
 
-    /// <summary>True while the repository URL still contains the OWNER placeholder.</summary>
+    /// <summary>False if no catalog URL is set or it still contains an OWNER placeholder.</summary>
     public static bool IsRepositoryConfigured =>
         !string.IsNullOrWhiteSpace(CatalogUrl) && !CatalogUrl.Contains("/OWNER/", StringComparison.Ordinal);
 

@@ -66,7 +66,7 @@ data/                              vendors.json, JSON schema, example entry, pci
 docs/                              architecture, roadmap, release checklist, adding vendors
 ```
 
-Change the app's **display name** in exactly one place: `<DriverCompassDisplayName>` in [Directory.Build.props](Directory.Build.props). The URL of the online vendor list is defined there too (replace `OWNER` with the GitHub account).
+Change the app's **display name** in exactly one place: `<DriverCompassDisplayName>` in [Directory.Build.props](Directory.Build.props). The repository URL and the URL of the online vendor list are defined there too (forks: point them to your own GitHub account).
 
 ## Adding vendors
 

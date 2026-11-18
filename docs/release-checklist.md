@@ -2,7 +2,9 @@
 
 ## Before going public
 
-- [ ] **GitHub repository created** and `OWNER` replaced in `Directory.Build.props` and `.github/ISSUE_TEMPLATE/config.yml`. Without this the app only uses the built-in vendor list.
+- [x] Repository URL set to `Max0874-dev/DriverCompass` in `Directory.Build.props` and `.github/ISSUE_TEMPLATE/config.yml`.
+- [ ] **GitHub repository created and `main` pushed.** Until `data/vendors.json` is reachable there, the app uses its cached or built-in vendor list.
+- [ ] Enable "Private vulnerability reporting" (Settings → Security) so the security link in the issue templates works.
 - [ ] **Code-signing certificate.** Unsigned EXEs trigger SmartScreen warnings. Options:
   - [SignPath Foundation](https://signpath.org/), free for OSS
   - Azure Trusted Signing, low monthly cost

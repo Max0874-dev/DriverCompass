@@ -70,7 +70,7 @@ data/
 docs/                              Architektur, Roadmap, Release-Checkliste, Hersteller eintragen
 ```
 
-Den **Anzeigenamen** der App änderst du an genau einer Stelle: `<DriverCompassDisplayName>` in [Directory.Build.props](Directory.Build.props). Dort steht auch die URL der Online-Herstellerliste; `OWNER` wird durch den GitHub-Account ersetzt, sobald das Repo existiert.
+Den **Anzeigenamen** der App änderst du an genau einer Stelle: `<DriverCompassDisplayName>` in [Directory.Build.props](Directory.Build.props). Dort stehen auch die Repo-URL und die URL der Online-Herstellerliste (für Forks: auf den eigenen GitHub-Account anpassen).
 
 ## Neue Hersteller eintragen
 
