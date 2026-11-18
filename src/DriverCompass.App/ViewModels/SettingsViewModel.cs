@@ -26,6 +26,7 @@ public sealed partial class SettingsViewModel : ObservableObject
         UseSerialNumberInLinks = s.UseSerialNumberInLinks;
         IncludeSerialNumberInExports = s.IncludeSerialNumberInExports;
         UpdateCatalogOnline = s.UpdateCatalogOnline;
+        CheckForAppUpdates = s.CheckForAppUpdates;
         AboutText = Localizer.F("Settings_AboutText", AppInfo.DisplayName, AppInfo.Version, catalogVersion);
     }
 
@@ -46,6 +47,7 @@ public sealed partial class SettingsViewModel : ObservableObject
     [ObservableProperty] public partial bool UseSerialNumberInLinks { get; set; }
     [ObservableProperty] public partial bool IncludeSerialNumberInExports { get; set; }
     [ObservableProperty] public partial bool UpdateCatalogOnline { get; set; }
+    [ObservableProperty] public partial bool CheckForAppUpdates { get; set; }
 
     public int StartViewIndex
     {
@@ -61,6 +63,7 @@ public sealed partial class SettingsViewModel : ObservableObject
         UseSerialNumberInLinks = UseSerialNumberInLinks,
         IncludeSerialNumberInExports = IncludeSerialNumberInExports,
         UpdateCatalogOnline = UpdateCatalogOnline,
+        CheckForAppUpdates = CheckForAppUpdates,
         EnabledVersionSources = [.. VersionSources.Where(v => v.IsEnabled).Select(v => v.Id)],
     });
 

@@ -47,9 +47,21 @@
       </CommandBar>
     </Grid>
 
-    <InfoBar Grid.Row="1" Margin="24,0,24,4" IsClosable="False" Severity="Informational"
-             IsOpen="{x:Bind ViewModel.IsMockMode}"
-             Message="{x:Bind svc:Localizer.T('Mock_Banner')}" />
+    <StackPanel Grid.Row="1">
+      <InfoBar Margin="24,0,24,4" IsClosable="False" Severity="Informational"
+               IsOpen="{x:Bind ViewModel.IsMockMode}"
+               Message="{x:Bind svc:Localizer.T('Mock_Banner')}" />
+
+      <!-- Optional update hint (off by default): only a link to the release page, nothing is downloaded -->
+      <InfoBar Margin="24,0,24,4" Severity="Informational"
+               Title="{x:Bind svc:Localizer.T('Update_Title')}"
+               IsOpen="{x:Bind ViewModel.IsUpdateAvailable, Mode=TwoWay}"
+               Message="{x:Bind ViewModel.UpdateMessage, Mode=OneWay}">
+        <InfoBar.ActionButton>
+          <Button Content="{x:Bind svc:Localizer.T('Update_Open')}" Command="{x:Bind ViewModel.OpenUpdatePageCommand}" />
+        </InfoBar.ActionButton>
+      </InfoBar>
+    </StackPanel>
 
     <StackPanel Grid.Row="2" Margin="24,0,24,4" Spacing="4" Visibility="{x:Bind svc:StatusVisuals.VisibleIf(ViewModel.IsCheckingVersions), Mode=OneWay}">
       <TextBlock Text="{x:Bind ViewModel.VersionProgressText, Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}" />

@@ -1,5 +1,10 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+- Optional update hint (off by default): at startup DriverCompass asks the public GitHub API for the latest release and, if it is newer, shows a link to the release page. Only the version number is read from the answer; the link is built from the app's own repository address. Nothing is downloaded or installed automatically, no device data is sent.
+
 ## [0.1.1] – 2026-11-18
 
 Small fix release. **Preview:** the EXE is still not code-signed, so Windows SmartScreen will warn ("Windows protected your PC" → *More info* → *Run anyway*). Check the SHA-256 against `SHA256SUMS-*.txt` before running it.

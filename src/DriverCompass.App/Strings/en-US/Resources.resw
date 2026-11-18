@@ -201,6 +201,11 @@
   <data name="Settings_SerialInExports" xml:space="preserve"><value>Include the serial number in reports</value></data>
   <data name="Settings_UpdateCatalog" xml:space="preserve"><value>Update the vendor list online at startup</value></data>
   <data name="Settings_UpdateCatalog_Help" xml:space="preserve"><value>Downloads a public file from GitHub. No device data is sent.</value></data>
+  <data name="Settings_CheckAppUpdates" xml:space="preserve"><value>Check for a new DriverCompass version at startup</value></data>
+  <data name="Settings_CheckAppUpdates_Help" xml:space="preserve"><value>Asks GitHub (api.github.com) for the latest published version and, if there is one, shows a link to the download page. No device data is sent and nothing is downloaded or installed automatically.</value></data>
+  <data name="Update_Title" xml:space="preserve"><value>New version available</value></data>
+  <data name="Update_Available" xml:space="preserve"><value>{0} {1} has been released (installed: {2}).</value></data>
+  <data name="Update_Open" xml:space="preserve"><value>Go to download page</value></data>
   <data name="Settings_OpenLogs" xml:space="preserve"><value>Open log folder</value></data>
   <data name="Settings_About" xml:space="preserve"><value>About</value></data>
   <data name="Settings_AboutText" xml:space="preserve"><value>{0} {1} · MIT license · vendor list {2}</value></data>

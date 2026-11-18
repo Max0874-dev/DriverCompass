@@ -159,6 +159,8 @@ public sealed partial class MainWindow : Window, IShellService
         }
 
         _started = true;
+        var updateCheck = ViewModel.CheckForAppUpdateAsync();
         await ViewModel.ScanCommand.ExecuteAsync(null);
+        await updateCheck;
     }
 }

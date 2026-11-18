@@ -25,6 +25,9 @@ public sealed partial class MainViewModel : ObservableObject
     private readonly ILogger<MainViewModel> _logger;
     private readonly IElevatedInstallerClient _installer;
     private readonly IInstallLog _installLog;
+    private readonly IAppUpdateChecker _updates;
+    private bool _updateChecked;
+    private Uri? _updatePage;
     private List<DeviceItemViewModel> _all = [];
     private AnalysisResult? _result;
 
@@ -33,6 +36,7 @@ public sealed partial class MainViewModel : ObservableObject
         IVersionCheckService versions,
         IElevatedInstallerClient installer,
         IInstallLog installLog,
+        IAppUpdateChecker updates,
         ISettingsService settings,
         IEnumerable<IReportExporter> exporters,
         ILogger<MainViewModel> logger,
@@ -42,6 +46,7 @@ public sealed partial class MainViewModel : ObservableObject
         _versions = versions;
         _installer = installer;
         _installLog = installLog;
+        _updates = updates;
         _settings = settings;
         _exporters = exporters.ToDictionary(e => e.FormatId, StringComparer.OrdinalIgnoreCase);
         _logger = logger;
@@ -97,6 +102,8 @@ public sealed partial class MainViewModel : ObservableObject
     [ObservableProperty] public partial string VersionText { get; set; } = string.Empty;
     [ObservableProperty] public partial bool IsInstalling { get; set; }
     [ObservableProperty] public partial string InstallProgressText { get; set; } = string.Empty;
+    [ObservableProperty] public partial bool IsUpdateAvailable { get; set; }
+    [ObservableProperty] public partial string UpdateMessage { get; set; } = string.Empty;
 
     public bool HasInfoAction => !string.IsNullOrEmpty(InfoActionPath);
 
@@ -285,6 +292,45 @@ public sealed partial class MainViewModel : ObservableObject
         }
     }
 
+    /// <summary>
+    /// Optional, off by default: asks GitHub once per session whether a newer release exists and only shows a link.
+    /// Called after startup and when the user switches the check on.
+    /// </summary>
+    public async Task CheckForAppUpdateAsync()
+    {
+        if (_updateChecked || !_settings.Current.CheckForAppUpdates)
+        {
+            return;
+        }
+
+        _updateChecked = true;
+        try
+        {
+            var update = await _updates.CheckAsync(AppInfo.Version);
+            if (update is null || !_settings.Current.CheckForAppUpdates)
+            {
+                return;
+            }
+
+            _updatePage = update.ReleasePage;
+            UpdateMessage = Localizer.F("Update_Available", AppInfo.DisplayName, update.Version, AppInfo.Version);
+            IsUpdateAvailable = true;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Update check failed");
+        }
+    }
+
+    [RelayCommand]
+    private async Task OpenUpdatePageAsync()
+    {
+        if (_updatePage is not null)
+        {
+            await Launcher.OpenAsync(_updatePage);
+        }
+    }
+
     [RelayCommand]
     private void OpenInfoAction()
     {
@@ -310,6 +356,22 @@ public sealed partial class MainViewModel : ObservableObject
 
         var after = _settings.Current;
         ShowSystemDevices = after.ShowSystemDevices;
+
+        if (!after.CheckForAppUpdates)
+        {
+            IsUpdateAvailable = false;
+        }
+        else if (!before.CheckForAppUpdates)
+        {
+            if (_updatePage is not null)
+            {
+                IsUpdateAvailable = true;
+            }
+            else
+            {
+                await CheckForAppUpdateAsync();
+            }
+        }
 
         if (before.UpdateCatalogOnline != after.UpdateCatalogOnline && _analysis is DeviceAnalysisService service)
         {

@@ -25,6 +25,9 @@ public sealed record AppSettings
     /// <summary>Load the newest vendor list from GitHub at startup.</summary>
     public bool UpdateCatalogOnline { get; init; } = true;
 
+    /// <summary>Ask GitHub at startup whether a newer DriverCompass release exists (off by default; only shows a link).</summary>
+    public bool CheckForAppUpdates { get; init; }
+
     /// <summary>
     /// Version sources the user switched on (ids from <see cref="VersionSourceIds"/>).
     /// Empty by default: every source sends model or device data to a third party, so each one is opt-in.
@@ -45,9 +48,10 @@ public sealed record AppSettings
         UseSerialNumberInLinks == other.UseSerialNumberInLinks &&
         IncludeSerialNumberInExports == other.IncludeSerialNumberInExports &&
         UpdateCatalogOnline == other.UpdateCatalogOnline &&
+        CheckForAppUpdates == other.CheckForAppUpdates &&
         InstallDisclaimerAccepted == other.InstallDisclaimerAccepted &&
         EnabledVersionSources.SequenceEqual(other.EnabledVersionSources, StringComparer.Ordinal);
 
     public override int GetHashCode() =>
-        HashCode.Combine(Language, StartView, ShowSystemDevices, UseSerialNumberInLinks, IncludeSerialNumberInExports, UpdateCatalogOnline, EnabledVersionSources.Count);
+        HashCode.Combine(Language, StartView, ShowSystemDevices, UseSerialNumberInLinks, IncludeSerialNumberInExports, UpdateCatalogOnline, CheckForAppUpdates, EnabledVersionSources.Count);
 }

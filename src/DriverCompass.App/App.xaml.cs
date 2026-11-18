@@ -126,11 +126,23 @@ public partial class App : Application
             services.AddSingleton<IInstallLog>(_ => new InstallLogFile());
         }
 
+        // Optional update hint (off by default): one GET of the public "latest release" info, shows a link only.
+        if (isMock)
+        {
+            services.AddSingleton<IAppUpdateChecker, MockAppUpdateChecker>();
+        }
+        else
+        {
+            services.AddSingleton<IAppUpdateChecker>(sp =>
+                GitHubReleaseChecker.CreateDefault(sp.GetRequiredService<HttpClient>(), sp.GetRequiredService<ILogger<GitHubReleaseChecker>>()));
+        }
+
         services.AddSingleton(sp => new MainViewModel(
             sp.GetRequiredService<IDeviceAnalysisService>(),
             sp.GetRequiredService<IVersionCheckService>(),
             sp.GetRequiredService<IElevatedInstallerClient>(),
             sp.GetRequiredService<IInstallLog>(),
+            sp.GetRequiredService<IAppUpdateChecker>(),
             sp.GetRequiredService<ISettingsService>(),
             sp.GetServices<IReportExporter>(),
             sp.GetRequiredService<ILogger<MainViewModel>>(),

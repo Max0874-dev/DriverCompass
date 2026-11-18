@@ -4,7 +4,7 @@
 
 DriverCompass ist eine kostenlose Open-Source-App für Windows 10 und 11. Sie erkennt alle Geräte in deinem PC, zeigt dir, welche Treiber **fehlen**, **Fehler melden** oder **nur generisch** sind (z. B. „Microsoft Basic Display Adapter“), und führt dich zur **offiziellen Treiberseite** des Herstellers.
 
-- 🔒 **Alles lokal.** Keine Telemetrie, keine Gerätedaten verlassen den PC. Automatisch lädt die App nur die öffentliche Herstellerliste von GitHub (abschaltbar). Die optionale Versionsprüfung fragt erst, wenn du sie einschaltest und startest.
+- 🔒 **Alles lokal.** Keine Telemetrie, keine Gerätedaten verlassen den PC. Automatisch lädt die App nur die öffentliche Herstellerliste von GitHub (abschaltbar). Die optionale Versionsprüfung fragt erst, wenn du sie einschaltest und startest. Auch der Hinweis auf neue DriverCompass-Versionen ist standardmäßig aus.
 - 🚦 **Einfache Ansicht** mit Ampel, verständlichen Namen und einem Button „Treiber holen“.
 - 🔬 **Expertenmodus** mit Hardware-IDs, INF-Datei, Treiberanbieter, Version, Datum, Fehlercode, Suche, Filter, Sortierung und Export (HTML/CSV).
 - 🔄 **Versionsprüfung** (optional): „Versionen prüfen“ vergleicht installierte Treiber mit offiziellen Quellen: Windows Update sowie die Kataloge von Dell, Lenovo und HP. Ohne offizielle Quelle steht ehrlich „Version unbekannt – bitte Link prüfen“. Jede Quelle ist standardmäßig aus, siehe [PRIVACY.md](PRIVACY.md).

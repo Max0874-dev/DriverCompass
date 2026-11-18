@@ -39,6 +39,12 @@
                    Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
       </StackPanel>
 
+      <StackPanel Spacing="2">
+        <ToggleSwitch Header="{x:Bind svc:Localizer.T('Settings_CheckAppUpdates')}" IsOn="{x:Bind ViewModel.CheckForAppUpdates, Mode=TwoWay}" />
+        <TextBlock Text="{x:Bind svc:Localizer.T('Settings_CheckAppUpdates_Help')}" Style="{StaticResource CaptionTextBlockStyle}"
+                   Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
+      </StackPanel>
+
       <!-- Stage 2: every version source is opt-in and says what it sends where -->
       <StackPanel Spacing="6">
         <TextBlock Text="{x:Bind svc:Localizer.T('Settings_VersionCheck')}" Style="{StaticResource BodyStrongTextBlockStyle}" />
