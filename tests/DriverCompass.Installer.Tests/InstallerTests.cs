@@ -48,7 +48,7 @@ internal sealed class FakeDriverStore(List<string> calls) : IDriverStore
     public IReadOnlyDictionary<string, string> Snapshot()
     {
         calls.Add("snapshot");
-        if (calls.Contains("install") && AfterInstall is not null)
+        if ((calls.Contains("install") || calls.Contains("add")) && AfterInstall is not null)
         {
             return AfterInstall;
         }
@@ -57,6 +57,16 @@ internal sealed class FakeDriverStore(List<string> calls) : IDriverStore
     }
 
     public string? HashOf(string publishedName) => Files.GetValueOrDefault(publishedName);
+
+    public List<string> Added { get; } = [];
+    public int AddExitCode { get; init; }
+
+    public int AddDriver(string infPath)
+    {
+        Added.Add(infPath);
+        calls.Add("add");
+        return AddExitCode;
+    }
 
     public int DeleteDriver(string publishedName)
     {
@@ -123,7 +133,7 @@ public class InstallerEngineTests
         var updatedDevice = Bluetooth with { Driver = Bluetooth.Driver! with { Version = "23.150.0.3", InfName = "oem87.inf" } };
         var engine = new InstallerEngine(
             new FakeDevices(devices ?? [Bluetooth, updatedDevice]),
-            new LoggingWindowsUpdate(wu, calls),
+            [new DriverCompass.Installer.Sources.WindowsUpdateSource(new LoggingWindowsUpdate(wu, calls))],
             new FakeRestorePoints(restorePoint ?? new RestorePointInfo(true), calls),
             ds,
             store);
@@ -405,6 +415,13 @@ public class InstallProtocolTests
         Assert.Equal(2, parsed.Count);
         Assert.Equal(entry.Id, parsed[0].Id);
     }
+}
+
+internal static class EngineTestExtensions
+{
+    /// <summary>The Windows Update path completes synchronously; keeps the existing tests compact.</summary>
+    public static InstallResult Execute(this InstallerEngine engine, InstallRequest request) =>
+        engine.ExecuteAsync(request).GetAwaiter().GetResult();
 }
 
 public sealed class ElevatedInstallerClientTests : IDisposable

@@ -26,7 +26,9 @@ public sealed class MockInstallerClient : IElevatedInstallerClient, IInstallLog
             return new InstallResult { RequestId = request.RequestId, Outcome = InstallOutcome.RolledBack, LogEntryId = rollback.Id, Title = original?.Title };
         }
 
-        const string title = "Intel Corporation - Bluetooth - 23.150.0.3";
+        var dell = request.Source == VersionSourceIds.Dell;
+        var title = dell ? "Intel AX210/AX211 WLAN Driver" : "Intel Corporation - Bluetooth - 23.150.0.3";
+        var (before, after) = dell ? ("23.60.1.2", "23.130.0.4") : ("22.240.0.2", "23.150.0.3");
         if (!_restorePointShown && !request.AllowWithoutRestorePoint)
         {
             _restorePointShown = true;
@@ -44,14 +46,14 @@ public sealed class MockInstallerClient : IElevatedInstallerClient, IInstallLog
 
         var entry = Entry(request, InstallAction.Install, InstallOutcome.Installed, title) with
         {
-            PreviousInfName = "oem31.inf",
-            PreviousVersion = "22.240.0.2",
-            InstalledVersion = "23.150.0.3",
-            PublishedInfs = [new PublishedInf("oem87.inf", new string('A', 64))],
+            PreviousInfName = dell ? "oem45.inf" : "oem31.inf",
+            PreviousVersion = before,
+            InstalledVersion = after,
+            PublishedInfs = [new PublishedInf(dell ? "oem88.inf" : "oem87.inf", new string('A', 64))],
             RestorePointCreated = !request.AllowWithoutRestorePoint,
         };
         _log.Add(entry);
-        return new InstallResult { RequestId = request.RequestId, Outcome = InstallOutcome.Installed, LogEntryId = entry.Id, Title = title, InstalledVersion = "23.150.0.3" };
+        return new InstallResult { RequestId = request.RequestId, Outcome = InstallOutcome.Installed, LogEntryId = entry.Id, Title = title, InstalledVersion = after };
     }
 
     private static InstallLogEntry Entry(InstallRequest request, InstallAction action, InstallOutcome outcome, string? title) => new()
@@ -62,9 +64,9 @@ public sealed class MockInstallerClient : IElevatedInstallerClient, IInstallLog
         Outcome = outcome,
         RequestId = request.RequestId,
         DeviceInstanceId = request.DeviceInstanceId,
-        DeviceName = "Intel(R) Wireless Bluetooth(R)",
-        Source = VersionSourceIds.WindowsUpdate,
-        UpdateId = request.UpdateId,
+        DeviceName = request.Source == VersionSourceIds.Dell ? "Intel(R) Wi-Fi 6E AX210 160MHz" : "Intel(R) Wireless Bluetooth(R)",
+        Source = request.Source,
+        UpdateId = request.UpdateId ?? request.PackageId,
         Title = title,
     };
 }

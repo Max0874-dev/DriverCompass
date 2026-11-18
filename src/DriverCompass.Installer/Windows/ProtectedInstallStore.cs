@@ -30,6 +30,15 @@ public sealed class ProtectedInstallStore : IInstallStore
         EnsureSecure(root);
         EnsureSecure(Path.Combine(root, "results"));
         EnsureSecure(Path.Combine(root, "logs"));
+        EnsureSecure(Path.Combine(root, "cache"));
+        EnsureSecure(Path.Combine(root, "work"));
+
+        // Leftovers of an interrupted run (extracted packages) are not needed any more.
+        foreach (var old in new DirectoryInfo(Path.Combine(root, "work")).EnumerateDirectories()
+                     .Where(d => d.LastWriteTimeUtc < DateTime.UtcNow.AddDays(-1) && !d.Attributes.HasFlag(FileAttributes.ReparsePoint)))
+        {
+            old.Delete(recursive: true);
+        }
     }
 
     public IReadOnlyList<InstallLogEntry> ReadLog() => new InstallLogFile(_root).ReadAll();

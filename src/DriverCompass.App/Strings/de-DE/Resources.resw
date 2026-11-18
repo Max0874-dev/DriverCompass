@@ -296,4 +296,10 @@
   <data name="Rollback_Title" xml:space="preserve"><value>Installation rückgängig machen?</value></data>
   <data name="Rollback_Message" xml:space="preserve"><value>DriverCompass entfernt die mit „{0}“ installierten Treiberpakete ({1}) per pnputil. Windows verwendet danach wieder den vorherigen Treiber. Dafür fragt Windows nach Administratorrechten.</value></data>
   <data name="Rollback_Confirm" xml:space="preserve"><value>Rückgängig machen</value></data>
+  <data name="Install_Intro_Oem" xml:space="preserve"><value>DriverCompass installiert genau diesen einen Treiber aus dem offiziellen {0}-Paket:</value></data>
+  <data name="Install_Steps_Oem" xml:space="preserve"><value>Das Paket wird von {1} geladen und mit der Prüfsumme aus dem signierten {0}-Katalog sowie der {0}-Signatur geprüft. Entpackt wird es ohne Herstellerprogramme auszuführen; installiert wird nur der signierte Treiber – keine Zusatzsoftware oder Systemsteuerung von {0}. Vorher wird ein Wiederherstellungspunkt angelegt, und Windows fragt nach Administratorrechten (nur für diesen Schritt). Rückgängig machen können Sie die Installation über „Verlauf“.</value></data>
+  <data name="PackageHost_dell" xml:space="preserve"><value>downloads.dell.com</value></data>
+  <data name="PackageHost_hp" xml:space="preserve"><value>ftp.hp.com</value></data>
+  <data name="Install_Outcome_NotInstallable" xml:space="preserve"><value>Dieses Paket enthält keinen Treiber, den DriverCompass für dieses Gerät installieren kann ({1}). Es wurde nichts geändert. Bitte nutzen Sie die Treiberseite des Herstellers.</value></data>
+  <data name="InstallOutcomeShort_NotInstallable" xml:space="preserve"><value>nicht installierbar</value></data>
 </root>

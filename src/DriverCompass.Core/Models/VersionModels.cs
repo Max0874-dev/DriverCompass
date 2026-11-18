@@ -38,8 +38,8 @@ public sealed record VersionCheckResult(
     /// <summary>Stage 3: Windows Update revision number belonging to <see cref="PackageId"/>.</summary>
     public int PackageRevision { get; init; }
 
-    /// <summary>True if DriverCompass can install this newer driver itself (stage 3, Windows Update only).</summary>
-    public bool IsInstallable => State == VersionCheckState.NewerAvailable && ProviderId == VersionSourceIds.WindowsUpdate && PackageId is not null;
+    /// <summary>True if DriverCompass can install this newer driver itself (stage 3: Windows Update, Dell, HP).</summary>
+    public bool IsInstallable => State == VersionCheckState.NewerAvailable && PackageId is not null && ProviderId is VersionSourceIds.WindowsUpdate or VersionSourceIds.Dell or VersionSourceIds.Hp;
 
     public static VersionCheckResult None { get; } = new(string.Empty, VersionCheckState.Unknown);
 }

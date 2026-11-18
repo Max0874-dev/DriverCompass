@@ -1,7 +1,10 @@
 using System.Runtime.InteropServices;
 using System.Xml.Linq;
+using DriverCompass.Core.Installation;
 using DriverCompass.Core.Links;
+using DriverCompass.Core.Models;
 using DriverCompass.Core.Versions;
+using DriverCompass.VersionProviders.Packages;
 using DriverCompass.VersionProviders.Xml;
 
 namespace DriverCompass.VersionProviders.Dell;
@@ -38,7 +41,38 @@ public static class DellCatalogParser
     }
 
     /// <summary>Driver entries for the given CPU architecture (components without OS list count for all).</summary>
-    public static IReadOnlyList<CatalogDriverEntry> ParseModelCatalog(Stream stream, Architecture architecture)
+    public static IReadOnlyList<CatalogDriverEntry> ParseModelCatalog(Stream stream, Architecture architecture) =>
+        [.. ReadDriverComponents(stream, architecture).SelectMany(c => c.Entries)];
+
+    /// <summary>
+    /// Stage 3: the downloadable package for one component path, with SHA-256 from the (signed) catalog.
+    /// <c>null</c> if the catalog has no such driver component for this architecture.
+    /// </summary>
+    public static OemPackage? FindPackage(Stream stream, string componentPath, Architecture architecture)
+    {
+        var component = ReadDriverComponents(stream, architecture)
+            .FirstOrDefault(c => string.Equals(c.Path, componentPath, StringComparison.OrdinalIgnoreCase));
+        if (component is null || component.Sha256 is null || component.Entries.Count == 0)
+        {
+            return null;
+        }
+
+        return new OemPackage(
+            VersionSourceIds.Dell,
+            component.Path!,
+            new Uri(DellVersionProvider.BaseUri, component.Path),
+            component.Sha256,
+            component.Size,
+            component.Name,
+            component.Entries.Select(e => e.Version).OfType<string>().OrderByDescending(v => DriverVersion.TryParse(v, out var dv) ? dv : default).FirstOrDefault(),
+            [.. component.Entries.SelectMany(e => e.HardwareIds).Distinct(StringComparer.OrdinalIgnoreCase)],
+            DellVersionProvider.Signers,
+            DellVersionProvider.Hosts);
+    }
+
+    private sealed record DriverComponent(string? Path, string? Sha256, long? Size, string? Name, IReadOnlyList<CatalogDriverEntry> Entries);
+
+    private static IEnumerable<DriverComponent> ReadDriverComponents(Stream stream, Architecture architecture)
     {
         var arch = architecture switch
         {
@@ -47,7 +81,6 @@ public static class DellCatalogParser
             _ => "x64",
         };
 
-        var entries = new List<CatalogDriverEntry>();
         foreach (var component in SafeXml.ReadChildren(stream, n => n == "SoftwareComponent"))
         {
             if (!string.Equals(component.Kid("ComponentType").Attr("value"), "DRVR", StringComparison.OrdinalIgnoreCase))
@@ -68,7 +101,15 @@ public static class DellCatalogParser
                 ? u
                 : null;
 
+            // Installable (stage 3) only with a safe package path and a SHA-256 in the signed catalog.
+            var path = component.Attr("path");
+            var sha = component.Kid("Cryptography")?.Kids("Hash")
+                .FirstOrDefault(h => string.Equals(h.Attr("algorithm"), "SHA256", StringComparison.OrdinalIgnoreCase)).Text();
+            var installable = InstallProtocol.IsSafeDellPackagePath(path) && sha is { Length: 64 } && sha.All(char.IsAsciiHexDigit);
+            var packageId = installable ? path : null;
+
             // Only the device entries carry the real INF driver version; vendorVersion is the package version.
+            var entries = new List<CatalogDriverEntry>();
             foreach (var device in component.Below("Device"))
             {
                 var version = device.Attr("version");
@@ -80,12 +121,17 @@ public static class DellCatalogParser
                 var ids = HardwareIds(device).ToList();
                 if (ids.Count > 0)
                 {
-                    entries.Add(new CatalogDriverEntry(ids, version, date, name, page));
+                    entries.Add(new CatalogDriverEntry(ids, version, date, name, page, packageId));
                 }
             }
-        }
 
-        return entries;
+            yield return new DriverComponent(
+                path,
+                installable ? sha!.ToUpperInvariant() : null,
+                long.TryParse(component.Attr("size"), System.Globalization.NumberStyles.None, System.Globalization.CultureInfo.InvariantCulture, out var size) ? size : null,
+                name,
+                entries);
+        }
     }
 
     private static IEnumerable<string> HardwareIds(XElement device)

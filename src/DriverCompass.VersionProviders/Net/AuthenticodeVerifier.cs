@@ -99,3 +99,15 @@ internal static class AuthenticodeVerifier
         public IntPtr pSignatureSettings;
     }
 }
+
+/// <summary>Checks a file's Authenticode signature (also works for driver catalog .cat files).</summary>
+public interface IFileSignatureVerifier
+{
+    /// <summary>Common name of the signer if the signature is valid and trusted by Windows, otherwise <c>null</c>.</summary>
+    string? GetTrustedSigner(string path);
+}
+
+public sealed class AuthenticodeFileVerifier : IFileSignatureVerifier
+{
+    public string? GetTrustedSigner(string path) => AuthenticodeVerifier.VerifyAndGetSigner(path);
+}

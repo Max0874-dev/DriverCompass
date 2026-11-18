@@ -10,9 +10,11 @@ namespace DriverCompass.Installer.Windows;
 
 /// <summary>Reads the device with the same WMI queries as the scanner.</summary>
 [SupportedOSPlatform("windows")]
-public sealed class WmiDeviceQuery(WmiDeviceScanner scanner) : IDeviceQuery
+public sealed class WmiDeviceQuery(WmiDeviceScanner scanner) : IDeviceQuery, ISystemQuery
 {
     public DeviceInfo? Find(string instanceId) => scanner.FindDevice(instanceId);
+
+    public SystemInfo Read() => scanner.ReadSystem();
 }
 
 /// <summary>
@@ -119,7 +121,12 @@ public sealed class WindowsDriverStore : IDriverStore
         return File.Exists(path) ? Hash(path) : null;
     }
 
-    public int DeleteDriver(string publishedName)
+    public int AddDriver(string infPath) => RunPnpUtil("/add-driver", Path.GetFullPath(infPath), "/install");
+
+    public int DeleteDriver(string publishedName) => RunPnpUtil("/delete-driver", Path.GetFileName(publishedName), "/uninstall");
+
+    /// <summary>pnputil by absolute path with fixed arguments (no shell).</summary>
+    private static int RunPnpUtil(params string[] arguments)
     {
         var startInfo = new ProcessStartInfo(Path.Combine(Environment.SystemDirectory, "pnputil.exe"))
         {
@@ -128,9 +135,10 @@ public sealed class WindowsDriverStore : IDriverStore
             RedirectStandardOutput = true,
             RedirectStandardError = true,
         };
-        startInfo.ArgumentList.Add("/delete-driver");
-        startInfo.ArgumentList.Add(Path.GetFileName(publishedName));
-        startInfo.ArgumentList.Add("/uninstall");
+        foreach (var argument in arguments)
+        {
+            startInfo.ArgumentList.Add(argument);
+        }
 
         using var process = Process.Start(startInfo) ?? throw new InvalidOperationException("pnputil did not start");
         var stdout = process.StandardOutput.ReadToEndAsync();

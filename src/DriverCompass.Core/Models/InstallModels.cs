@@ -37,6 +37,9 @@ public enum InstallOutcome
 
     /// <summary>Rollback finished.</summary>
     RolledBack,
+
+    /// <summary>The package contains no driver DriverCompass can install for this device (or an unsupported format). Nothing changed.</summary>
+    NotInstallable,
 }
 
 /// <summary>
@@ -50,6 +53,12 @@ public sealed record InstallRequest
 
     /// <summary>Install: PnP instance ID of the device the update is meant for.</summary>
     public string? DeviceInstanceId { get; init; }
+
+    /// <summary>Install: where the package comes from – "windowsupdate", "dell" or "hp" (see <see cref="VersionSourceIds"/>).</summary>
+    public string Source { get; init; } = VersionSourceIds.WindowsUpdate;
+
+    /// <summary>Install from Dell/HP: Dell component path or HP SoftPaq ID. The elevated process looks it up in the signed catalog itself.</summary>
+    public string? PackageId { get; init; }
 
     /// <summary>Install: Windows Update UpdateID (GUID).</summary>
     public string? UpdateId { get; init; }

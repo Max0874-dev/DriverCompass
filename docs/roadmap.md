@@ -21,7 +21,7 @@
 - Results in both views, a filter "Newer version available", detail pane and HTML/CSV export.
 - Possible later: more OEMs with official catalogs, optional automatic check after the scan.
 
-## Stage 3 – install (part 1 ✅: Windows Update drivers)
+## Stage 3 – install (part 1 ✅ Windows Update, part 2 ✅ Dell and HP)
 
 Done:
 
@@ -29,7 +29,16 @@ Done:
 - Separate UAC-elevated process (`DriverCompass.exe --elevated`) that re-checks device and update, creates a restore point (or asks again), installs via the Windows Update Agent, and logs the new `oemNN.inf` packages.
 - History with rollback (`pnputil /delete-driver oemNN.inf /uninstall`), bound to the protected log and SHA-256.
 
-Part 2 (open): OEM packages from Dell/Lenovo/HP – download over HTTPS with SHA-256 and Authenticode check, extract, install INF drivers with pnputil. Original plan for reference:
+Part 2 (done): Dell Update Packages and HP SoftPaqs.
+
+- The elevated process looks the package up in the signed vendor catalog itself (protected cache), downloads it over HTTPS from `downloads.dell.com` / `ftp.hp.com`, checks SHA-256 and the Dell/HP Authenticode signer.
+- The 7z payload appended to these EXEs is extracted with Windows' own `tar.exe` – vendor code is never run.
+- Only INFs for this device, for this CPU architecture and with a validly signed catalog are installed with `pnputil /add-driver /install`; no vendor software or control panels.
+- If Windows does not use the package for any device, exactly that package is removed again.
+
+Open: Lenovo packages (Inno Setup installers – they can only be extracted by running Lenovo's own program), so Lenovo devices keep "Open driver page".
+
+Original plan for reference:
 
 - Exactly one driver per user confirmation; no bulk installation.
 - Download only via HTTPS from allow-listed domains.

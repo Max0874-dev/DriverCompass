@@ -30,6 +30,7 @@ public sealed class MockVersionProvider(string sourceId, IReadOnlyList<CatalogDr
     }
 
     public const string MockUpdateId = "6f1c2b7e-0d1a-4c5e-9b0a-3e2d1c4b5a69";
+    public const string MockDellPackage = "FOLDER00000001M/1/Intel-AX210-WLAN-Driver_DEMO1_WIN64_23.130.0.4_A01.EXE";
 
     private static IReadOnlyList<CatalogDriverEntry> DefaultEntries(string sourceId) => sourceId switch
     {
@@ -44,7 +45,8 @@ public sealed class MockVersionProvider(string sourceId, IReadOnlyList<CatalogDr
         [
             // Intel Wi-Fi AX210 (installed 23.60.1.2) → newer.
             new([@"PCI\VEN_8086&DEV_2725&SUBSYS_00248086"], "23.130.0.4", new DateOnly(2025, 3, 12), "Intel AX210/AX211 WLAN Driver",
-                new Uri("https://www.dell.com/support/home/drivers/driversdetails?driverid=demo1")),
+                new Uri("https://www.dell.com/support/home/drivers/driversdetails?driverid=demo1"),
+                PackageId: sourceId == VersionSourceIds.Dell ? MockDellPackage : null),
             // Samsung NVMe (Microsoft inbox driver) – catalog has the same version → up to date.
             new([@"PCI\VEN_144D&DEV_A80A&SUBSYS_A801144D"], "10.0.26100.1", new DateOnly(2006, 6, 21), "Standard NVMe Controller"),
         ],

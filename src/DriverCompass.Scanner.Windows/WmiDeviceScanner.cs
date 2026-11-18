@@ -67,13 +67,7 @@ public sealed class WmiDeviceScanner(IWmiQuery wmi, ILogger<WmiDeviceScanner>? l
         var drivers = SafeQuery(DriverQuery);
         ct.ThrowIfCancellationRequested();
 
-        var system = WmiMapper.MapSystem(
-            SafeQuery("SELECT Manufacturer, Model, SystemFamily, SystemSKUNumber FROM Win32_ComputerSystem").FirstOrDefault(),
-            SafeQuery("SELECT Manufacturer, Product, Version FROM Win32_BaseBoard").FirstOrDefault(),
-            SafeQuery("SELECT SerialNumber, SMBIOSBIOSVersion FROM Win32_BIOS").FirstOrDefault(),
-            SafeQuery("SELECT Caption, Version FROM Win32_OperatingSystem").FirstOrDefault())
-            with { OperatingSystemDisplayVersion = ReadDisplayVersion() };
-
+        var system = ReadSystem();
         var devices = WmiMapper.MapDevices(entities, drivers);
         _logger.LogInformation("WMI scan: {Devices} devices, {Drivers} driver entries in {Ms} ms",
             devices.Count, drivers.Count, (int)(DateTimeOffset.Now - started).TotalMilliseconds);
@@ -94,6 +88,15 @@ public sealed class WmiDeviceScanner(IWmiQuery wmi, ILogger<WmiDeviceScanner>? l
             return wmi.Query(EntityFallbackQuery);
         }
     }
+
+    /// <summary>PC identity (manufacturer, model, SKU, mainboard, Windows) – also read fresh by the elevated installer.</summary>
+    public SystemInfo ReadSystem() =>
+        WmiMapper.MapSystem(
+            SafeQuery("SELECT Manufacturer, Model, SystemFamily, SystemSKUNumber FROM Win32_ComputerSystem").FirstOrDefault(),
+            SafeQuery("SELECT Manufacturer, Product, Version FROM Win32_BaseBoard").FirstOrDefault(),
+            SafeQuery("SELECT SerialNumber, SMBIOSBIOSVersion FROM Win32_BIOS").FirstOrDefault(),
+            SafeQuery("SELECT Caption, Version FROM Win32_OperatingSystem").FirstOrDefault())
+        with { OperatingSystemDisplayVersion = ReadDisplayVersion() };
 
     /// <summary>Feature update name such as "24H2" (read-only registry access, no admin needed).</summary>
     private string? ReadDisplayVersion()

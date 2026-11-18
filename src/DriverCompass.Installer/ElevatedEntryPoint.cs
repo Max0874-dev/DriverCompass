@@ -1,8 +1,15 @@
 using System.Runtime.Versioning;
 using System.Security.Principal;
 using DriverCompass.Core.Installation;
+using DriverCompass.Installer.Packages;
+using DriverCompass.Installer.Sources;
 using DriverCompass.Installer.Windows;
 using DriverCompass.Scanner.Windows;
+using DriverCompass.VersionProviders;
+using DriverCompass.VersionProviders.Dell;
+using DriverCompass.VersionProviders.Hp;
+using DriverCompass.VersionProviders.Net;
+using DriverCompass.VersionProviders.Packages;
 using Microsoft.Extensions.Logging;
 
 namespace DriverCompass.Installer;
@@ -49,16 +56,35 @@ public static class ElevatedEntryPoint
 
         try
         {
+            var store = new ProtectedInstallStore();
+            var root = InstallProtocol.ProtectedDirectory;
+            var wmi = new WmiDeviceQuery(new WmiDeviceScanner(new WmiQueryRunner(), loggerFactory.CreateLogger<WmiDeviceScanner>()));
+            var driverStore = new WindowsDriverStore();
             using var windowsUpdate = new ComWindowsUpdateInstaller();
+
+            // Catalogs and packages are cached and extracted ONLY inside the admin-only folder – never in the user's profile.
+            using var http = VersionProviderFactory.CreateHttpClient();
+            var downloader = new CatalogDownloader(http, Path.Combine(root, "cache"), logger: loggerFactory.CreateLogger<CatalogDownloader>());
+            var cabs = new ExpandCabExtractor(Path.Combine(root, "work"), loggerFactory.CreateLogger<ExpandCabExtractor>());
+            var signatures = new AuthenticodeFileVerifier();
+            var payloads = new SevenZipPayloadExtractor();
+
+            IPackageSource Oem(IOemPackageCatalog catalog) => new OemPackageSource(
+                catalog, wmi, downloader, signatures, payloads, driverStore, Path.Combine(root, "work"), loggerFactory.CreateLogger<OemPackageSource>());
+
             var engine = new InstallerEngine(
-                new WmiDeviceQuery(new WmiDeviceScanner(new WmiQueryRunner(), loggerFactory.CreateLogger<WmiDeviceScanner>())),
-                windowsUpdate,
+                wmi,
+                [
+                    new WindowsUpdateSource(windowsUpdate),
+                    Oem(new DellVersionProvider(downloader, cabs)),
+                    Oem(new HpVersionProvider(downloader, cabs)),
+                ],
                 new WmiRestorePointCreator(),
-                new WindowsDriverStore(),
-                new ProtectedInstallStore(),
+                driverStore,
+                store,
                 logger: loggerFactory.CreateLogger<InstallerEngine>());
 
-            var result = engine.Execute(request);
+            var result = engine.ExecuteAsync(request).GetAwaiter().GetResult();
             logger.LogInformation("Request {Request} ({Action}) finished: {Outcome} {Message}", request.RequestId, request.Action, result.Outcome, result.Message);
             return ExitOk;
         }

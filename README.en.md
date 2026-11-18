@@ -8,11 +8,11 @@ DriverCompass is a free, open-source app for Windows 10 and 11. It detects every
 - 🚦 **Simple view** with a traffic light, plain names and one "Get driver" button.
 - 🔬 **Expert mode** with hardware IDs, INF file, driver provider, version, date, error code, search, filters, sorting and export (HTML/CSV).
 - 🔄 **Version check** (optional): "Check versions" compares installed drivers with official sources: Windows Update plus the Dell, Lenovo and HP catalogs. Without an official source it honestly says "Version unknown – please check the link". Every source is off by default, see [PRIVACY.md](PRIVACY.md).
-- 🛠️ **Installation** (Windows Update drivers): "Install …" installs exactly one confirmed driver, with restore point, log and "Undo" in the history. Admin rights only for this step (UAC). **No warranty** – drivers come from third parties, back up important data first.
+- 🛠️ **Installation** (Windows Update, Dell, HP): "Install …" installs exactly one confirmed driver – for Dell and HP only the signed driver from the official package, without running any vendor program –, with restore point, log and "Undo" in the history. Admin rights only for this step (UAC). **No warranty** – drivers come from third parties, back up important data first.
 - 🌍 English and German.
 - 🛡️ No administrator rights needed – except for a confirmed driver installation.
 
-> **Status:** stage 1 (detect and link), stage 2 (version comparison) and stage 3 part 1 (installing Windows Update drivers) are done. Installing Dell, Lenovo and HP packages is planned, see [docs/roadmap.md](docs/roadmap.md).
+> **Status:** stage 1 (detect and link), stage 2 (version comparison) and stage 3 (installing from Windows Update and from Dell and HP packages) are done. Lenovo packages are still open, see [docs/roadmap.md](docs/roadmap.md).
 
 ## How links are chosen
 

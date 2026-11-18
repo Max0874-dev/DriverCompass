@@ -87,3 +87,16 @@ rescan, show outcome; history → rollback          rollback: entry from own log
 - `Program.Main` (custom entry, `DISABLE_XAML_GENERATED_MAIN`) branches on `--elevated` before any WinUI code runs; the same self-contained runtime is reused, so no second ~70 MB EXE is shipped.
 - Engine (`DriverCompass.Installer/InstallerEngine.cs`) depends only on small interfaces (`IDeviceQuery`, `IWindowsUpdateInstaller`, `IRestorePointCreator`, `IDriverStore`, `IInstallStore`) and is unit-tested with fakes.
 - `--mock` uses `MockInstallerClient`: no UAC, no change to Windows; the first attempt simulates a missing restore point.
+
+### Part 2 – Dell and HP packages
+
+`InstallerEngine` delegates to an `IPackageSource` per source: `WindowsUpdateSource` (part 1) and `OemPackageSource` for Dell and HP. `PrepareAsync` does everything that changes nothing (lookup, download, checks, extraction, INF choice) **before** the restore point; `Install` runs `pnputil /add-driver <inf> /install`.
+
+```
+fresh WMI system data → IOemPackageCatalog (Dell/HP provider, signed catalog, protected cache)
+→ OemPackage (URL on downloads.dell.com / ftp.hp.com, SHA-256, hardware IDs, signers)
+→ CatalogDownloader (HTTPS, allow-list, SHA-256) → Authenticode signer = Dell / HP
+→ SevenZipPayloadExtractor (appended 7z → System32\tar.exe, no vendor code)
+→ InfMatcher (device hardware ID, architecture, CatalogFile with trusted signature)
+→ restore point → pnputil → new oemNN.inf attributed by INF SHA-256 → log
+```

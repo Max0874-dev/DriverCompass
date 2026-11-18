@@ -311,3 +311,63 @@ public class WindowsUpdateTests
     public void VersionFromTitle(string? title, string? expected) =>
         Assert.Equal(expected, WindowsUpdateVersionProvider.VersionFromTitle(title));
 }
+
+public class OemPackageCatalogTests
+{
+    [Fact]
+    public void Dell_FindPackage_ReadsPathHashAndDevices_OnlySafePaths()
+    {
+        const string path = "FOLDER123M/1/Intel-WLAN_ABC12_WIN64_23.130.0.4_A01.EXE";
+        using (var stream = File.OpenRead(Fixtures.PathOf("dell-model.xml")))
+        {
+            var package = DellCatalogParser.FindPackage(stream, path, System.Runtime.InteropServices.Architecture.X64);
+
+            Assert.NotNull(package);
+            Assert.Equal("https://downloads.dell.com/" + path, package.DownloadUri.AbsoluteUri);
+            Assert.Equal(new string('A', 0) + "ABCDEFABCDEFABCDEFABCDEFABCDEFABCDEFABCDEFABCDEFABCDEFABCDEFABCD", package.Sha256);
+            Assert.Equal(52428800, package.Size);
+            Assert.Equal("23.130.0.4", package.Version);
+            Assert.Contains(@"PCI\VEN_8086&DEV_2725&SUBSYS_00248086", package.HardwareIds);
+            Assert.Equal(["downloads.dell.com"], package.AllowedHosts);
+        }
+
+        using (var stream = File.OpenRead(Fixtures.PathOf("dell-model.xml")))
+        {
+            Assert.Null(DellCatalogParser.FindPackage(stream, "../../evil.EXE", System.Runtime.InteropServices.Architecture.X64));
+        }
+
+        using (var stream = File.OpenRead(Fixtures.PathOf("dell-model.xml")))
+        {
+            // Stage 2 marks only the safe, hashed component as installable.
+            var entries = DellCatalogParser.ParseModelCatalog(stream, System.Runtime.InteropServices.Architecture.X64);
+            Assert.Equal(path, entries[0].PackageId);
+            Assert.Null(entries[1].PackageId);
+        }
+    }
+
+    [Fact]
+    public void Hp_FindPackage_RequiresFtpHpComHttpsAndHash()
+    {
+        using (var stream = File.OpenRead(Fixtures.PathOf("hp-reference.xml")))
+        {
+            var package = HpCatalogParser.FindPackage(stream, "sp174175");
+            Assert.NotNull(package);
+            Assert.Equal("https://ftp.hp.com/pub/softpaq/sp174001-174500/sp174175.exe", package.DownloadUri.AbsoluteUri);
+            Assert.Equal(9000000, package.Size);
+            Assert.Equal([@"PCI\VEN_1022&DEV_15E2&REV_60"], package.HardwareIds);
+            Assert.Equal(["HP Inc."], package.Signers);
+        }
+
+        using (var stream = File.OpenRead(Fixtures.PathOf("hp-reference.xml")))
+        {
+            Assert.Null(HpCatalogParser.FindPackage(stream, "sp170000"));
+        }
+
+        using (var stream = File.OpenRead(Fixtures.PathOf("hp-reference.xml")))
+        {
+            var entries = HpCatalogParser.ParseReference(stream);
+            Assert.Equal("sp174175", entries[0].PackageId);
+            Assert.Null(entries[1].PackageId);
+        }
+    }
+}

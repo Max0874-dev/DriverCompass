@@ -68,7 +68,9 @@ public sealed partial class MainWindow : Window, IShellService
     public async Task<bool> ConfirmInstallAsync(InstallConfirmation confirmation)
     {
         var panel = new StackPanel { Spacing = 8, MaxWidth = 520 };
-        panel.Children.Add(Text(Localizer.T("Install_Intro")));
+        var oem = confirmation.SourceId != Core.Models.VersionSourceIds.WindowsUpdate;
+        var vendor = Localizer.T($"VersionSource_{confirmation.SourceId}");
+        panel.Children.Add(Text(oem ? Localizer.F("Install_Intro_Oem", vendor) : Localizer.T("Install_Intro")));
         panel.Children.Add(Text(Localizer.F("Install_Device", confirmation.DeviceName), bold: true));
         panel.Children.Add(Text(Localizer.F("Install_Driver", confirmation.DriverTitle)));
         if (!string.IsNullOrWhiteSpace(confirmation.VersionText))
@@ -76,7 +78,7 @@ public sealed partial class MainWindow : Window, IShellService
             panel.Children.Add(Text(Localizer.F("Install_Version", confirmation.VersionText)));
         }
 
-        panel.Children.Add(Text(Localizer.T("Install_Steps"), secondary: true));
+        panel.Children.Add(Text(oem ? Localizer.F("Install_Steps_Oem", vendor, Localizer.T($"PackageHost_{confirmation.SourceId}")) : Localizer.T("Install_Steps"), secondary: true));
 
         var dialog = new ContentDialog
         {

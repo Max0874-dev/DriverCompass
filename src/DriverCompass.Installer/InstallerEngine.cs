@@ -1,7 +1,6 @@
 using System.Text.RegularExpressions;
 using DriverCompass.Core.Installation;
 using DriverCompass.Core.Models;
-using DriverCompass.Core.Versions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
@@ -9,94 +8,128 @@ namespace DriverCompass.Installer;
 
 /// <summary>
 /// Runs inside the elevated process. Trusts nothing from the request except IDs:
-/// re-reads the device, re-searches Windows Update, checks that the update is a driver for exactly
-/// this device, creates a restore point (or stops unless the user allowed to continue without),
-/// installs ONE update, records what changed in the driver store and writes the log.
+/// re-reads the device, lets the package source resolve and verify the package (Windows Update, Dell, HP),
+/// creates a restore point (or stops unless the user allowed to continue without), installs ONE package,
+/// records what changed in the driver store and writes the log.
 /// </summary>
-public sealed partial class InstallerEngine(
-    IDeviceQuery devices,
-    IWindowsUpdateInstaller windowsUpdate,
-    IRestorePointCreator restorePoints,
-    IDriverStore driverStore,
-    IInstallStore store,
-    TimeProvider? time = null,
-    ILogger<InstallerEngine>? logger = null)
+public sealed partial class InstallerEngine
 {
     private const int PnpUtilRebootRequired = 3010;
 
-    private readonly TimeProvider _time = time ?? TimeProvider.System;
-    private readonly ILogger _logger = (ILogger?)logger ?? NullLogger.Instance;
+    private readonly IDeviceQuery _devices;
+    private readonly IReadOnlyDictionary<string, IPackageSource> _sources;
+    private readonly IRestorePointCreator _restorePoints;
+    private readonly IDriverStore _driverStore;
+    private readonly IInstallStore _store;
+    private readonly TimeProvider _time;
+    private readonly ILogger _logger;
 
-    public InstallResult Execute(InstallRequest request)
+    public InstallerEngine(
+        IDeviceQuery devices,
+        IEnumerable<IPackageSource> sources,
+        IRestorePointCreator restorePoints,
+        IDriverStore driverStore,
+        IInstallStore store,
+        TimeProvider? time = null,
+        ILogger<InstallerEngine>? logger = null)
+    {
+        _devices = devices;
+        _sources = sources.ToDictionary(s => s.SourceId, StringComparer.Ordinal);
+        _restorePoints = restorePoints;
+        _driverStore = driverStore;
+        _store = store;
+        _time = time ?? TimeProvider.System;
+        _logger = (ILogger?)logger ?? NullLogger.Instance;
+    }
+
+    public async Task<InstallResult> ExecuteAsync(InstallRequest request, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(request);
         var result = InstallProtocol.Validate(request) is { } error
             ? Fail(request, error)
-            : request.Action == InstallAction.Rollback ? Rollback(request) : Install(request);
-        store.WriteResult(result);
+            : request.Action == InstallAction.Rollback ? Rollback(request) : await InstallAsync(request, cancellationToken).ConfigureAwait(false);
+        _store.WriteResult(result);
         return result;
     }
 
-    private InstallResult Install(InstallRequest request)
+    private async Task<InstallResult> InstallAsync(InstallRequest request, CancellationToken cancellationToken)
     {
         var instanceId = request.DeviceInstanceId!;
-        var device = devices.Find(instanceId);
+        var device = _devices.Find(instanceId);
         if (device is null)
         {
             return Stop(request, InstallOutcome.DeviceMismatch, "DeviceNotFound");
         }
 
-        var update = windowsUpdate.Find(request.UpdateId!);
-        if (update is null)
+        if (!_sources.TryGetValue(request.Source, out var source))
         {
-            return Stop(request, InstallOutcome.NotOffered, "UpdateNotOffered");
+            return Stop(request, InstallOutcome.Failed, "UnsupportedSource");
         }
 
-        if (!update.IsDriver)
+        // Resolve, download and verify first – a failure here costs no restore point and changes nothing.
+        PrepareResult prepared;
+        try
         {
-            return Stop(request, InstallOutcome.DeviceMismatch, "NotADriver");
+            prepared = await source.PrepareAsync(request, device, cancellationToken).ConfigureAwait(false);
+        }
+        catch (VersionSourceException ex)
+        {
+            _logger.LogWarning(ex, "Preparing {Source} package failed: {Reason}", request.Source, ex.Reason);
+            return Stop(request, InstallOutcome.Failed, ex.Reason);
         }
 
-        var deviceIds = VersionMatching.MatchableIds(device).ToHashSet(StringComparer.OrdinalIgnoreCase);
-        if (update.DriverHardwareId is null || !deviceIds.Contains(update.DriverHardwareId))
+        if (prepared.Package is not { } package)
         {
-            return Stop(request, InstallOutcome.DeviceMismatch, "HardwareIdMismatch");
+            return Stop(request, prepared.Outcome, prepared.Reason ?? "NotPrepared");
         }
 
-        if (!update.EulaAccepted)
+        try
         {
-            // Accepting license terms is the user's decision in Windows Update itself – never done silently here.
-            return Stop(request, InstallOutcome.Failed, "EulaRequired");
-        }
+            var restorePoint = _restorePoints.Create($"DriverCompass: {Shorten(package.Title ?? device.Name ?? instanceId)}");
+            if (!restorePoint.Created && !request.AllowWithoutRestorePoint)
+            {
+                _logger.LogWarning("No restore point ({Reason}) and no permission to continue – stopping", restorePoint.Reason);
+                return Log(request, device, package, InstallOutcome.RestorePointFailed, restorePoint, [], null, "NoRestorePoint");
+            }
 
-        var restorePoint = restorePoints.Create($"DriverCompass: {Shorten(update.Title ?? device.Name ?? instanceId)}");
-        if (!restorePoint.Created && !request.AllowWithoutRestorePoint)
+            var before = _driverStore.Snapshot();
+            _logger.LogInformation("Installing {Source} package {Package} ({Title}) for {Device}", package.Source, package.PackageId, package.Title, instanceId);
+            var installed = source.Install(package);
+            var after = _driverStore.Snapshot();
+
+            var published = after
+                .Where(kv => !before.TryGetValue(kv.Key, out var hash) || hash != kv.Value)
+                .Where(kv => package.ExpectedInfHashes is null || package.ExpectedInfHashes.Contains(kv.Value))
+                .Select(kv => new PublishedInf(kv.Key, kv.Value))
+                .OrderBy(p => p.Name, StringComparer.OrdinalIgnoreCase)
+                .ToList();
+
+            var outcome = installed.Succeeded
+                ? installed.RebootRequired ? InstallOutcome.RebootRequired : InstallOutcome.Installed
+                : installed.Code == UpdateCodes.NoDeviceUpdated ? InstallOutcome.NotInstallable : InstallOutcome.Failed;
+
+            if (!installed.Succeeded && package.ExpectedInfHashes is not null && published.Count > 0)
+            {
+                // Our own package went into the store but no device uses it – take exactly it out again.
+                foreach (var inf in published)
+                {
+                    _logger.LogInformation("Removing unused package {Inf}: pnputil exit {Exit}", inf.Name, _driverStore.DeleteDriver(inf.Name));
+                }
+
+                published = [];
+            }
+
+            return Log(request, device, package, outcome, restorePoint, published, _devices.Find(instanceId), installed.Code);
+        }
+        finally
         {
-            _logger.LogWarning("No restore point ({Reason}) and no permission to continue – stopping", restorePoint.Reason);
-            return Log(request, device, update, InstallOutcome.RestorePointFailed, restorePoint, [], null, "NoRestorePoint");
+            source.Cleanup(package);
         }
-
-        var before = driverStore.Snapshot();
-        _logger.LogInformation("Installing Windows Update {UpdateId} ({Title}) for {Device}", update.UpdateId, update.Title, instanceId);
-        var installed = windowsUpdate.Install(update);
-        var after = driverStore.Snapshot();
-
-        var published = after
-            .Where(kv => !before.TryGetValue(kv.Key, out var hash) || hash != kv.Value)
-            .Select(kv => new PublishedInf(kv.Key, kv.Value))
-            .OrderBy(p => p.Name, StringComparer.OrdinalIgnoreCase)
-            .ToList();
-
-        var outcome = !installed.Succeeded
-            ? InstallOutcome.Failed
-            : installed.RebootRequired ? InstallOutcome.RebootRequired : InstallOutcome.Installed;
-
-        return Log(request, device, update, outcome, restorePoint, published, devices.Find(instanceId), installed.Code);
     }
 
     private InstallResult Rollback(InstallRequest request)
     {
-        var log = store.ReadLog();
+        var log = _store.ReadLog();
         var entry = log.FirstOrDefault(e => e.Id == request.LogEntryId);
         if (entry is null || !InstallProtocol.CanRollBack(entry, log))
         {
@@ -111,7 +144,7 @@ public sealed partial class InstallerEngine(
                 return RollbackResult(request, entry, InstallOutcome.Failed, "InvalidInfName");
             }
 
-            var current = driverStore.HashOf(inf.Name);
+            var current = _driverStore.HashOf(inf.Name);
             if (current is null || !string.Equals(current, inf.Sha256, StringComparison.OrdinalIgnoreCase))
             {
                 return RollbackResult(request, entry, InstallOutcome.Failed, "InfChanged");
@@ -121,7 +154,7 @@ public sealed partial class InstallerEngine(
         var reboot = false;
         foreach (var inf in entry.PublishedInfs)
         {
-            var exit = driverStore.DeleteDriver(inf.Name);
+            var exit = _driverStore.DeleteDriver(inf.Name);
             _logger.LogInformation("pnputil /delete-driver {Inf} /uninstall → {Exit}", inf.Name, exit);
             if (exit == PnpUtilRebootRequired)
             {
@@ -148,7 +181,7 @@ public sealed partial class InstallerEngine(
     private InstallResult Log(
         InstallRequest request,
         DeviceInfo device,
-        OfferedUpdate update,
+        PreparedPackage package,
         InstallOutcome outcome,
         RestorePointInfo restorePoint,
         IReadOnlyList<PublishedInf> published,
@@ -164,9 +197,9 @@ public sealed partial class InstallerEngine(
             RequestId = request.RequestId,
             DeviceInstanceId = device.InstanceId,
             DeviceName = device.Name,
-            Source = VersionSourceIds.WindowsUpdate,
-            UpdateId = update.UpdateId,
-            Title = update.Title,
+            Source = package.Source,
+            UpdateId = package.PackageId,
+            Title = package.Title,
             PreviousInfName = device.Driver?.InfName,
             PreviousVersion = device.Driver?.Version,
             InstalledVersion = deviceAfter?.Driver?.Version,
@@ -175,7 +208,7 @@ public sealed partial class InstallerEngine(
             Message = message,
         };
 
-        store.AppendLog(entry);
+        _store.AppendLog(entry);
         return new InstallResult
         {
             RequestId = request.RequestId,
@@ -183,7 +216,7 @@ public sealed partial class InstallerEngine(
             Message = message,
             RestorePoint = restorePoint,
             LogEntryId = entry.Id,
-            Title = update.Title,
+            Title = package.Title,
             InstalledVersion = entry.InstalledVersion,
         };
     }
@@ -207,7 +240,7 @@ public sealed partial class InstallerEngine(
             Message = message,
         };
 
-        store.AppendLog(entry);
+        _store.AppendLog(entry);
         return new InstallResult { RequestId = request.RequestId, Outcome = outcome, Message = message, LogEntryId = entry.Id, Title = original?.Title };
     }
 
@@ -215,4 +248,11 @@ public sealed partial class InstallerEngine(
 
     [GeneratedRegex(@"^oem\d{1,5}\.inf$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
     private static partial Regex PublishedNameRegex();
+}
+
+/// <summary>Well-known result codes of package sources.</summary>
+public static class UpdateCodes
+{
+    /// <summary>pnputil added the package but no device uses it (Windows does not consider it better).</summary>
+    public const string NoDeviceUpdated = "NoDeviceUpdated";
 }

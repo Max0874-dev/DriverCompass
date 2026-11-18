@@ -3,6 +3,7 @@ using DriverCompass.Core.Abstractions;
 using DriverCompass.Core.Models;
 using DriverCompass.Core.Versions;
 using DriverCompass.VersionProviders.Net;
+using DriverCompass.VersionProviders.Packages;
 
 namespace DriverCompass.VersionProviders.Hp;
 
@@ -11,11 +12,12 @@ namespace DriverCompass.VersionProviders.Hp;
 /// reference file tells HP the platform ID (from the mainboard product, e.g. "8B41") and Windows release.
 /// Both CABs are Authenticode-signed by HP Inc.
 /// </summary>
-public sealed partial class HpVersionProvider(ICatalogDownloader downloader, ICabExtractor extractor) : IVersionProvider
+public sealed partial class HpVersionProvider(ICatalogDownloader downloader, ICabExtractor extractor) : IVersionProvider, IOemPackageCatalog
 {
     internal static readonly Uri PlatformListUri = new("https://hpia.hpcloud.hp.com/ref/platformList.cab");
     internal static readonly string[] Hosts = ["hpia.hpcloud.hp.com"];
     internal static readonly string[] Signers = ["HP Inc."];
+    internal static readonly string[] PackageHosts = ["ftp.hp.com"];
     private const long MaxCabBytes = 30L * 1024 * 1024;
 
     public VersionSourceInfo Source { get; } = new(VersionSourceIds.Hp, TransmitsDeviceData: true);
@@ -27,15 +29,57 @@ public sealed partial class HpVersionProvider(ICatalogDownloader downloader, ICa
     internal static string? PlatformId(SystemInfo system) =>
         system.BaseBoardProduct?.Trim() is { } p && PlatformRegex().IsMatch(p) ? p.ToUpperInvariant() : null;
 
+    public string SourceId => VersionSourceIds.Hp;
+
     public async Task<VersionProviderResult> CheckAsync(
         IReadOnlyList<DeviceAssessment> devices,
         SystemInfo system,
         CancellationToken cancellationToken = default)
     {
+        var reference = await OpenReferenceAsync(system, cancellationToken).ConfigureAwait(false);
+        if (reference is null)
+        {
+            return VersionProviderResult.NotApplicable(VersionSourceReasons.ModelNotInCatalog);
+        }
+
+        IReadOnlyList<CatalogDriverEntry> entries;
+        using (reference.Value.File)
+        await using (var stream = reference.Value.File.OpenRead())
+        {
+            entries = HpCatalogParser.ParseReference(stream);
+        }
+
+        var results = VersionMatching.Match(devices, entries, Source.Id);
+        return new VersionProviderResult(results, VersionSourceOutcome.Ok, reference.Value.Detail);
+    }
+
+    public async Task<OemPackage?> FindPackageAsync(SystemInfo system, string packageId, CancellationToken cancellationToken = default)
+    {
+        if (!IsApplicable(system))
+        {
+            return null;
+        }
+
+        var reference = await OpenReferenceAsync(system, cancellationToken).ConfigureAwait(false);
+        if (reference is null)
+        {
+            return null;
+        }
+
+        using (reference.Value.File)
+        await using (var stream = reference.Value.File.OpenRead())
+        {
+            return HpCatalogParser.FindPackage(stream, packageId);
+        }
+    }
+
+    /// <summary>Platform list → reference file for this platform and Windows release (both signed by HP).</summary>
+    private async Task<(ExtractedFile File, string Detail)?> OpenReferenceAsync(SystemInfo system, CancellationToken cancellationToken)
+    {
         var platformId = PlatformId(system);
         if (platformId is null)
         {
-            return VersionProviderResult.NotApplicable(VersionSourceReasons.ModelNotInCatalog);
+            return null;
         }
 
         var listCab = await downloader.DownloadAsync(new DownloadRequest(PlatformListUri, Hosts, MaxCabBytes), cancellationToken).ConfigureAwait(false);
@@ -49,7 +93,7 @@ public sealed partial class HpVersionProvider(ICatalogDownloader downloader, ICa
         var os = HpCatalogParser.ChooseOs(releases, system.IsWindows11, system.OperatingSystemDisplayVersion, system.OperatingSystemBuild);
         if (os is null)
         {
-            return VersionProviderResult.NotApplicable(VersionSourceReasons.ModelNotInCatalog);
+            return null;
         }
 
         string referenceCab;
@@ -60,18 +104,10 @@ public sealed partial class HpVersionProvider(ICatalogDownloader downloader, ICa
         }
         catch (VersionSourceException ex) when (ex.Reason == VersionSourceReasons.ModelNotInCatalog)
         {
-            return VersionProviderResult.NotApplicable(VersionSourceReasons.ModelNotInCatalog);
+            return null;
         }
 
-        IReadOnlyList<CatalogDriverEntry> entries;
-        using (var xml = await extractor.ExtractAsync(referenceCab, Signers, cancellationToken).ConfigureAwait(false))
-        await using (var stream = xml.OpenRead())
-        {
-            entries = HpCatalogParser.ParseReference(stream);
-        }
-
-        var results = VersionMatching.Match(devices, entries, Source.Id);
-        return new VersionProviderResult(results, VersionSourceOutcome.Ok, $"{platformId} {os.ReleaseIdFilename}");
+        return (await extractor.ExtractAsync(referenceCab, Signers, cancellationToken).ConfigureAwait(false), $"{platformId} {os.ReleaseIdFilename}");
     }
 
     [GeneratedRegex("^[0-9A-Fa-f]{4}$", RegexOptions.CultureInvariant)]

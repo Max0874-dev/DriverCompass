@@ -80,25 +80,26 @@ public static class InstallProtocol
                     return "invalid device instance id";
                 }
 
-                if (!Guid.TryParseExact(request.UpdateId, "D", out _))
-                {
-                    return "invalid update id";
-                }
-
-                if (request.Revision is < 0 or > 1_000_000)
-                {
-                    return "invalid revision";
-                }
-
                 if (request.LogEntryId is not null)
                 {
                     return "unexpected log entry id";
                 }
 
-                return null;
+                return request.Source switch
+                {
+                    VersionSourceIds.WindowsUpdate when !Guid.TryParseExact(request.UpdateId, "D", out _) => "invalid update id",
+                    VersionSourceIds.WindowsUpdate when request.Revision is < 0 or > 1_000_000 => "invalid revision",
+                    VersionSourceIds.WindowsUpdate when request.PackageId is not null => "unexpected package id",
+                    VersionSourceIds.WindowsUpdate => null,
+                    VersionSourceIds.Dell when request.UpdateId is not null || !IsSafeDellPackagePath(request.PackageId) => "invalid Dell package",
+                    VersionSourceIds.Hp when request.UpdateId is not null || !IsHpSoftPaqId(request.PackageId) => "invalid HP package",
+                    VersionSourceIds.Dell or VersionSourceIds.Hp => null,
+                    _ => "unsupported source",
+                };
 
             case InstallAction.Rollback:
-                return request.LogEntryId is { } id && id != Guid.Empty && request.UpdateId is null && request.DeviceInstanceId is null
+                return request.LogEntryId is { } id && id != Guid.Empty && request.UpdateId is null && request.DeviceInstanceId is null &&
+                       request.PackageId is null
                     ? null
                     : "invalid rollback request";
 
@@ -106,6 +107,24 @@ public static class InstallProtocol
                 return "unknown action";
         }
     }
+
+    /// <summary>Sources whose packages DriverCompass can install.</summary>
+    public static IReadOnlySet<string> InstallableSources { get; } =
+        new HashSet<string>(StringComparer.Ordinal) { VersionSourceIds.WindowsUpdate, VersionSourceIds.Dell, VersionSourceIds.Hp };
+
+    /// <summary>Dell component path relative to downloads.dell.com, e.g. "FOLDER14023085M/2/Name_A03.EXE".</summary>
+    public static bool IsSafeDellPackagePath(string? path) =>
+        path is { Length: > 5 and < 300 } &&
+        path.EndsWith(".exe", StringComparison.OrdinalIgnoreCase) &&
+        !path.StartsWith('/') &&
+        !path.Contains("..", StringComparison.Ordinal) &&
+        path.All(c => char.IsAsciiLetterOrDigit(c) || c is '/' or '-' or '_' or '.');
+
+    /// <summary>HP SoftPaq number, e.g. "sp157308".</summary>
+    public static bool IsHpSoftPaqId(string? id) =>
+        id is { Length: >= 6 and <= 9 } &&
+        id.StartsWith("sp", StringComparison.OrdinalIgnoreCase) &&
+        id[2..].All(char.IsAsciiDigit);
 
     /// <summary>PnP instance IDs: printable ASCII, no quotes (they end up in a WQL query), sensible length.</summary>
     public static bool IsPlausibleInstanceId(string? id) =>

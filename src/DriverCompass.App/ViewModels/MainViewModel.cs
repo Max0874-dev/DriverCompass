@@ -345,7 +345,7 @@ public sealed partial class MainViewModel : ObservableObject
         }
 
         var needsDisclaimer = !_settings.Current.InstallDisclaimerAccepted;
-        if (!await Shell.ConfirmInstallAsync(new InstallConfirmation(item.Name, check.PackageName ?? check.PackageId!, item.LatestVersionText, needsDisclaimer)))
+        if (!await Shell.ConfirmInstallAsync(new InstallConfirmation(item.Name, check.PackageName ?? check.PackageId!, item.LatestVersionText, needsDisclaimer, check.ProviderId)))
         {
             return;
         }
@@ -360,8 +360,10 @@ public sealed partial class MainViewModel : ObservableObject
             RequestId = Guid.NewGuid(),
             Action = InstallAction.Install,
             DeviceInstanceId = item.InstanceId,
-            UpdateId = check.PackageId,
+            Source = check.ProviderId,
+            UpdateId = check.ProviderId == VersionSourceIds.WindowsUpdate ? check.PackageId : null,
             Revision = check.PackageRevision,
+            PackageId = check.ProviderId == VersionSourceIds.WindowsUpdate ? null : check.PackageId,
         };
 
         var result = await RunInstallerAsync(request, Localizer.F("Busy_Installing", item.Name));

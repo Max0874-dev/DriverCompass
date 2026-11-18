@@ -29,7 +29,7 @@
     </Device>
   </Devices>
   <Solutions>
-    <UpdateInfo><Id>sp174175</Id><Name>AMD Audio Driver</Name><Version>6.0.2.114 Rev.A</Version><ReleaseNotesUrl>ftp.hp.com/pub/softpaq/sp174001-174500/sp174175.html</ReleaseNotesUrl></UpdateInfo>
-    <UpdateInfo><Id>sp170000</Id><Name>Realtek Audio Driver</Name><ReleaseNotesUrl>evil.example.com/notes.html</ReleaseNotesUrl></UpdateInfo>
+    <UpdateInfo><Id>sp174175</Id><Name>AMD Audio Driver</Name><Version>6.0.2.114 Rev.A</Version><Url>ftp.hp.com/pub/softpaq/sp174001-174500/sp174175.exe</Url><ReleaseNotesUrl>ftp.hp.com/pub/softpaq/sp174001-174500/sp174175.html</ReleaseNotesUrl><SHA256>1234567890ABCDEF1234567890ABCDEF1234567890ABCDEF1234567890ABCDEF</SHA256><Size>9000000</Size></UpdateInfo>
+    <UpdateInfo><Id>sp170000</Id><Name>Realtek Audio Driver</Name><Url>evil.example.com/sp170000.exe</Url><ReleaseNotesUrl>evil.example.com/notes.html</ReleaseNotesUrl><SHA256>1234567890ABCDEF1234567890ABCDEF1234567890ABCDEF1234567890ABCDEF</SHA256></UpdateInfo>
   </Solutions>
 </ImagePal>

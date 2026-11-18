@@ -3,7 +3,7 @@ using DriverCompass.App.ViewModels;
 namespace DriverCompass.App.Services;
 
 /// <summary>What the install confirmation dialog shows.</summary>
-public sealed record InstallConfirmation(string DeviceName, string DriverTitle, string VersionText, bool NeedsDisclaimer);
+public sealed record InstallConfirmation(string DeviceName, string DriverTitle, string VersionText, bool NeedsDisclaimer, string SourceId);
 
 /// <summary>Window-bound UI operations the view models need (implemented by MainWindow).</summary>
 public interface IShellService
