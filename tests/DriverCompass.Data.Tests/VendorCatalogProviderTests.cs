@@ -61,7 +61,7 @@ public sealed class VendorCatalogProviderTests : IDisposable
         // 1) Nothing cached, network down → embedded.
         var first = await Create(FakeHandler.Throws(), embedded).LoadAsync(TestContext.Current.CancellationToken);
         Assert.Equal(CatalogSource.Embedded, first.Info.Source);
-        Assert.Contains(CatalogWarnings.RemoteUnavailable, first.Info.Warnings);
+        Assert.Equal(new[] { CatalogWarnings.RemoteUnavailable }, first.Info.Warnings);
 
         // 2) Fill the cache with a newer version.
         await Create(FakeHandler.Json(CatalogJson("2026.3.1.1")), embedded).LoadAsync(TestContext.Current.CancellationToken);
@@ -70,6 +70,7 @@ public sealed class VendorCatalogProviderTests : IDisposable
         var third = await Create(FakeHandler.Throws(), embedded).LoadAsync(TestContext.Current.CancellationToken);
         Assert.Equal(CatalogSource.Cache, third.Info.Source);
         Assert.Equal("2026.3.1.1", third.Info.DataVersion);
+        Assert.Equal(new[] { CatalogWarnings.RemoteUnavailableCached }, third.Info.Warnings);
     }
 
     [Fact]

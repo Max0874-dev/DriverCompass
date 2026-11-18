@@ -36,7 +36,7 @@ public class LocalizationTests
         expected.AddRange(Enum.GetValues<LinkSpecificity>().Select(s => $"Link_OemSupport_{s}"));
         expected.AddRange(Enum.GetValues<CatalogSource>().Select(s => $"CatalogSource_{s}"));
         expected.AddRange(["Link_ChipVendor", "Link_MicrosoftCatalog", "CmError_Unknown", "Class_Unknown",
-            "Catalog_RemoteUnavailable", "Catalog_RemoteInvalid", "Catalog_RemoteOlder", "Catalog_CacheInvalid"]);
+            "Catalog_RemoteUnavailable", "Catalog_RemoteUnavailableCached", "Catalog_RemoteInvalid", "Catalog_RemoteOlder", "Catalog_CacheInvalid"]);
 
         // Stage 2: source names, privacy notes, verdicts and reason codes are built from ids at runtime.
         expected.AddRange(VersionSourceIds.All.SelectMany(id => new[] { $"VersionSource_{id}", $"VersionSource_{id}_Privacy" }));

@@ -34,7 +34,11 @@ public sealed record CatalogProviderOptions
 /// <summary>Warning codes in <see cref="CatalogInfo.Warnings"/> (localized by the app).</summary>
 public static class CatalogWarnings
 {
+    /// <summary>Download failed; the built-in copy is used.</summary>
     public const string RemoteUnavailable = "Catalog_RemoteUnavailable";
+
+    /// <summary>Download failed; the last downloaded copy from the cache is used.</summary>
+    public const string RemoteUnavailableCached = "Catalog_RemoteUnavailableCached";
     public const string RemoteInvalid = "Catalog_RemoteInvalid";
     public const string RemoteOlder = "Catalog_RemoteOlder";
     public const string CacheInvalid = "Catalog_CacheInvalid";
@@ -128,7 +132,7 @@ public sealed class VendorCatalogProvider : IVendorCatalogProvider
                     break;
 
                 default:
-                    warnings.Add(CatalogWarnings.RemoteUnavailable);
+                    warnings.Add(source == CatalogSource.Cache ? CatalogWarnings.RemoteUnavailableCached : CatalogWarnings.RemoteUnavailable);
                     break;
             }
         }

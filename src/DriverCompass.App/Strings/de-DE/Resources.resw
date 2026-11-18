@@ -32,7 +32,8 @@
   <data name="CatalogSource_Cache" xml:space="preserve"><value>gespeichert</value></data>
   <data name="CatalogSource_Remote" xml:space="preserve"><value>online aktualisiert</value></data>
   <data name="Mock_Banner" xml:space="preserve"><value>Demo-Modus: Statt Ihrer Hardware werden Beispielgeräte angezeigt (--mock).</value></data>
-  <data name="Catalog_RemoteUnavailable" xml:space="preserve"><value>Die Herstellerliste konnte nicht aktualisiert werden (offline?). Die gespeicherte Version wird verwendet.</value></data>
+  <data name="Catalog_RemoteUnavailable" xml:space="preserve"><value>Die Herstellerliste konnte nicht aktualisiert werden (offline?). Die mitgelieferte Version wird verwendet.</value></data>
+  <data name="Catalog_RemoteUnavailableCached" xml:space="preserve"><value>Die Herstellerliste konnte nicht aktualisiert werden (offline?). Die zuletzt heruntergeladene Version wird verwendet.</value></data>
   <data name="Catalog_RemoteInvalid" xml:space="preserve"><value>Die heruntergeladene Herstellerliste hat die Prüfung nicht bestanden und wurde ignoriert.</value></data>
   <data name="Catalog_RemoteOlder" xml:space="preserve"><value>Die Online-Herstellerliste ist älter als die mitgelieferte und wurde ignoriert.</value></data>
   <data name="Catalog_CacheInvalid" xml:space="preserve"><value>Die gespeicherte Herstellerliste war beschädigt und wurde entfernt.</value></data>

@@ -32,7 +32,8 @@
   <data name="CatalogSource_Cache" xml:space="preserve"><value>saved</value></data>
   <data name="CatalogSource_Remote" xml:space="preserve"><value>updated online</value></data>
   <data name="Mock_Banner" xml:space="preserve"><value>Demo mode: example devices are shown instead of your hardware (--mock).</value></data>
-  <data name="Catalog_RemoteUnavailable" xml:space="preserve"><value>The vendor list could not be updated (offline?). The saved version is used.</value></data>
+  <data name="Catalog_RemoteUnavailable" xml:space="preserve"><value>The vendor list could not be updated (offline?). The built-in version is used.</value></data>
+  <data name="Catalog_RemoteUnavailableCached" xml:space="preserve"><value>The vendor list could not be updated (offline?). The last downloaded version is used.</value></data>
   <data name="Catalog_RemoteInvalid" xml:space="preserve"><value>The downloaded vendor list failed validation and was ignored.</value></data>
   <data name="Catalog_RemoteOlder" xml:space="preserve"><value>The online vendor list is older than the built-in one and was ignored.</value></data>
   <data name="Catalog_CacheInvalid" xml:space="preserve"><value>The saved vendor list was damaged and has been removed.</value></data>
