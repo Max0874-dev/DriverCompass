@@ -60,6 +60,37 @@ public class VendorCatalogValidatorTests
         Assert.Equal(expectedOem, catalog.FindOem(new SystemInfo { Manufacturer = smbiosManufacturer })?.Vendor.Id);
     }
 
+    [Theory]
+    [InlineData(@"USB\VID_0CF2&PID_A100&REV_0100", "lianli")]
+    [InlineData(@"HID\VID_0CF2&PID_A103&MI_01", "lianli")]
+    [InlineData(@"USB\VID_0416&PID_7373", "lianli")]
+    [InlineData(@"USB\VID_0CF2&PID_6250", null)]
+    [InlineData(@"USB\VID_1B1C&PID_0C3F", "corsair")]
+    public void Usb_products_win_over_the_vendor_id_owner(string hardwareId, string? expectedVendor)
+    {
+        var catalog = _validator.Validate(RepoFile("vendors.json")).Catalog!;
+        Assert.Equal(expectedVendor, catalog.FindChipVendor(HardwareIdParser.Parse(hardwareId))?.Id);
+    }
+
+    [Theory]
+    [InlineData("0cf2:a100")]
+    [InlineData("0CF2-A100")]
+    [InlineData("0CF2")]
+    public void Malformed_usb_products_are_rejected(string product)
+    {
+        var json = RepoFile("vendors.json").Replace("\"0CF2:A100\"", $"\"{product}\"", StringComparison.Ordinal);
+        Assert.False(_validator.Validate(json).IsValid);
+    }
+
+    [Fact]
+    public void A_usb_product_may_not_belong_to_two_vendors()
+    {
+        var json = RepoFile("vendors.json").Replace("\"ids\": { \"usb\": [\"1B1C\"] }", "\"ids\": { \"usb\": [\"1B1C\"], \"usbProducts\": [\"0CF2:A100\"] }", StringComparison.Ordinal);
+        var result = _validator.Validate(json);
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, e => e.Contains("0CF2:A100", StringComparison.Ordinal));
+    }
+
     [Fact]
     public void Embedded_catalog_equals_repository_file()
     {

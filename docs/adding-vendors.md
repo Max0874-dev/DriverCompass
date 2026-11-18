@@ -31,6 +31,12 @@ The vendor list maps hardware vendor IDs to manufacturers and their official dri
 }
 ```
 
+Some products use **another company's USB vendor ID** – e.g. Lian Li hubs report ENE's `0CF2`. Mapping `0CF2` to Lian Li would mislabel every other ENE device, so such products are listed one by one as `VID:PID` (upper-case hex). They are checked before the vendor IDs and may not be listed twice:
+
+```json
+"ids": { "usbProducts": ["0CF2:A100", "0416:7373"] }
+```
+
 Device classes are the Windows setup class names: `Display`, `Net`, `MEDIA`, `Bluetooth`, `USB`, `HIDClass`, `SCSIAdapter`, `System`, `Camera` … You can see them in the expert view.
 
 ### OEM (PC / mainboard manufacturer)

@@ -16,6 +16,9 @@ public sealed record ChipVendor
     public required string Name { get; init; }
     public IReadOnlyList<string> PciIds { get; init; } = [];
     public IReadOnlyList<string> UsbIds { get; init; } = [];
+
+    /// <summary>Single USB devices "VID:PID" that belong to this vendor although the VID is someone else's (checked first).</summary>
+    public IReadOnlyList<string> UsbProductIds { get; init; } = [];
     public IReadOnlyList<string> AcpiIds { get; init; } = [];
     public IReadOnlyList<string> PnpIds { get; init; } = [];
     public IReadOnlyList<string> AllowedDomains { get; init; } = [];

@@ -13,6 +13,7 @@ public sealed class VendorCatalog : IVendorCatalog
     public static readonly TimeSpan RegexTimeout = TimeSpan.FromMilliseconds(100);
 
     private readonly Dictionary<(VendorIdKind Kind, string Id), ChipVendor> _chipIndex = [];
+    private readonly Dictionary<string, ChipVendor> _usbProductIndex = new(StringComparer.OrdinalIgnoreCase);
     private readonly ConcurrentDictionary<string, Regex> _regexCache = new(StringComparer.Ordinal);
 
     public VendorCatalog(
@@ -34,6 +35,10 @@ public sealed class VendorCatalog : IVendorCatalog
             Index(vendor, VendorIdKind.Usb, vendor.UsbIds);
             Index(vendor, VendorIdKind.Acpi, vendor.AcpiIds);
             Index(vendor, VendorIdKind.Pnp, vendor.PnpIds);
+            foreach (var product in vendor.UsbProductIds)
+            {
+                _usbProductIndex.TryAdd(product, vendor);
+            }
         }
     }
 
@@ -48,6 +53,13 @@ public sealed class VendorCatalog : IVendorCatalog
         if (!id.HasVendor)
         {
             return null;
+        }
+
+        // A single product (VID:PID) wins over the owner of the vendor ID – e.g. Lian Li hubs use ENE's VID 0CF2.
+        if (id.VendorKind == VendorIdKind.Usb && id.DeviceId is { Length: > 0 } pid &&
+            _usbProductIndex.TryGetValue($"{id.VendorId}:{pid}", out var product))
+        {
+            return product;
         }
 
         return _chipIndex.GetValueOrDefault((id.VendorKind, id.VendorId!.ToUpperInvariant()));

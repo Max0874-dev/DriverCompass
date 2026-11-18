@@ -1,7 +1,7 @@
 {
   "$schema": "./vendors.schema.json",
   "schemaVersion": 1,
-  "dataVersion": "2026.11.18.2",
+  "dataVersion": "2026.11.18.3",
   "chipVendors": [
     {
       "id": "nvidia",
@@ -186,6 +186,22 @@
       "ids": { "usb": ["1B1C"] },
       "allowedDomains": ["corsair.com"],
       "driverPages": [{ "url": "https://www.corsair.com/us/en/s/downloads" }]
+    },
+    {
+      "id": "lianli",
+      "name": "Lian Li",
+      "ids": {
+        "usbProducts": [
+          "0CF2:7750", "0CF2:A100", "0CF2:A101", "0CF2:A102", "0CF2:A103", "0CF2:A104", "0CF2:A105", "0CF2:A200",
+          "0416:7371", "0416:7373", "0416:8050"
+        ]
+      },
+      "allowedDomains": ["lian-li.com"],
+      "driverPages": [{ "url": "https://lian-li.com/l-connect3/" }],
+      "note": {
+        "en": "Lian Li fan/RGB hubs (UNI HUB, Strimer, GA II, Universal Screen) use the chip maker's USB ID (ENE or Nuvoton). They run on the Windows standard driver; lighting and fans are controlled with L-Connect 3.",
+        "de": "Lian-Li-Lüfter-/RGB-Hubs (UNI HUB, Strimer, GA II, Universal Screen) nutzen die USB-Kennung des Chip-Herstellers (ENE bzw. Nuvoton). Sie laufen mit dem Windows-Standardtreiber; Licht und Lüfter steuert L-Connect 3."
+      }
     },
     {
       "id": "steelseries",

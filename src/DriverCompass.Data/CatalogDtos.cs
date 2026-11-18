@@ -27,6 +27,7 @@ internal sealed class IdsDto
 {
     [JsonPropertyName("pci")] public List<string> Pci { get; set; } = [];
     [JsonPropertyName("usb")] public List<string> Usb { get; set; } = [];
+    [JsonPropertyName("usbProducts")] public List<string> UsbProducts { get; set; } = [];
     [JsonPropertyName("acpi")] public List<string> Acpi { get; set; } = [];
     [JsonPropertyName("pnp")] public List<string> Pnp { get; set; } = [];
 }

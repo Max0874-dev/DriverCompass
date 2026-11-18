@@ -46,6 +46,11 @@
           "properties": {
             "pci": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/hex4" } },
             "usb": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/hex4" } },
+            "usbProducts": {
+              "description": "Single USB devices as VID:PID (upper-case hex). For products that use another company's vendor ID, e.g. Lian Li hubs with ENE's 0CF2. Checked before the vendor IDs.",
+              "type": "array", "uniqueItems": true, "maxItems": 200,
+              "items": { "type": "string", "pattern": "^[0-9A-F]{4}:[0-9A-F]{4}$" }
+            },
             "acpi": { "type": "array", "uniqueItems": true, "items": { "type": "string", "pattern": "^[A-Z][A-Z0-9]{2,3}$" } },
             "pnp": { "type": "array", "uniqueItems": true, "items": { "type": "string", "pattern": "^[A-Z]{3}$" } }
           }

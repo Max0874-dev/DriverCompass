@@ -122,6 +122,7 @@ public sealed class VendorCatalogValidator : IVendorCatalogValidator
         {
             foreach (var (kind, id) in v.Ids.Pci.Select(i => ("pci", i))
                          .Concat(v.Ids.Usb.Select(i => ("usb", i)))
+                         .Concat(v.Ids.UsbProducts.Select(i => ("usb product", i)))
                          .Concat(v.Ids.Acpi.Select(i => ("acpi", i)))
                          .Concat(v.Ids.Pnp.Select(i => ("pnp", i))))
             {
@@ -236,6 +237,7 @@ public sealed class VendorCatalogValidator : IVendorCatalogValidator
             Name = v.Name,
             PciIds = Upper(v.Ids.Pci),
             UsbIds = Upper(v.Ids.Usb),
+            UsbProductIds = Upper(v.Ids.UsbProducts),
             AcpiIds = Upper(v.Ids.Acpi),
             PnpIds = Upper(v.Ids.Pnp),
             AllowedDomains = v.AllowedDomains,
