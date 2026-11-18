@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.1.1] – 2026-11-18
+
+Small fix release. **Preview:** the EXE is still not code-signed, so Windows SmartScreen will warn ("Windows protected your PC" → *More info* → *Run anyway*). Check the SHA-256 against `SHA256SUMS-*.txt` before running it.
+
+### Fixed
+- When the vendor list cannot be updated, the warning now names the list that is actually used: the built-in one or the last downloaded one. Before, it always said "the saved version is used".
+
+### Changed
+- The repository is public now, so the app updates its vendor list from GitHub at startup (a plain download of a public file, no device data).
+
+### Download
+- `DriverCompass-0.1.1-win-x64.zip` / `-win-arm64.zip`: unzip and run `DriverCompass.exe` (self-contained, no installation, Windows 10 1809+ / Windows 11).
+
 ## [0.1.0] – 2026-11-18
 
 First release. **Preview:** the EXE is not code-signed yet, so Windows SmartScreen will warn ("Windows protected your PC" → *More info* → *Run anyway*). Check the SHA-256 against `SHA256SUMS-*.txt` before running it.

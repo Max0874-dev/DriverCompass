@@ -3,8 +3,8 @@
 ## Before going public
 
 - [x] Repository URL set to `Max0874-dev/DriverCompass` in `Directory.Build.props` and `.github/ISSUE_TEMPLATE/config.yml`.
-- [x] GitHub repository created and `main` pushed (private). While it is private, the app cannot load `data/vendors.json` online and uses its cached or built-in list.
-- [ ] Enable "Private vulnerability reporting" (Settings → Security) so the security link in the issue templates works.
+- [x] GitHub repository created, `main` pushed and made public (2026-11-18), so the app loads `data/vendors.json` online.
+- [x] "Private vulnerability reporting" enabled (Settings → Security), so the security link in the issue templates works.
 - [ ] **Code-signing certificate.** Unsigned EXEs trigger SmartScreen warnings. Options:
   - [SignPath Foundation](https://signpath.org/), free for OSS
   - Azure Trusted Signing, low monthly cost
