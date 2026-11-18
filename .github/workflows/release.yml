@@ -80,7 +80,22 @@ jobs:
           if ($end -lt 0) { $end = $lines.Length }
           $lines[($start + 1)..($end - 1)] | Out-File -Encoding utf8 RELEASE_NOTES.md
 
+      # Never touch a release that is already published (e.g. when a tag is moved) – it would be set back to draft.
+      - name: Check for published release
+        id: existing
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          $json = gh release view '${{ github.ref_name }}' --json isDraft 2>$null
+          $published = ($LASTEXITCODE -eq 0) -and -not ($json | ConvertFrom-Json).isDraft
+          "published=$($published.ToString().ToLower())" >> $env:GITHUB_OUTPUT
+          if ($published) { Write-Host "Release ${{ github.ref_name }} is already published – skipping upload." }
+          $global:LASTEXITCODE = 0   # "release not found" is the normal case for a new tag
+
       - name: Upload to release
+        if: steps.existing.outputs.published != 'true'
         uses: softprops/action-gh-release@v2
         with:
           draft: true
