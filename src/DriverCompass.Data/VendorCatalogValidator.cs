@@ -56,7 +56,8 @@ public sealed class VendorCatalogValidator : IVendorCatalogValidator
                 sv.TryGetInt32(out var schemaVersion) && schemaVersion > SupportedSchemaVersion)
             {
                 return CatalogValidationResult.Fail(
-                    $"Catalog schemaVersion {schemaVersion} is newer than supported ({SupportedSchemaVersion}). Please update the app.");
+                    $"Catalog schemaVersion {schemaVersion} is newer than supported ({SupportedSchemaVersion}). Please update the app.")
+                    with { RequiresNewerApp = true };
             }
 
             var evaluation = Schema.Value.Evaluate(root, new EvaluationOptions { OutputFormat = OutputFormat.List });

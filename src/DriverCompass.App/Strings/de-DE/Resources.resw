@@ -35,6 +35,7 @@
   <data name="Catalog_RemoteUnavailable" xml:space="preserve"><value>Die Herstellerliste konnte nicht aktualisiert werden (offline?). Die mitgelieferte Version wird verwendet.</value></data>
   <data name="Catalog_RemoteUnavailableCached" xml:space="preserve"><value>Die Herstellerliste konnte nicht aktualisiert werden (offline?). Die zuletzt heruntergeladene Version wird verwendet.</value></data>
   <data name="Catalog_RemoteInvalid" xml:space="preserve"><value>Die heruntergeladene Herstellerliste hat die Prüfung nicht bestanden und wurde ignoriert.</value></data>
+  <data name="Catalog_RemoteNeedsNewerApp" xml:space="preserve"><value>Die Online-Herstellerliste braucht eine neuere DriverCompass-Version und wurde nicht verwendet. Bitte aktualisieren Sie DriverCompass.</value></data>
   <data name="Catalog_RemoteOlder" xml:space="preserve"><value>Die Online-Herstellerliste ist älter als die mitgelieferte und wurde ignoriert.</value></data>
   <data name="Catalog_CacheInvalid" xml:space="preserve"><value>Die gespeicherte Herstellerliste war beschädigt und wurde entfernt.</value></data>
   <data name="Error_ScanFailed" xml:space="preserve"><value>Der Scan ist fehlgeschlagen: {0}</value></data>

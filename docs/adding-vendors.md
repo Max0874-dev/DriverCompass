@@ -86,6 +86,7 @@ Keep rules narrow, because many Windows inbox drivers are perfectly fine.
 - [ ] Official manufacturer site, HTTPS, opened in a browser and checked
 - [ ] IDs upper-case hex, not already assigned to another entry
 - [ ] `dataVersion` raised
+- [ ] Schema unchanged – or `schemaVersion` raised as described in [Changing the schema](#changing-the-schema-new-fields)
 - [ ] `dotnet test --project tests/DriverCompass.Data.Tests` passes
 
 ## What the validator rejects
@@ -97,3 +98,16 @@ Anything that is not valid against `vendors.schema.json`. In addition:
 - invalid regular expressions
 - duplicate IDs, or a vendor ID assigned twice
 - files larger than 2 MB, a `schemaVersion` newer than the app supports, or a `dataVersion` older than the built-in copy
+
+## Changing the schema (new fields)
+
+Every released DriverCompass downloads the same `data/vendors.json` from `main`, and every version rejects properties it does not know – on purpose, so a manipulated list cannot smuggle anything in. Adding entries with the existing fields is always fine. A **new field or rule** in `vendors.schema.json` is different: older apps would reject the whole list.
+
+So a schema change always comes with a new schema version:
+
+1. Change `data/vendors.schema.json`.
+2. Raise `VendorCatalogValidator.SupportedSchemaVersion` and `"schemaVersion"` in `data/vendors.json` by one.
+3. Add the new fingerprint to `KnownSchemas` in `tests/DriverCompass.Data.Tests/SchemaVersionGuardTests.cs`. The test fails with the exact line to add; it also fails if you change the schema and forget step 2.
+4. Release the new app version before (or together with) merging the list that uses the new field.
+
+Older apps then ignore the online list, keep using their built-in or last downloaded one and tell the user: "The online vendor list needs a newer DriverCompass version." They no longer receive vendor list updates, so only change the schema when a new field is really needed. Descriptions and comments in the schema do not count as a change.

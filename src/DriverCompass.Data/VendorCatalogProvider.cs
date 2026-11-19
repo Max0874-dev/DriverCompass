@@ -41,6 +41,9 @@ public static class CatalogWarnings
     public const string RemoteUnavailableCached = "Catalog_RemoteUnavailableCached";
     public const string RemoteInvalid = "Catalog_RemoteInvalid";
     public const string RemoteOlder = "Catalog_RemoteOlder";
+
+    /// <summary>The online list uses a newer schema; this app version cannot read it.</summary>
+    public const string RemoteNeedsNewerApp = "Catalog_RemoteNeedsNewerApp";
     public const string CacheInvalid = "Catalog_CacheInvalid";
 }
 
@@ -111,7 +114,12 @@ public sealed class VendorCatalogProvider : IVendorCatalogProvider
 
                 case FetchOutcome.Ok:
                     var validation = _validator.Validate(remote.Body!);
-                    if (!validation.IsValid || validation.Catalog is null)
+                    if (validation.RequiresNewerApp)
+                    {
+                        _logger.LogWarning("Remote vendor catalog needs a newer app version – ignored");
+                        warnings.Add(CatalogWarnings.RemoteNeedsNewerApp);
+                    }
+                    else if (!validation.IsValid || validation.Catalog is null)
                     {
                         _logger.LogWarning("Remote vendor catalog rejected: {Errors}", string.Join("; ", validation.Errors));
                         warnings.Add(CatalogWarnings.RemoteInvalid);
@@ -160,6 +168,13 @@ public sealed class VendorCatalogProvider : IVendorCatalogProvider
             if (result.IsValid)
             {
                 return result.Catalog;
+            }
+
+            if (result.RequiresNewerApp)
+            {
+                // Only after going back to an older app version – keep it for when the user updates again.
+                _logger.LogInformation("Cached vendor catalog needs a newer app version – not used");
+                return null;
             }
 
             _logger.LogWarning("Cached vendor catalog invalid, deleting: {Errors}", string.Join("; ", result.Errors));

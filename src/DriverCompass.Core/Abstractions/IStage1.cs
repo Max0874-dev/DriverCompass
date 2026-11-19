@@ -49,6 +49,9 @@ public interface IVendorCatalogValidator
 
 public sealed record CatalogValidationResult(bool IsValid, IReadOnlyList<string> Errors, IVendorCatalog? Catalog)
 {
+    /// <summary>The list uses a newer <c>schemaVersion</c> than this app understands – not broken, the app is just too old.</summary>
+    public bool RequiresNewerApp { get; init; }
+
     public static CatalogValidationResult Fail(params string[] errors) => new(false, errors, null);
 }
 

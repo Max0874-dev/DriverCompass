@@ -94,6 +94,32 @@ public sealed class VendorCatalogProviderTests : IDisposable
     }
 
     [Fact]
+    public async Task Remote_list_with_a_newer_schema_asks_for_an_app_update()
+    {
+        var newer = CatalogJson("2027.1.1.1").Replace("\"schemaVersion\":1", "\"schemaVersion\":2", StringComparison.Ordinal);
+        var result = await Create(FakeHandler.Json(newer), CatalogJson("2026.1.1.1")).LoadAsync(TestContext.Current.CancellationToken);
+
+        Assert.Equal(CatalogSource.Embedded, result.Info.Source);
+        Assert.Equal(new[] { CatalogWarnings.RemoteNeedsNewerApp }, result.Info.Warnings);
+        Assert.False(File.Exists(Path.Combine(_cacheDir, "vendors.json")));
+    }
+
+    [Fact]
+    public async Task Cached_list_with_a_newer_schema_is_kept_but_not_used()
+    {
+        Directory.CreateDirectory(_cacheDir);
+        var cachePath = Path.Combine(_cacheDir, "vendors.json");
+        var newer = CatalogJson("2027.1.1.1").Replace("\"schemaVersion\":1", "\"schemaVersion\":2", StringComparison.Ordinal);
+        await File.WriteAllTextAsync(cachePath, newer, TestContext.Current.CancellationToken);
+
+        var result = await Create(FakeHandler.Throws(), CatalogJson("2026.1.1.1")).LoadAsync(TestContext.Current.CancellationToken);
+
+        Assert.Equal(CatalogSource.Embedded, result.Info.Source);
+        Assert.DoesNotContain(CatalogWarnings.CacheInvalid, result.Info.Warnings);
+        Assert.True(File.Exists(cachePath));
+    }
+
+    [Fact]
     public async Task Corrupted_cache_is_deleted()
     {
         Directory.CreateDirectory(_cacheDir);
