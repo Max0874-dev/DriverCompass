@@ -13,7 +13,7 @@
     <!-- GitHub repository: used for the online vendor list and links in the app. -->
     <DriverCompassRepositoryUrl>https://github.com/Max0874-dev/DriverCompass</DriverCompassRepositoryUrl>
     <DriverCompassCatalogUrl>https://raw.githubusercontent.com/Max0874-dev/DriverCompass/main/data/vendors.json</DriverCompassCatalogUrl>
-    <Version>0.3.0</Version>
+    <Version>0.3.1</Version>
   </PropertyGroup>
 
   <PropertyGroup>
