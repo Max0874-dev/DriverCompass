@@ -46,21 +46,28 @@ The USB ID list (linux-usb.org) does not state a license in its header, so its r
 
 The optional version check (stage 2) reads official catalogs directly from the vendors (Microsoft Windows Update, Dell, Lenovo, HP) when the user turns a source on and clicks "Check versions". These files are not part of DriverCompass and are not redistributed; they are cached locally for the user only.
 
-## NuGet packages
+## Components shipped in the release ZIP
+
+The release ZIP contains the full license and notice texts in the folder `licenses/` (the same folder is in this repository). [`licenses/packages.json`](licenses/packages.json) maps every shipped NuGet package to its folder; a test fails if a new package ships without one.
+
+| Component | License | Texts |
+|---|---|---|
+| .NET runtime (self-contained), Microsoft.Extensions.DependencyInjection / Logging / Options / Primitives, System.Management, System.CodeDom | MIT | `licenses/dotnet-runtime` (incl. the runtime's third-party notices) |
+| Windows Desktop runtime (`WindowsBase.dll`) | MIT | `licenses/windows-desktop-runtime` |
+| Windows App SDK: Microsoft.WindowsAppSDK.WinUI, .Base, .Foundation, .InteractiveExperiences | Microsoft Software License Terms (redistributable runtime components) | `licenses/Microsoft.WindowsAppSDK` |
+| Microsoft.Web.WebView2 (dependency of WinUI) | BSD-3-Clause-style license | `licenses/Microsoft.Web.WebView2` |
+| Windows SDK projection (`Microsoft.Windows.SDK.NET.dll`, `WinRT.Runtime.dll`) | Windows SDK license terms; C#/WinRT: MIT | `licenses/windows-sdk-projection` (links) |
+| CommunityToolkit.Mvvm | MIT | `licenses/CommunityToolkit.Mvvm` |
+| Serilog, Serilog.Extensions.Logging, Serilog.Sinks.File | Apache-2.0 | `licenses/Serilog` |
+| JsonSchema.Net, JsonPointer.Net, Json.More.Net (json-everything) | Source: MIT. The published NuGet binaries come with the "Open Source Maintenance Fee" EULA: a fee applies only to users with revenue-generating use and annual gross revenue of at least US$10,000. DriverCompass is free and non-commercial, so no fee applies. | `licenses/json-everything` (MIT and OSMFEULA) |
+| Humanizer.Core (dependency of JsonSchema.Net) | MIT | `licenses/Humanizer` |
+
+## Build and test tools (not shipped)
 
 | Package | License |
 |---|---|
-| Microsoft.WindowsAppSDK.WinUI (+ .Base, .Foundation, .InteractiveExperiences) | Windows App SDK – license terms shipped in each package (redistributable runtime components) |
-| Microsoft.Web.WebView2 (dependency of WinUI) | BSD-3-Clause-style license shipped in the package |
-| Microsoft.Windows.SDK.BuildTools | Microsoft Software License Terms (build-time only, not redistributed) |
-| CommunityToolkit.Mvvm | MIT |
-| Microsoft.Extensions.DependencyInjection / Logging | MIT |
-| System.Management | MIT |
-| Serilog, Serilog.Extensions.Logging, Serilog.Sinks.File | Apache-2.0 |
-| JsonSchema.Net (json-everything) | MIT |
-| xunit.v3 (tests only) | Apache-2.0 |
-
-The full license texts are available on nuget.org and in each package. Release archives must include them, see [docs/release-checklist.md](docs/release-checklist.md).
+| Microsoft.Windows.SDK.BuildTools, Microsoft.Windows.SDK.BuildTools.MSIX | Microsoft Software License Terms (build time only) |
+| xunit.v3 | Apache-2.0 |
 
 ## Trademarks
 

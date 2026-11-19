@@ -1,0 +1,35 @@
+{
+  "$comment": "Every NuGet package whose files end up in the release ZIP must be listed here with the folder (below licenses/) that holds its license texts. Checked by LicenseTextTests. Build-only packages are not shipped.",
+  "packages": {
+    "CommunityToolkit.Mvvm": "CommunityToolkit.Mvvm",
+    "Humanizer.Core": "Humanizer",
+    "Json.More.Net": "json-everything",
+    "JsonPointer.Net": "json-everything",
+    "JsonSchema.Net": "json-everything",
+    "Microsoft.Extensions.DependencyInjection": "dotnet-runtime",
+    "Microsoft.Extensions.DependencyInjection.Abstractions": "dotnet-runtime",
+    "Microsoft.Extensions.Logging": "dotnet-runtime",
+    "Microsoft.Extensions.Logging.Abstractions": "dotnet-runtime",
+    "Microsoft.Extensions.Options": "dotnet-runtime",
+    "Microsoft.Extensions.Primitives": "dotnet-runtime",
+    "System.CodeDom": "dotnet-runtime",
+    "System.Management": "dotnet-runtime",
+    "Microsoft.Web.WebView2": "Microsoft.Web.WebView2",
+    "Microsoft.WindowsAppSDK.Base": "Microsoft.WindowsAppSDK",
+    "Microsoft.WindowsAppSDK.Foundation": "Microsoft.WindowsAppSDK",
+    "Microsoft.WindowsAppSDK.InteractiveExperiences": "Microsoft.WindowsAppSDK",
+    "Microsoft.WindowsAppSDK.WinUI": "Microsoft.WindowsAppSDK",
+    "Serilog": "Serilog",
+    "Serilog.Extensions.Logging": "Serilog",
+    "Serilog.Sinks.File": "Serilog"
+  },
+  "runtimes": {
+    "Microsoft.NETCore.App": "dotnet-runtime",
+    "Microsoft.WindowsDesktop.App": "windows-desktop-runtime",
+    "Microsoft.Windows.SDK.NET.Ref": "windows-sdk-projection"
+  },
+  "buildOnly": [
+    "Microsoft.Windows.SDK.BuildTools",
+    "Microsoft.Windows.SDK.BuildTools.MSIX"
+  ]
+}

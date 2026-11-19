@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Added
+- The release ZIP now contains the full license and notice texts of every shipped third-party component (folder `licenses/`). THIRD-PARTY-NOTICES.md corrects the license of the json-everything packages (JsonSchema.Net): MIT source, binaries with the "Open Source Maintenance Fee" EULA, which does not apply to a free, non-commercial app like DriverCompass.
+
 ### Changed
 - If the online vendor list ever needs a newer DriverCompass version, the app now says so ("please update") instead of reporting that the list failed validation. A test makes sure every schema change comes with a new schema version (see docs/adding-vendors.md).
 

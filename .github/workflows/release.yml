@@ -47,6 +47,9 @@ jobs:
             -p:Version=$env:VERSION -o publish/$rid
           # Licence and notices travel with the binaries (MIT licence, third-party notices, privacy, security).
           Copy-Item LICENSE, THIRD-PARTY-NOTICES.md, PRIVACY.md, SECURITY.md, CHANGELOG.md, README.md, README.en.md -Destination publish/$rid
+          # Full license texts of every shipped third-party component (see licenses/packages.json).
+          Copy-Item licenses -Destination publish/$rid -Recurse
+          Remove-Item publish/$rid/licenses/packages.json
 
       # Only the project's own binaries are sent to SignPath; third-party DLLs stay as published by their authors.
       - name: Collect own binaries for signing

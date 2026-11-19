@@ -10,7 +10,7 @@
 - [ ] **MSIX** (optional). The manifest template is ready (`src/DriverCompass.App/Package.appxmanifest.template`). `Publisher` must match the certificate subject. CI builds the MSIX when the secrets `SIGNING_CERT` (base64 PFX) and `SIGNING_CERT_PASSWORD` exist.
 - [x] **Update hint.** Opt-in check of the GitHub Releases API that only shows a link (no automatic download). Real auto-update could later come via MSIX App Installer or winget.
 - [x] **Disclaimer** shown in the app before the first installation (must be ticked). Also add it to the README before a public release.
-- [ ] **License texts** of all NuGet dependencies included in the release ZIP (THIRD-PARTY-NOTICES.md plus the full texts).
+- [x] **License texts** of all shipped components are in `licenses/` and copied into the release ZIP; `LicenseTextTests` fails when a new package ships without them.
 - [ ] Verify all vendor URLs again (some sites answer 403 to scripts; open them in a browser).
 - [ ] winget manifest (`winget-pkgs` PR) once signed releases exist.
 
