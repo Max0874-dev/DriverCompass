@@ -1,9 +1,17 @@
 # Changelog
 
-## [Unreleased]
+## [0.3.0] – 2026-11-19
+
+**Preview:** the EXE is still not code-signed, so Windows SmartScreen will warn ("Windows protected your PC" → *More info* → *Run anyway*). Check the SHA-256 against `SHA256SUMS-*.txt` before running it. Code signing by SignPath Foundation is being applied for, see the [code signing policy](https://github.com/Max0874-dev/DriverCompass/blob/main/docs/code-signing-policy.md).
 
 ### Added
 - Privacy notice on first start: before DriverCompass connects to anything, it explains what leaves the PC and lets you switch off the vendor list download and switch on the update hint. It is shown once, also to users updating from an older version.
+
+### Changed
+- A changed setting now applies to the running session even if the settings file cannot be written, so "do not download the vendor list" is never ignored.
+
+### Download
+- `DriverCompass-0.3.0-win-x64.zip` / `-win-arm64.zip`: unzip and run `DriverCompass.exe` (self-contained, no installation, Windows 10 1809+ / Windows 11).
 
 ## [0.2.0] – 2026-11-19
 
