@@ -1,6 +1,6 @@
 # Code signing policy
 
-**Status:** application to SignPath Foundation in preparation. Releases up to 0.2.0 are **not signed** yet; Windows SmartScreen warns when you start them. Check the SHA-256 against `SHA256SUMS-*.txt` from the release page.
+**Status:** applied to SignPath Foundation on 2026-11-19, waiting for the decision. Releases up to 0.3.1 are **not signed**; Windows SmartScreen warns when you start them. Check the SHA-256 against `SHA256SUMS-*.txt` from the release page.
 
 Once SignPath Foundation accepts the project, Windows releases will be signed as follows:
 

@@ -6,15 +6,17 @@ SignPath Foundation signs open source projects for free. The certificate is issu
 
 ## 1. Before applying
 
-- [ ] Turn on **two-factor authentication** for the GitHub account `Max0874-dev` (*Settings → Password and authentication*). SignPath requires MFA for everyone with access to the repository and to SignPath.
-- [ ] The repository is public, MIT-licensed (OSI-approved) and has published releases (0.1.0, 0.1.1, 0.2.0). ✔
-- [ ] [code-signing-policy.md](code-signing-policy.md) is linked from the README and from every release (the release workflow appends the link to the release notes). ✔
-- [ ] The privacy policy describes every network connection and how to turn it off ([PRIVACY.md](../PRIVACY.md)). ✔
-- [ ] The app shows a privacy notice on first start, before its first network connection, with switches to turn the automatic connections off (SignPath asks for this "during installation"; DriverCompass has no installer). ✔ (0.3.0)
+- [x] Turn on **two-factor authentication** for the GitHub account `Max0874-dev` (*Settings → Password and authentication*). SignPath requires MFA for everyone with access to the repository and to SignPath.
+- [x] The repository is public, MIT-licensed (OSI-approved) and has published releases (0.1.0 – 0.3.1).
+- [x] [code-signing-policy.md](code-signing-policy.md) is linked from the README and from every release (the release workflow appends the link to the release notes).
+- [x] The privacy policy describes every network connection and how to turn it off ([PRIVACY.md](../PRIVACY.md)).
+- [x] The app shows a privacy notice on first start, before its first network connection, with switches to turn the automatic connections off (SignPath asks for this "during installation"; DriverCompass has no installer). (0.3.0)
 
 SignPath checks the project's reputation once, before it accepts it. A very new project with few users may be asked to come back later; there is no formal minimum.
 
 ## 2. Application (signpath.org/apply)
+
+**Submitted on 2026-11-19** (category *Other*, maintainer type *Individual maintainer(s)*, build system *GitHub Actions*). SignPath answers by e-mail.
 
 The form is filled in by the maintainer. Suggested answers:
 
