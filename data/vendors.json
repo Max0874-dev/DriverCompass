@@ -1,7 +1,7 @@
 {
   "$schema": "./vendors.schema.json",
   "schemaVersion": 1,
-  "dataVersion": "2026.11.18.3",
+  "dataVersion": "2026.11.20.1",
   "chipVendors": [
     {
       "id": "nvidia",
@@ -132,7 +132,7 @@
       "name": "Silicon Labs",
       "ids": { "usb": ["10C4"] },
       "allowedDomains": ["silabs.com"],
-      "driverPages": [{ "url": "https://www.silabs.com/developers/usb-to-uart-bridge-vcp-drivers" }]
+      "driverPages": [{ "url": "https://www.silabs.com/software-and-tools/usb-to-uart-bridge-vcp-drivers" }]
     },
     {
       "id": "ftdi",
@@ -247,7 +247,7 @@
       "allowedDomains": ["dell.com"],
       "supportUrls": [
         { "template": "https://www.dell.com/support/home/product-support/servicetag/{serial}/drivers", "requires": ["serial"] },
-        { "template": "https://www.dell.com/support/home/drivers", "requires": [] }
+        { "template": "https://www.dell.com/support/home/?app=drivers", "requires": [] }
       ]
     },
     {
@@ -363,7 +363,7 @@
       "name": "Panasonic",
       "match": ["^Panasonic"],
       "allowedDomains": ["panasonic.com"],
-      "supportUrls": [{ "template": "https://dl-pc-support.connect.panasonic.com/itn/drivers/", "requires": [] }]
+      "supportUrls": [{ "template": "https://global-pc-support.connect.panasonic.com/driver", "requires": [] }]
     }
   ],
   "genericDrivers": [

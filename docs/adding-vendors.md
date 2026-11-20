@@ -49,7 +49,7 @@ Device classes are the Windows setup class names: `Display`, `Net`, `MEDIA`, `Bl
   "allowedDomains": ["dell.com"],
   "supportUrls": [                      // most specific first – the first one whose values exist is used
     { "template": "https://www.dell.com/support/home/product-support/servicetag/{serial}/drivers", "requires": ["serial"] },
-    { "template": "https://www.dell.com/support/home/drivers", "requires": [] }
+    { "template": "https://www.dell.com/support/home/?app=drivers", "requires": [] }
   ]
 }
 ```

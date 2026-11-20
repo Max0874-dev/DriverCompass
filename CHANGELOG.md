@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Fixed
+- Vendor list: Dell's general driver page moved and returned "Page not found"; the Silicon Labs and Panasonic driver pages moved to new addresses. The app gets the corrected list at its next start, no update needed.
+
 ## [0.3.1] – 2026-11-19
 
 **Preview:** the EXE is still not code-signed, so Windows SmartScreen will warn ("Windows protected your PC" → *More info* → *Run anyway*). Check the SHA-256 against `SHA256SUMS-*.txt` before running it. Code signing by SignPath Foundation is being applied for, see the [code signing policy](https://github.com/Max0874-dev/DriverCompass/blob/main/docs/code-signing-policy.md).
