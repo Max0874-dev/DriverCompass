@@ -11,7 +11,7 @@
 - [x] **Update hint.** Opt-in check of the GitHub Releases API that only shows a link (no automatic download). Real auto-update could later come via MSIX App Installer or winget.
 - [x] **Disclaimer** shown in the app before the first installation (must be ticked). Also add it to the README before a public release.
 - [x] **License texts** of all shipped components are in `licenses/` and copied into the release ZIP; `LicenseTextTests` fails when a new package ships without them.
-- [ ] Verify all vendor URLs again (some sites answer 403 to scripts; open them in a browser).
+- [ ] Verify all vendor URLs again: `./scripts/check-vendor-links.ps1` (or the *Check vendor links* workflow), then open the warned links (403/timeouts) in a browser.
 - [ ] winget manifest (`winget-pkgs` PR) once signed releases exist.
 
 ## Every release

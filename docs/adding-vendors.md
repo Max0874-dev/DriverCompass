@@ -88,6 +88,17 @@ Keep rules narrow, because many Windows inbox drivers are perfectly fine.
 - [ ] `dataVersion` raised
 - [ ] Schema unchanged – or `schemaVersion` raised as described in [Changing the schema](#changing-the-schema-new-fields)
 - [ ] `dotnet test --project tests/DriverCompass.Data.Tests` passes
+- [ ] Optional: `./scripts/check-vendor-links.ps1` reports no errors
+
+## Link check
+
+Vendors move their driver pages from time to time. The workflow *Check vendor links* (`.github/workflows/check-vendor-links.yml`) opens every fixed link in `data/vendors.json` on the 1st of each month; you can also start it by hand under *Actions*, or run `./scripts/check-vendor-links.ps1` locally. Only public vendor pages are requested.
+
+- **Errors** fail the run, and GitHub sends the usual failure e-mail: HTTP 404 or 410, a host name that does not resolve, an invalid certificate, or a final address outside `allowedDomains`.
+- **Warnings** are listed in the run summary but do not fail it: 403, 429, 5xx and timeouts. Many vendor sites (Intel, Dell, MSI, Gigabyte, Cloudflare-protected sites …) block automated requests although the page works in a browser. A warning can still hide a dead page, so open warned links in a browser now and then.
+- Templates with placeholders such as `{serial}` are skipped.
+
+GitHub turns scheduled workflows in public repositories off after 60 days without repository activity. Turn the workflow back on under *Actions → Check vendor links*.
 
 ## What the validator rejects
 
