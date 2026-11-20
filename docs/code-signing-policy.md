@@ -1,8 +1,8 @@
 # Code signing policy
 
-**Status:** applied to SignPath Foundation on 2026-11-19, waiting for the decision. Releases up to 0.3.1 are **not signed**; Windows SmartScreen warns when you start them. Check the SHA-256 against `SHA256SUMS-*.txt` from the release page.
+**Status:** releases are **not signed**. SignPath Foundation declined the first application on 2026-11-20 because the project is still too new and little known; it welcomes a new application once the project is more widely used. Until then Windows SmartScreen warns when you start them. Check the SHA-256 against `SHA256SUMS-*.txt` from the release page.
 
-Once SignPath Foundation accepts the project, Windows releases will be signed as follows:
+If SignPath Foundation accepts the project later, Windows releases will be signed as follows:
 
 Free code signing provided by [SignPath.io](https://about.signpath.io/), certificate by [SignPath Foundation](https://signpath.org/).
 

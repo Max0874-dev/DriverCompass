@@ -16,7 +16,7 @@ SignPath checks the project's reputation once, before it accepts it. A very new 
 
 ## 2. Application (signpath.org/apply)
 
-**Submitted on 2026-11-19** (category *Other*, maintainer type *Individual maintainer(s)*, build system *GitHub Actions*). SignPath answers by e-mail.
+**Submitted on 2026-11-19** (category *Other*, maintainer type *Individual maintainer(s)*, build system *GitHub Actions*). **Declined on 2026-11-20:** not enough public visibility yet. SignPath looks for external signals such as GitHub stars, forks and contributors, independent articles or discussions (Reddit, Stack Overflow, YouTube), institutional backing and sustained activity. A new application is welcome once the project is better known; the answers below can be reused, update the reputation answer with whatever exists by then.
 
 The form is filled in by the maintainer. Suggested answers:
 
