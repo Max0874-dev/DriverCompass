@@ -4,6 +4,8 @@
 
 DriverCompass is a free, open-source app for Windows 10 and 11. It detects every device in your PC, shows which drivers are **missing**, **reporting errors** or **only generic** (e.g. "Microsoft Basic Display Adapter"), and takes you to the manufacturer's **official driver page**.
 
+![Simple view: devices with problems and missing drivers are listed first, each with "Get driver"](docs/images/simple-view-en.png)
+
 - 🔒 **Everything stays local.** No telemetry, no device data leaves the PC. The only automatic download is the public vendor list from GitHub (can be turned off). The optional version check only connects once you turn it on and start it. The hint about new DriverCompass versions is off by default too.
 - 🚦 **Simple view** with a traffic light, plain names and one "Get driver" button.
 - 🔬 **Expert mode** with hardware IDs, INF file, driver provider, version, date, error code, search, filters, sorting and export (HTML/CSV).
@@ -11,6 +13,10 @@ DriverCompass is a free, open-source app for Windows 10 and 11. It detects every
 - 🛠️ **Installation** (Windows Update, Dell, HP, Lenovo): "Install …" installs exactly one confirmed driver – for Dell, HP and Lenovo only the signed driver from the official package (Dell/HP without running vendor programs; Lenovo packages are extracted once by Lenovo's signed program with admin rights) –, with restore point, log and "Undo" in the history. Admin rights only for this step (UAC). **No warranty** – drivers come from third parties, back up important data first.
 - 🌍 English and German.
 - 🛡️ No administrator rights needed – except for a confirmed driver installation.
+
+![Expert view: table of all devices with status, chip vendor, driver provider and version, with details and driver sources of the selected device on the right](docs/images/expert-view-en.png)
+
+<sub>Both images show the demo mode (`DriverCompass.exe --mock`) with example devices.</sub>
 
 > **Status:** stage 1 (detect and link), stage 2 (version comparison) and stage 3 (installing from Windows Update and from Dell, HP and Lenovo packages) are done, see [docs/roadmap.md](docs/roadmap.md).
 

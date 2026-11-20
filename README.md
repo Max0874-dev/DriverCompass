@@ -4,6 +4,8 @@
 
 DriverCompass ist eine kostenlose Open-Source-App für Windows 10 und 11. Sie erkennt alle Geräte in deinem PC, zeigt dir, welche Treiber **fehlen**, **Fehler melden** oder **nur generisch** sind (z. B. „Microsoft Basic Display Adapter“), und führt dich zur **offiziellen Treiberseite** des Herstellers.
 
+![Einfache Ansicht: Geräte mit Problemen und fehlenden Treibern stehen oben, jeweils mit „Treiber holen“](docs/images/simple-view-de.png)
+
 - 🔒 **Alles lokal.** Keine Telemetrie, keine Gerätedaten verlassen den PC. Automatisch lädt die App nur die öffentliche Herstellerliste von GitHub (abschaltbar). Die optionale Versionsprüfung fragt erst, wenn du sie einschaltest und startest. Auch der Hinweis auf neue DriverCompass-Versionen ist standardmäßig aus.
 - 🚦 **Einfache Ansicht** mit Ampel, verständlichen Namen und einem Button „Treiber holen“.
 - 🔬 **Expertenmodus** mit Hardware-IDs, INF-Datei, Treiberanbieter, Version, Datum, Fehlercode, Suche, Filter, Sortierung und Export (HTML/CSV).
@@ -11,6 +13,10 @@ DriverCompass ist eine kostenlose Open-Source-App für Windows 10 und 11. Sie er
 - 🛠️ **Installation** (Windows Update, Dell, HP, Lenovo): „Installieren …“ installiert genau einen bestätigten Treiber – bei Dell, HP und Lenovo nur den signierten Treiber aus dem offiziellen Paket (Dell/HP ohne Herstellerprogramme; Lenovo-Pakete entpackt Lenovos signiertes Programm einmal mit Adminrechten) –, mit Wiederherstellungspunkt, Protokoll und „Rückgängig machen“ im Verlauf. Adminrechte nur für diesen Schritt (UAC). **Ohne Gewähr** – Treiber stammen von Drittanbietern, sichere vorher wichtige Daten.
 - 🌍 Deutsch und Englisch.
 - 🛡️ Keine Adminrechte nötig – außer für eine bestätigte Treiberinstallation.
+
+![Expertenansicht: Tabelle aller Geräte mit Status, Chip-Hersteller, Treiberanbieter und Version, rechts die Details und Treiberquellen des gewählten Geräts](docs/images/expert-view-de.png)
+
+<sub>Beide Bilder zeigen den Demo-Modus (`DriverCompass.exe --mock`) mit Beispielgeräten.</sub>
 
 > **Status:** Stufe 1 (Erkennen und Links), Stufe 2 (Versionsvergleich) und Stufe 3 (Installation aus Windows Update sowie Dell-, HP- und Lenovo-Paketen) sind fertig, siehe [docs/roadmap.md](docs/roadmap.md).
 
