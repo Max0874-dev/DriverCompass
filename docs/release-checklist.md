@@ -13,7 +13,7 @@
 - [x] **License texts** of all shipped components are in `licenses/` and copied into the release ZIP; `LicenseTextTests` fails when a new package ships without them.
 - [ ] Verify all vendor URLs again: `./scripts/check-vendor-links.ps1` (or the *Check vendor links* workflow), then open the warned links (403/timeouts) in a browser.
 - [ ] winget manifest (`winget-pkgs` PR) once signed releases exist.
-- [ ] **Microsoft Store edition** (signed by Microsoft, without driver installation). Code and the *Store package* workflow are ready; the developer account, the name reservation and the repository variables for the package identity are missing. See [store-edition.md](store-edition.md).
+- [ ] **Microsoft Store edition** (signed by Microsoft, without driver installation). Code and the *Store package* workflow are ready; developer account and name reservation done 2026-11-21 (Store ID 9PKVXM3Q7P7L, submit within three months); the repository secrets for the package identity are missing. See [store-edition.md](store-edition.md).
 
 ## Every release
 

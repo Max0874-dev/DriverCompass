@@ -71,7 +71,7 @@
     (always for the Store edition).
     Package identity: the defaults fit a self-signed package. For the Microsoft Store, pass the values
     Partner Center shows under "Product identity" (the store-package workflow takes them from
-    repository variables), e.g. -p:StoreIdentityName=12345Name.DriverCompass -p:StorePublisher="CN=...".
+    repository secrets), e.g. -p:StoreIdentityName=12345Name.DriverCompass -p:StorePublisher="CN=...".
   -->
   <PropertyGroup>
     <StoreIdentityName Condition="'$(StoreIdentityName)' == ''">DriverCompass</StoreIdentityName>

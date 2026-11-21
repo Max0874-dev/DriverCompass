@@ -5,8 +5,10 @@ name: Store package
 # a certificate. The result is a workflow artifact to upload in Partner Center by hand; it is NOT
 # attached to the GitHub release, because an unsigned MSIX cannot be installed directly.
 #
-# Package identity comes from repository variables (Settings → Secrets and variables → Actions →
-# Variables). Copy them from Partner Center → the app → Product identity:
+# Package identity comes from repository secrets (Settings → Secrets and variables → Actions →
+# Secrets). It is not secret, but for an individual developer account it contains the publisher's
+# real name, and secrets are masked in the public logs while variables are not.
+# Copy the values from Partner Center → the app → Product identity:
 #   STORE_IDENTITY_NAME            Package/Identity/Name
 #   STORE_PUBLISHER                Package/Identity/Publisher (CN=…)
 #   STORE_PUBLISHER_DISPLAY_NAME   Package/Properties/PublisherDisplayName
@@ -29,9 +31,9 @@ jobs:
       DOTNET_NOLOGO: true
       DOTNET_CLI_TELEMETRY_OPTOUT: true
       RID: ${{ matrix.platform == 'ARM64' && 'win-arm64' || 'win-x64' }}
-      STORE_IDENTITY_NAME: ${{ vars.STORE_IDENTITY_NAME }}
-      STORE_PUBLISHER: ${{ vars.STORE_PUBLISHER }}
-      STORE_PUBLISHER_DISPLAY_NAME: ${{ vars.STORE_PUBLISHER_DISPLAY_NAME }}
+      STORE_IDENTITY_NAME: ${{ secrets.STORE_IDENTITY_NAME }}
+      STORE_PUBLISHER: ${{ secrets.STORE_PUBLISHER }}
+      STORE_PUBLISHER_DISPLAY_NAME: ${{ secrets.STORE_PUBLISHER_DISPLAY_NAME }}
     steps:
       - uses: actions/checkout@v5
 
@@ -43,7 +45,7 @@ jobs:
         shell: pwsh
         run: |
           if (-not $env:STORE_IDENTITY_NAME -or -not $env:STORE_PUBLISHER -or -not $env:STORE_PUBLISHER_DISPLAY_NAME) {
-            Write-Host "::warning::Store identity variables are not set. The package uses placeholder values and cannot be submitted. See docs/store-edition.md."
+            Write-Host "::warning::Store identity secrets are not set. The package uses placeholder values and cannot be submitted. See docs/store-edition.md."
           }
 
       # Symbol packages are off: the MSIX tooling fails to create them under the dotnet CLI, and the Store does not need them.
@@ -73,7 +75,9 @@ jobs:
             $manifest = New-Object IO.StreamReader(($zip.Entries | Where-Object FullName -eq 'AppxManifest.xml').Open())
             $text = $manifest.ReadToEnd(); $manifest.Dispose()
             if ($text -match 'allowElevation') { throw 'The Store package asks for elevation.' }
-            Write-Host ($text -split "`n" | Select-String '<Identity|PublisherDisplayName' | ForEach-Object { $_.Line.Trim() })
+            # The identity contains the publisher's name, so the public log only says whether it was set.
+            $placeholder = $text -match 'Publisher="CN=DriverCompass Contributors"'
+            Write-Host "Package contents OK. Store identity: $(if ($placeholder) { 'placeholder values' } else { 'from repository secrets' })"
           } finally { $zip.Dispose() }
 
       - uses: actions/upload-artifact@v6

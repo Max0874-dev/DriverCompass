@@ -46,7 +46,7 @@ Tested on 2026-11-21 with the registered x64 package (Developer Mode): the app s
 
 1. **Create a developer account** in [Partner Center](https://learn.microsoft.com/en-us/windows/apps/get-started/sign-up). Choose *Individual developer*. Registration is free when you use the new sign-up flow ("Get started for free" on the Store developer page); Microsoft verifies your identity.
 2. **Reserve the name** "DriverCompass" (Apps and games → New product → MSIX or PWA app).
-3. **Copy the package identity** from *Product management → Product identity* into three repository variables (GitHub → Settings → Secrets and variables → Actions → Variables):
+3. **Copy the package identity** from *Product management → Product identity* into three repository secrets (GitHub → Settings → Secrets and variables → Actions → Secrets). The values are not secret, but for an individual account they contain your real name; secrets are masked in the public workflow logs, variables are not:
    - `STORE_IDENTITY_NAME` = `Package/Identity/Name`
    - `STORE_PUBLISHER` = `Package/Identity/Publisher`
    - `STORE_PUBLISHER_DISPLAY_NAME` = `Package/Properties/PublisherDisplayName`
