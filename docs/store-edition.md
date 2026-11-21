@@ -38,7 +38,9 @@ Symbol packages stay off: the MSIX tooling fails to create them under the dotnet
 
 To run the unsigned package on your own PC, turn on Windows *Developer Mode*. Then unzip the `.msix` into a folder and register it with `Add-AppxPackage -Register <folder>\AppxManifest.xml`. Afterwards remove it with `Get-AppxPackage *DriverCompass* | Remove-AppxPackage`.
 
-Settings, cache and logs: the app writes to `%LOCALAPPDATA%\DriverCompass` as usual. In the Store edition Windows redirects these writes into the package's private folder below `%LOCALAPPDATA%\Packages\`. Uninstalling the app removes them.
+Settings, cache and logs: the app writes to `%LOCALAPPDATA%\DriverCompass` as usual. In the Store edition Windows redirects these writes into the package's private storage, which other programs do not see; uninstalling the app removes it. Reads still see existing files, so on a PC that already used the GitHub edition the Store edition starts with those settings (and does not show the first-start privacy notice again).
+
+Tested on 2026-11-21 with the registered x64 package (Developer Mode): the app starts, scans the real hardware, shows no "Install …", no history and no update hint, and the Windows Update version check works inside the package ("Windows Update: checked").
 
 ## Submitting to the Store (done by the maintainer)
 
@@ -61,6 +63,7 @@ Settings, cache and logs: the app writes to `%LOCALAPPDATA%\DriverCompass` as us
 
 ## Not verified yet
 
-- **Windows Update search:** whether the Windows Update driver search (stage 2) works inside the MSIX package. Test this before the first submission.
+- **Privacy notice in a fresh install:** the test PC already had settings from the GitHub edition, so the first-start notice of the Store edition was not shown. Check it on a PC without DriverCompass data.
+- **Dell, Lenovo and HP catalogs** inside the package (only Windows Update was tested).
 - **Package format:** whether certification accepts the self-contained Windows App SDK in the package, or asks for the framework package instead.
 - **Review:** how reviewers judge an app that shows driver problems and links to manufacturer pages.
