@@ -23,6 +23,15 @@
     <DefineConstants>$(DefineConstants);DISABLE_XAML_GENERATED_MAIN</DefineConstants>
   </PropertyGroup>
 
+  <!--
+    Microsoft Store edition: MSIX package without the stage-3 installer. The installer project is not
+    referenced at all, so the package contains no code that asks for administrator rights.
+  -->
+  <PropertyGroup Condition="'$(DriverCompassEdition)' == 'Store'">
+    <DefineConstants>$(DefineConstants);STORE_EDITION</DefineConstants>
+    <WindowsPackageType>MSIX</WindowsPackageType>
+  </PropertyGroup>
+
   <!-- WinUI needs a concrete architecture; default to x64 when built as AnyCPU. -->
   <PropertyGroup Condition="'$(Platform)' == 'AnyCPU' or '$(Platform)' == ''">
     <Platform>x64</Platform>
@@ -37,7 +46,7 @@
     <ProjectReference Include="..\DriverCompass.Data\DriverCompass.Data.csproj" />
     <ProjectReference Include="..\DriverCompass.Scanner.Windows\DriverCompass.Scanner.Windows.csproj" />
     <ProjectReference Include="..\DriverCompass.VersionProviders\DriverCompass.VersionProviders.csproj" />
-    <ProjectReference Include="..\DriverCompass.Installer\DriverCompass.Installer.csproj" />
+    <ProjectReference Include="..\DriverCompass.Installer\DriverCompass.Installer.csproj" Condition="'$(DriverCompassEdition)' != 'Store'" />
   </ItemGroup>
 
   <ItemGroup>
@@ -58,8 +67,17 @@
 
   <!--
     MSIX manifest: generated from Package.appxmanifest.template so that the display name
-    comes from Directory.Build.props. Only used when building with -p:WindowsPackageType=MSIX.
+    comes from Directory.Build.props. Only used when building with -p:WindowsPackageType=MSIX
+    (always for the Store edition).
+    Package identity: the defaults fit a self-signed package. For the Microsoft Store, pass the values
+    Partner Center shows under "Product identity" (the store-package workflow takes them from
+    repository variables), e.g. -p:StoreIdentityName=12345Name.DriverCompass -p:StorePublisher="CN=...".
   -->
+  <PropertyGroup>
+    <StoreIdentityName Condition="'$(StoreIdentityName)' == ''">DriverCompass</StoreIdentityName>
+    <StorePublisher Condition="'$(StorePublisher)' == ''">CN=DriverCompass Contributors</StorePublisher>
+    <StorePublisherDisplayName Condition="'$(StorePublisherDisplayName)' == ''">$(DriverCompassDisplayName) contributors</StorePublisherDisplayName>
+  </PropertyGroup>
   <ItemGroup Condition="'$(WindowsPackageType)' == 'MSIX'">
     <AppxManifest Include="$(IntermediateOutputPath)Package.appxmanifest" />
   </ItemGroup>
@@ -67,6 +85,7 @@
     <PropertyGroup>
       <_DcManifest>$([System.IO.File]::ReadAllText('$(MSBuildProjectDirectory)\Package.appxmanifest.template'))</_DcManifest>
       <_DcManifest>$(_DcManifest.Replace('$DisplayName$', '$(DriverCompassDisplayName)').Replace('$Version$', '$(Version).0'))</_DcManifest>
+      <_DcManifest>$(_DcManifest.Replace('$IdentityName$', '$(StoreIdentityName)').Replace('$PublisherDisplayName$', '$(StorePublisherDisplayName)').Replace('$Publisher$', '$(StorePublisher)'))</_DcManifest>
     </PropertyGroup>
     <MakeDir Directories="$(IntermediateOutputPath)" />
     <WriteLinesToFile File="$(IntermediateOutputPath)Package.appxmanifest" Lines="$(_DcManifest)" Overwrite="true" WriteOnlyWhenDifferent="true" />

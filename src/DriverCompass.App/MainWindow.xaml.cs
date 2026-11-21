@@ -60,11 +60,16 @@ public sealed partial class MainWindow : Window, IShellService
         panel.Children.Add(catalog);
         panel.Children.Add(Text(Localizer.T("Privacy_Catalog_Help"), secondary: true));
 
-        var updates = new ToggleSwitch { Header = Localizer.T("Settings_CheckAppUpdates"), IsOn = current.CheckForAppUpdates };
-        panel.Children.Add(updates);
-        panel.Children.Add(Text(Localizer.T("Settings_CheckAppUpdates_Help"), secondary: true));
+        // The Store edition has no update hint (the Store updates the app) and installs no drivers.
+        ToggleSwitch? updates = null;
+        if (MainViewModel.UpdateHintAvailable)
+        {
+            updates = new ToggleSwitch { Header = Localizer.T("Settings_CheckAppUpdates"), IsOn = current.CheckForAppUpdates };
+            panel.Children.Add(updates);
+            panel.Children.Add(Text(Localizer.T("Settings_CheckAppUpdates_Help"), secondary: true));
+        }
 
-        panel.Children.Add(Text(Localizer.T("Privacy_OnClick")));
+        panel.Children.Add(Text(Localizer.T(ViewModel.InstallationAvailable ? "Privacy_OnClick" : "Privacy_OnClick_NoInstall")));
         panel.Children.Add(Text(Localizer.T("Privacy_Later"), secondary: true));
 
         var policy = new HyperlinkButton { Content = Localizer.T("Privacy_ReadPolicy"), Padding = new Thickness(0) };
@@ -83,7 +88,7 @@ public sealed partial class MainWindow : Window, IShellService
 
         // Any way of closing keeps what the switches show – there is no "accept or leave".
         await dialog.ShowAsync();
-        return new PrivacyChoices(catalog.IsOn, updates.IsOn);
+        return new PrivacyChoices(catalog.IsOn, updates?.IsOn ?? false);
     }
 
     /// <summary>Opens the PRIVACY.md shipped next to the EXE; falls back to the copy in the repository.</summary>

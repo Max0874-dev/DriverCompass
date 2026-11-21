@@ -30,6 +30,12 @@ public static class AppInfo
     public static bool IsRepositoryConfigured =>
         !string.IsNullOrWhiteSpace(CatalogUrl) && !CatalogUrl.Contains("/OWNER/", StringComparison.Ordinal);
 
+    /// <summary>"Standard" (GitHub ZIP) or "Store" (Microsoft Store MSIX, without driver installation).</summary>
+    public static string Edition => Get("DriverCompass.Edition", "Standard");
+
+    /// <summary>True for the Microsoft Store edition: no driver installation, no install history, no update hint.</summary>
+    public static bool IsStoreEdition => string.Equals(Edition, "Store", StringComparison.OrdinalIgnoreCase);
+
     public static string Version
     {
         get

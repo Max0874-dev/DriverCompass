@@ -211,6 +211,7 @@
   <data name="Privacy_Intro" xml:space="preserve"><value>DriverCompass runs locally on your PC. There is no telemetry. Device data such as hardware IDs, model or serial number does not leave the PC on its own.</value></data>
   <data name="Privacy_Catalog_Help" xml:space="preserve"><value>Downloads the public vendor list from GitHub (raw.githubusercontent.com) at startup. No device data is sent, only the usual connection data such as your IP address. When off, the app uses the built-in or last downloaded list.</value></data>
   <data name="Privacy_OnClick" xml:space="preserve"><value>Everything else only happens when you start it: driver links open in your browser when you click them (manufacturer links may contain the model or serial number). The version check is off by default and is turned on per source in the settings. Drivers are only installed when you explicitly confirm a single driver.</value></data>
+  <data name="Privacy_OnClick_NoInstall" xml:space="preserve"><value>Everything else only happens when you start it: driver links open in your browser when you click them (manufacturer links may contain the model or serial number). The version check is off by default and is turned on per source in the settings.</value></data>
   <data name="Privacy_Later" xml:space="preserve"><value>You can change all of this later in "Settings".</value></data>
   <data name="Privacy_ReadPolicy" xml:space="preserve"><value>Read the privacy policy</value></data>
   <data name="Privacy_Continue" xml:space="preserve"><value>Continue</value></data>

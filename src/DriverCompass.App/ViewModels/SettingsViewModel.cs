@@ -49,6 +49,9 @@ public sealed partial class SettingsViewModel : ObservableObject
     [ObservableProperty] public partial bool UpdateCatalogOnline { get; set; }
     [ObservableProperty] public partial bool CheckForAppUpdates { get; set; }
 
+    /// <summary>False in the Microsoft Store edition, which the Store keeps up to date itself.</summary>
+    public bool UpdateHintAvailable => MainViewModel.UpdateHintAvailable;
+
     public int StartViewIndex
     {
         get => IsExpertStart ? 1 : 0;

@@ -1,0 +1,83 @@
+name: Store package
+
+# Builds the Microsoft Store edition (no driver installation, see docs/store-edition.md) as an
+# unsigned .msixupload for x64 and ARM64. The Store signs the package itself, so nothing here needs
+# a certificate. The result is a workflow artifact to upload in Partner Center by hand; it is NOT
+# attached to the GitHub release, because an unsigned MSIX cannot be installed directly.
+#
+# Package identity comes from repository variables (Settings → Secrets and variables → Actions →
+# Variables). Copy them from Partner Center → the app → Product identity:
+#   STORE_IDENTITY_NAME            Package/Identity/Name
+#   STORE_PUBLISHER                Package/Identity/Publisher (CN=…)
+#   STORE_PUBLISHER_DISPLAY_NAME   Package/Properties/PublisherDisplayName
+# Without them the package still builds, with placeholder values that Partner Center rejects.
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        platform: [x64, ARM64]
+    env:
+      DOTNET_NOLOGO: true
+      DOTNET_CLI_TELEMETRY_OPTOUT: true
+      RID: ${{ matrix.platform == 'ARM64' && 'win-arm64' || 'win-x64' }}
+      STORE_IDENTITY_NAME: ${{ vars.STORE_IDENTITY_NAME }}
+      STORE_PUBLISHER: ${{ vars.STORE_PUBLISHER }}
+      STORE_PUBLISHER_DISPLAY_NAME: ${{ vars.STORE_PUBLISHER_DISPLAY_NAME }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-dotnet@v5
+        with:
+          global-json-file: global.json
+
+      - name: Check package identity
+        shell: pwsh
+        run: |
+          if (-not $env:STORE_IDENTITY_NAME -or -not $env:STORE_PUBLISHER -or -not $env:STORE_PUBLISHER_DISPLAY_NAME) {
+            Write-Host "::warning::Store identity variables are not set. The package uses placeholder values and cannot be submitted. See docs/store-edition.md."
+          }
+
+      # Symbol packages are off: the MSIX tooling fails to create them under the dotnet CLI, and the Store does not need them.
+      - name: Build Store package
+        shell: pwsh
+        run: |
+          $identity = @()
+          if ($env:STORE_IDENTITY_NAME) { $identity += "-p:StoreIdentityName=$env:STORE_IDENTITY_NAME" }
+          if ($env:STORE_PUBLISHER) { $identity += "-p:StorePublisher=$env:STORE_PUBLISHER" }
+          if ($env:STORE_PUBLISHER_DISPLAY_NAME) { $identity += "-p:StorePublisherDisplayName=$env:STORE_PUBLISHER_DISPLAY_NAME" }
+          dotnet publish src/DriverCompass.App/DriverCompass.App.csproj -c Release -p:Platform=${{ matrix.platform }} -r $env:RID `
+            -p:DriverCompassEdition=Store -p:GenerateAppxPackageOnBuild=true -p:AppxPackageSigningEnabled=false `
+            -p:UapAppxPackageBuildMode=StoreUpload -p:AppxBundle=Never -p:AppxSymbolPackageEnabled=false `
+            -p:AppxPackageDir="$PWD\store\" @identity
+
+      # The Store edition must not contain the stage-3 installer or anything that asks for administrator rights.
+      - name: Check package contents
+        shell: pwsh
+        run: |
+          $msix = Get-ChildItem store -Recurse -Filter *.msix | Select-Object -First 1
+          if (-not $msix) { throw 'No .msix was built.' }
+          Add-Type -AssemblyName System.IO.Compression.FileSystem
+          $zip = [IO.Compression.ZipFile]::OpenRead($msix.FullName)
+          try {
+            $names = $zip.Entries.FullName
+            if ($names -match 'DriverCompass\.Installer') { throw 'The Store package contains the installer.' }
+            $manifest = New-Object IO.StreamReader(($zip.Entries | Where-Object FullName -eq 'AppxManifest.xml').Open())
+            $text = $manifest.ReadToEnd(); $manifest.Dispose()
+            if ($text -match 'allowElevation') { throw 'The Store package asks for elevation.' }
+            Write-Host ($text -split "`n" | Select-String '<Identity|PublisherDisplayName' | ForEach-Object { $_.Line.Trim() })
+          } finally { $zip.Dispose() }
+
+      - uses: actions/upload-artifact@v6
+        with:
+          name: store-package-${{ matrix.platform }}
+          path: store/*.msixupload
+          if-no-files-found: error

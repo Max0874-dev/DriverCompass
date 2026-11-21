@@ -2,7 +2,11 @@
 
 ## [Unreleased]
 
+### Added
+- Microsoft Store edition prepared (not in the Store yet): the same app without driver installation, install history and update hint, because the Store accepts no app that needs administrator rights. It is built with `-p:DriverCompassEdition=Store` and contains no installer code at all. The new workflow *Store package* builds it for x64 and ARM64. See docs/store-edition.md.
+
 ### Fixed
+- PRIVACY.md showed the version-catalog cache folder with a broken path; it is `%LOCALAPPDATA%\DriverCompass\cache\versions`.
 - Vendor list: Dell's general driver page moved and returned "Page not found"; the Silicon Labs and Panasonic driver pages moved to new addresses. The app gets the corrected list at its next start, no update needed.
 
 ## [0.3.1] – 2026-11-19

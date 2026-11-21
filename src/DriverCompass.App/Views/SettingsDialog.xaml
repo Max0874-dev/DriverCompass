@@ -39,7 +39,7 @@
                    Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
       </StackPanel>
 
-      <StackPanel Spacing="2">
+      <StackPanel Spacing="2" Visibility="{x:Bind svc:StatusVisuals.VisibleIf(ViewModel.UpdateHintAvailable)}">
         <ToggleSwitch Header="{x:Bind svc:Localizer.T('Settings_CheckAppUpdates')}" IsOn="{x:Bind ViewModel.CheckForAppUpdates, Mode=TwoWay}" />
         <TextBlock Text="{x:Bind svc:Localizer.T('Settings_CheckAppUpdates_Help')}" Style="{StaticResource CaptionTextBlockStyle}"
                    Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />

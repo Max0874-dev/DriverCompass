@@ -13,7 +13,9 @@ using DriverCompass.Core.Versions;
 using DriverCompass.Data;
 using DriverCompass.Scanner.Windows;
 using DriverCompass.VersionProviders;
+#if !STORE_EDITION
 using DriverCompass.Installer.Client;
+#endif
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Xaml;
@@ -110,6 +112,14 @@ public partial class App : Application
         services.AddSingleton<IVersionCheckService>(sp =>
             new VersionCheckService(sp.GetRequiredService<IEnumerable<IVersionProvider>>(), sp.GetRequiredService<ILogger<VersionCheckService>>()));
 
+#if STORE_EDITION
+        // Microsoft Store edition: no driver installation (the Store accepts no app that needs administrator
+        // rights) and no update hint (the Store updates the app itself).
+        var noInstallation = new NoInstallation();
+        services.AddSingleton<IElevatedInstallerClient>(noInstallation);
+        services.AddSingleton<IInstallLog>(noInstallation);
+        services.AddSingleton<IAppUpdateChecker, NoAppUpdateChecker>();
+#else
         // Stage 3: installation runs in a separate, UAC-elevated process ("DriverCompass.exe --elevated ...").
         // The demo mode only simulates it – no UAC prompt, no change to Windows.
         if (isMock)
@@ -136,6 +146,7 @@ public partial class App : Application
             services.AddSingleton<IAppUpdateChecker>(sp =>
                 GitHubReleaseChecker.CreateDefault(sp.GetRequiredService<HttpClient>(), sp.GetRequiredService<ILogger<GitHubReleaseChecker>>()));
         }
+#endif
 
         services.AddSingleton(sp => new MainViewModel(
             sp.GetRequiredService<IDeviceAnalysisService>(),

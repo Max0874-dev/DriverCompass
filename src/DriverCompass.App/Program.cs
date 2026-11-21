@@ -1,10 +1,12 @@
+#if !STORE_EDITION
 using DriverCompass.Core;
 using DriverCompass.Core.Installation;
 using DriverCompass.Installer;
 using Microsoft.Extensions.Logging;
+using Serilog;
+#endif
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
-using Serilog;
 
 namespace DriverCompass.App;
 
@@ -12,16 +14,19 @@ namespace DriverCompass.App;
 /// Custom entry point (DISABLE_XAML_GENERATED_MAIN):
 /// <c>DriverCompass.exe --elevated --request &lt;file&gt;</c> runs the stage-3 installer engine in this separate,
 /// UAC-elevated process WITHOUT starting any UI. Every other start is the normal, unelevated app.
+/// The Microsoft Store edition (STORE_EDITION) has no installer and therefore no elevated entry point.
 /// </summary>
 public static class Program
 {
     [STAThread]
     private static int Main(string[] args)
     {
+#if !STORE_EDITION
         if (ElevatedEntryPoint.IsElevatedInvocation(args))
         {
             return RunElevated(args);
         }
+#endif
 
         WinRT.ComWrappersSupport.InitializeComWrappers();
         Application.Start(callbackParams =>
@@ -33,6 +38,7 @@ public static class Program
         return 0;
     }
 
+#if !STORE_EDITION
     private static int RunElevated(string[] args)
     {
         try
@@ -58,4 +64,5 @@ public static class Program
         factory.CreateLogger("DriverCompass").LogInformation("{App} {Version} elevated helper started", AppInfo.DisplayName, AppInfo.Version);
         return ElevatedEntryPoint.Run(args, factory);
     }
+#endif
 }

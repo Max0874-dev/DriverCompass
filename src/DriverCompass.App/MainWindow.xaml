@@ -30,7 +30,8 @@
             <FontIcon Glyph="&#xE8FD;" />
           </AppBarToggleButton.Icon>
         </AppBarToggleButton>
-        <AppBarButton Label="{x:Bind svc:Localizer.T('Cmd_History')}" Command="{x:Bind ViewModel.ShowHistoryCommand}">
+        <AppBarButton Label="{x:Bind svc:Localizer.T('Cmd_History')}" Command="{x:Bind ViewModel.ShowHistoryCommand}"
+                      Visibility="{x:Bind svc:StatusVisuals.VisibleIf(ViewModel.InstallationAvailable)}">
           <AppBarButton.Icon>
             <FontIcon Glyph="&#xE81C;" />
           </AppBarButton.Icon>

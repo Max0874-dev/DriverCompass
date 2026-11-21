@@ -19,12 +19,13 @@ DriverCompass läuft vollständig lokal auf deinem PC.
   - **Lenovo:** Lädt `download.lenovo.com/catalog/<Maschinentyp>_Win11.xml` und die zugehörigen Paketbeschreibungen. Lenovo sieht den Maschinentyp.
   - **HP:** Lädt `hpia.hpcloud.hp.com/ref/platformList.cab` (keine Gerätedaten) und die Referenzdatei für deine Plattform. HP sieht Plattform-ID und Windows-Version.
 
-  Die Seriennummer wird dabei nie verwendet. Die Kataloge werden unter `%LOCALAPPDATA%DriverCompasscheversions` zwischengespeichert. Die Downloads laufen nur über HTTPS, nur von diesen fest eingetragenen Adressen, mit Signatur- bzw. Prüfsummen-Kontrolle.
+  Die Seriennummer wird dabei nie verwendet. Die Kataloge werden unter `%LOCALAPPDATA%\DriverCompass\cache\versions` zwischengespeichert. Die Downloads laufen nur über HTTPS, nur von diesen fest eingetragenen Adressen, mit Signatur- bzw. Prüfsummen-Kontrolle.
 - **Treiberinstallation (optional):** Wenn du bei einem von Windows Update gefundenen Treiber auf „Installieren …“ klickst und bestätigst, lädt Windows Update genau dieses Paket von Microsoft und installiert es. Dabei gilt dasselbe wie bei Windows Update selbst. Protokoll und Ergebnis liegen lokal unter `%ProgramData%\DriverCompass`.
 - **Treiber aus Dell- oder HP-Paketen (optional):** Bei „Installieren …“ für einen Treffer aus dem Dell- oder HP-Katalog lädt DriverCompass den Katalog und das Treiberpaket direkt von `downloads.dell.com` bzw. `ftp.hp.com`. Dell bzw. HP sieht dabei Modell bzw. Plattform und welches Paket geladen wird – keine Seriennummer.
 - **Treiber aus Lenovo-Paketen (optional):** Wie bei Dell und HP, aber von `download.lenovo.com`. Lenovo sieht den Maschinentyp und welches Paket geladen wird – keine Seriennummer.
 - **Logs** (`%LOCALAPPDATA%\DriverCompass\logs`, 14 Tage) enthalten Geräteanzahlen und Fehlermeldungen, aber keine Seriennummern.
 - **Berichte** (HTML/CSV) entstehen nur, wenn du exportierst. Die Seriennummer ist standardmäßig nicht enthalten. Prüfe Berichte, bevor du sie weitergibst.
+- **Microsoft-Store-Ausgabe:** Sie installiert keine Treiber und hat keinen Update-Hinweis (der Store aktualisiert die App). Die Punkte zur Treiberinstallation und zum Update-Hinweis gelten dort also nicht. Einstellungen, Zwischenspeicher und Logs leitet Windows in den privaten Ordner des App-Pakets unter `%LOCALAPPDATA%\Packages\` um; beim Deinstallieren werden sie entfernt.
 
 ## English
 
@@ -45,9 +46,10 @@ DriverCompass runs entirely on your PC.
   - **Lenovo:** downloads `download.lenovo.com/catalog/<machine type>_Win11.xml` and the package descriptions it lists. Lenovo sees the machine type.
   - **HP:** downloads `hpia.hpcloud.hp.com/ref/platformList.cab` (no device data), then the reference file for your platform. HP sees the platform ID and Windows version.
 
-  The serial number is never used. Catalogs are cached in `%LOCALAPPDATA%DriverCompasscheversions`. Downloads use HTTPS only, only from these hard-coded addresses, with signature or checksum checks.
+  The serial number is never used. Catalogs are cached in `%LOCALAPPDATA%\DriverCompass\cache\versions`. Downloads use HTTPS only, only from these hard-coded addresses, with signature or checksum checks.
 - **Driver installation (optional):** when you click "Install …" for a driver found on Windows Update and confirm, Windows Update downloads exactly this package from Microsoft and installs it – the same as Windows Update itself. Log and result stay local in `%ProgramData%\DriverCompass`.
 - **Drivers from Dell or HP packages (optional):** when you click "Install …" for a match from the Dell or HP catalog, DriverCompass downloads the catalog and the driver package directly from `downloads.dell.com` or `ftp.hp.com`. Dell or HP sees the model or platform and which package is downloaded – no serial number.
 - **Drivers from Lenovo packages (optional):** as for Dell and HP, but from `download.lenovo.com`. Lenovo sees the machine type and which package is downloaded – no serial number.
 - **Logs** (`%LOCALAPPDATA%\DriverCompass\logs`, 14 days) contain device counts and error messages, but no serial numbers.
 - **Reports** (HTML/CSV) are only created when you export them. The serial number is excluded by default. Review reports before sharing them.
+- **Microsoft Store edition:** it installs no drivers and has no update hint (the Store updates the app), so the points about driver installation and the update hint do not apply there. Windows redirects settings, cache and logs into the app package's private folder below `%LOCALAPPDATA%\Packages\`; uninstalling removes them.

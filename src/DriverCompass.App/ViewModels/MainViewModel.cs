@@ -71,6 +71,12 @@ public sealed partial class MainViewModel : ObservableObject
 
     public bool IsMockMode { get; }
 
+    /// <summary>False in the Microsoft Store edition: no "Install …", no install history.</summary>
+    public bool InstallationAvailable => !AppInfo.IsStoreEdition;
+
+    /// <summary>False in the Microsoft Store edition: the Store keeps the app up to date itself.</summary>
+    public static bool UpdateHintAvailable => !AppInfo.IsStoreEdition;
+
     public string Title => AppInfo.DisplayName;
 
     public ObservableCollection<DeviceGroupViewModel> SimpleGroups { get; } = [];
@@ -327,7 +333,7 @@ public sealed partial class MainViewModel : ObservableObject
     /// </summary>
     public async Task CheckForAppUpdateAsync()
     {
-        if (_updateChecked || !_settings.Current.CheckForAppUpdates)
+        if (_updateChecked || !_settings.Current.CheckForAppUpdates || !UpdateHintAvailable)
         {
             return;
         }
@@ -421,7 +427,8 @@ public sealed partial class MainViewModel : ObservableObject
     private void BuildItems(AnalysisResult result)
     {
         var lang = Localizer.Current.Language;
-        _all = result.Devices.Select(d => new DeviceItemViewModel(d, Localizer.Current, lang, InstallAsync)).ToList();
+        Func<DeviceItemViewModel, Task>? install = InstallationAvailable ? InstallAsync : null;
+        _all = result.Devices.Select(d => new DeviceItemViewModel(d, Localizer.Current, lang, install)).ToList();
     }
 
     // ===================== Stage 3: install ONE driver (Windows Update) =====================

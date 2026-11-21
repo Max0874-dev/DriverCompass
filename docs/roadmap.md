@@ -50,3 +50,9 @@ Original plan for reference:
   - It creates a restore point. If that fails (System Restore off, or only one point per 24 h), it shows a clear warning with an option to cancel.
   - It installs with `pnputil /add-driver <inf> /install`.
 - Install log (JSON) and rollback via `pnputil /delete-driver oemNN.inf /uninstall`.
+
+## Distribution
+
+- GitHub releases: self-contained ZIP for x64 and ARM64 (all three stages). Not signed yet, see [code-signing.md](code-signing.md).
+- Microsoft Store edition (prepared): stages 1 and 2 only, signed by Microsoft, updated by the Store. The Store accepts no app that needs administrator rights, so the Store edition is built without the installer. See [store-edition.md](store-edition.md).
+- Later: winget manifest once signed releases exist.
