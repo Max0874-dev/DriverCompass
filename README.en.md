@@ -20,6 +20,13 @@ DriverCompass is a free, open-source app for Windows 10 and 11. It detects every
 
 ## Download
 
+DriverCompass comes in two editions:
+
+- **[Microsoft Store](https://apps.microsoft.com/detail/9PKVXM3Q7P7L)** (recommended): signed by Microsoft, no SmartScreen warning, automatic updates. Finds driver problems, links the official driver pages and checks versions – but installs no drivers itself, because the Store accepts no app that needs administrator rights.
+- **ZIP from GitHub:** additionally offers "Install …" (one confirmed driver, restore point, history with "Undo"). Not code-signed yet, see below.
+
+### ZIP from GitHub
+
 1. Download the matching ZIP file from the [latest release](https://github.com/Max0874-dev/DriverCompass/releases/latest):
    - `DriverCompass-…-win-x64.zip` for most PCs (Intel and AMD)
    - `DriverCompass-…-win-arm64.zip` for ARM devices, e.g. with a Snapdragon processor

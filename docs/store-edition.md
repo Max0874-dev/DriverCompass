@@ -1,5 +1,7 @@
 # Microsoft Store edition
 
+**Status:** published in the Microsoft Store on 2026-11-22 (version 0.3.1.0, x64 and ARM64): <https://apps.microsoft.com/detail/9PKVXM3Q7P7L> (Store ID `9PKVXM3Q7P7L`).
+
 DriverCompass is released in two editions:
 
 | | GitHub edition (ZIP) | Microsoft Store edition (MSIX) |
@@ -61,9 +63,18 @@ Tested on 2026-11-21 with the registered x64 package (Developer Mode): the app s
 
    > DriverCompass lists the devices on this PC whose driver is missing, failing or only generic, and opens the official driver page of the PC, mainboard or chip manufacturer in the default browser. It does not download or install drivers and never asks for administrator rights. runFullTrust is needed for the WMI device query (Win32_PnPEntity, read-only) and the optional Windows Update driver search (Windows Update Agent API, search only). The only automatic network access is the download of a public vendor list from raw.githubusercontent.com, which the user can turn off on first start. Source code: https://github.com/Max0874-dev/DriverCompass
 
+The first submission (2026-11-21) passed certification as described: self-contained Windows App SDK in the package, `runFullTrust` with the justification above, category *Utilities & tools*, age rating 3+ / USK 0. It was set to publish only after "Publish now", which the maintainer clicked on 2026-11-22.
+
+## Updating the Store edition
+
+1. Release the new version as usual (raise `<Version>`, tag `vX.Y.Z`). The tag also starts *Store package*; its artifacts contain the `.msixupload` files with the Store identity from the secrets.
+2. In Partner Center open DriverCompass → *Update* (a new submission copies the previous one).
+3. *Packages:* upload the two new `.msixupload` files and remove the old ones. The version must be higher than the published one.
+4. Adjust the store listings if something visible changed (for example *What's new in this version*), then *Submit to the Store*.
+
+The Store keeps installed copies up to date by itself; there is nothing to change in the app.
+
 ## Not verified yet
 
 - **Privacy notice in a fresh install:** the test PC already had settings from the GitHub edition, so the first-start notice of the Store edition was not shown. Check it on a PC without DriverCompass data.
 - **Dell, Lenovo and HP catalogs** inside the package (only Windows Update was tested).
-- **Package format:** whether certification accepts the self-contained Windows App SDK in the package, or asks for the framework package instead.
-- **Review:** how reviewers judge an app that shows driver problems and links to manufacturer pages.

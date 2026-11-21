@@ -3,7 +3,7 @@
 ## [Unreleased]
 
 ### Added
-- Microsoft Store edition prepared (not in the Store yet): the same app without driver installation, install history and update hint, because the Store accepts no app that needs administrator rights. It is built with `-p:DriverCompassEdition=Store` and contains no installer code at all. The new workflow *Store package* builds it for x64 and ARM64. See docs/store-edition.md.
+- DriverCompass is now in the Microsoft Store (<https://apps.microsoft.com/detail/9PKVXM3Q7P7L>), signed by Microsoft and updated by the Store. The Store edition is the same app without driver installation, install history and update hint, because the Store accepts no app that needs administrator rights. It is built with `-p:DriverCompassEdition=Store` and contains no installer code at all. The new workflow *Store package* builds it for x64 and ARM64. See docs/store-edition.md.
 
 ### Fixed
 - PRIVACY.md showed the version-catalog cache folder with a broken path; it is `%LOCALAPPDATA%\DriverCompass\cache\versions`.

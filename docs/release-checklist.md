@@ -13,7 +13,7 @@
 - [x] **License texts** of all shipped components are in `licenses/` and copied into the release ZIP; `LicenseTextTests` fails when a new package ships without them.
 - [ ] Verify all vendor URLs again: `./scripts/check-vendor-links.ps1` (or the *Check vendor links* workflow), then open the warned links (403/timeouts) in a browser.
 - [ ] winget manifest (`winget-pkgs` PR) once signed releases exist.
-- [ ] **Microsoft Store edition** (signed by Microsoft, without driver installation). Code and the *Store package* workflow are ready; developer account and name reservation done 2026-11-21 (Store ID 9PKVXM3Q7P7L, submit within three months); the repository secrets for the package identity are missing. See [store-edition.md](store-edition.md).
+- [x] **Microsoft Store edition** (signed by Microsoft, without driver installation): published 2026-11-22, <https://apps.microsoft.com/detail/9PKVXM3Q7P7L>. How to submit updates: [store-edition.md](store-edition.md#updating-the-store-edition).
 
 ## Every release
 
@@ -22,3 +22,4 @@
 3. Run `scripts/update-pci-ids.ps1` if needed.
 4. Commit, then tag `vX.Y.Z` and push the tag. `release.yml` builds ZIPs (x64/ARM64) and SHA256SUMS into a **draft** release.
 5. Check the draft release, add release notes, publish.
+6. Microsoft Store: the same tag runs *Store package*. Upload its two `.msixupload` files as a new submission in Partner Center, see [store-edition.md](store-edition.md#updating-the-store-edition).

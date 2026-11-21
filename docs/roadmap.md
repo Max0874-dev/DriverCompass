@@ -54,5 +54,5 @@ Original plan for reference:
 ## Distribution
 
 - GitHub releases: self-contained ZIP for x64 and ARM64 (all three stages). Not signed yet, see [code-signing.md](code-signing.md).
-- Microsoft Store edition (prepared): stages 1 and 2 only, signed by Microsoft, updated by the Store. The Store accepts no app that needs administrator rights, so the Store edition is built without the installer. See [store-edition.md](store-edition.md).
+- Microsoft Store edition (published 2026-11-22, <https://apps.microsoft.com/detail/9PKVXM3Q7P7L>): stages 1 and 2 only, signed by Microsoft, updated by the Store. The Store accepts no app that needs administrator rights, so the Store edition is built without the installer. See [store-edition.md](store-edition.md).
 - Later: winget manifest once signed releases exist.
