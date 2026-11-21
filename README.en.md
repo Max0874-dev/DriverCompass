@@ -18,6 +18,24 @@ DriverCompass is a free, open-source app for Windows 10 and 11. It detects every
 
 <sub>Both images show the demo mode (`DriverCompass.exe --mock`) with example devices.</sub>
 
+## Download
+
+1. Download the matching ZIP file from the [latest release](https://github.com/Max0874-dev/DriverCompass/releases/latest):
+   - `DriverCompass-…-win-x64.zip` for most PCs (Intel and AMD)
+   - `DriverCompass-…-win-arm64.zip` for ARM devices, e.g. with a Snapdragon processor
+2. Unzip it and run `DriverCompass.exe`. No installation needed.
+3. The EXE is not code-signed yet, so Windows SmartScreen warns on first start ("Windows protected your PC"). Click **More info → Run anyway**. Why there is no signature yet: see the [code signing policy](docs/code-signing-policy.md).
+
+It is a good idea to check that the file is unchanged first. This PowerShell command shows its checksum:
+
+```powershell
+Get-FileHash .\DriverCompass-*-win-x64.zip -Algorithm SHA256
+```
+
+It must match the entry in `SHA256SUMS-x64.txt` (or `SHA256SUMS-arm64.txt`) on the release page.
+
+To try DriverCompass safely, run `.\DriverCompass.exe --mock` in PowerShell in the unzipped folder. It then shows example devices instead of your hardware.
+
 > **Status:** stage 1 (detect and link), stage 2 (version comparison) and stage 3 (installing from Windows Update and from Dell, HP and Lenovo packages) are done, see [docs/roadmap.md](docs/roadmap.md).
 
 ## How links are chosen

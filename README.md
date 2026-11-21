@@ -18,6 +18,24 @@ DriverCompass ist eine kostenlose Open-Source-App für Windows 10 und 11. Sie er
 
 <sub>Beide Bilder zeigen den Demo-Modus (`DriverCompass.exe --mock`) mit Beispielgeräten.</sub>
 
+## Herunterladen
+
+1. Lade beim [neuesten Release](https://github.com/Max0874-dev/DriverCompass/releases/latest) die passende ZIP-Datei herunter:
+   - `DriverCompass-…-win-x64.zip` für die meisten PCs (Intel und AMD)
+   - `DriverCompass-…-win-arm64.zip` für ARM-Geräte, z. B. mit Snapdragon-Prozessor
+2. Entpacke die ZIP-Datei und starte `DriverCompass.exe`. Eine Installation ist nicht nötig.
+3. Die EXE ist noch nicht signiert, deshalb warnt Windows SmartScreen beim ersten Start („Der Computer wurde durch Windows geschützt“). Klicke auf **Weitere Informationen → Trotzdem ausführen**. Warum noch keine Signatur: siehe [Code signing policy](docs/code-signing-policy.md).
+
+Prüfe vorher am besten, ob die Datei unverändert ist. Dieser Befehl in PowerShell zeigt die Prüfsumme an:
+
+```powershell
+Get-FileHash .\DriverCompass-*-win-x64.zip -Algorithm SHA256
+```
+
+Sie muss mit dem Eintrag in `SHA256SUMS-x64.txt` (bzw. `SHA256SUMS-arm64.txt`) auf der Release-Seite übereinstimmen.
+
+Zum gefahrlosen Ausprobieren startest du DriverCompass im entpackten Ordner mit `.\DriverCompass.exe --mock` (in PowerShell). Dann zeigt es Beispielgeräte statt deiner Hardware.
+
 > **Status:** Stufe 1 (Erkennen und Links), Stufe 2 (Versionsvergleich) und Stufe 3 (Installation aus Windows Update sowie Dell-, HP- und Lenovo-Paketen) sind fertig, siehe [docs/roadmap.md](docs/roadmap.md).
 
 ## Wie die Links entstehen
