@@ -74,7 +74,9 @@ The first submission (2026-11-21) passed certification as described: self-contai
 
 The Store keeps installed copies up to date by itself; there is nothing to change in the app.
 
+Tested on 2026-11-23 with the app installed from the Store (0.3.1.0, x64, signed by the Store): the Dell and HP catalogs only run on PCs of those makers, and the test PC is not one. So the risky part was run inside the Store package with `Invoke-CommandInDesktopPackage`, the same way `CatalogDownloader` and `CabExtractor` do it: download `CatalogIndexPC.cab` (Dell) and `platformList.cab` (HP) over HTTPS into `%LOCALAPPDATA%\DriverCompass\cache`, check the Authenticode signer (both valid: Dell Technologies Inc., HP Inc.) and extract with `System32\expand.exe` into `%TEMP%\DriverCompass`. Both returned exit code 0 and exactly one file. Lenovo's catalog is a plain XML download over HTTPS without a CAB, the same way the vendor list is loaded, which works in the package.
+
 ## Not verified yet
 
 - **Privacy notice in a fresh install:** the test PC already had settings from the GitHub edition, so the first-start notice of the Store edition was not shown. Check it on a PC without DriverCompass data.
-- **Dell, Lenovo and HP catalogs** inside the package (only Windows Update was tested).
+- **Dell, Lenovo and HP version check end to end** on a PC of that maker with the Store edition (the download, signature check and extraction were tested inside the package, see above).
