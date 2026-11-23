@@ -12,7 +12,7 @@
 - [x] **Disclaimer** shown in the app before the first installation (must be ticked). Also add it to the README before a public release.
 - [x] **License texts** of all shipped components are in `licenses/` and copied into the release ZIP; `LicenseTextTests` fails when a new package ships without them.
 - [ ] Verify all vendor URLs again: `./scripts/check-vendor-links.ps1` (or the *Check vendor links* workflow), then open the warned links (403/timeouts) in a browser.
-- [ ] winget manifest (`winget-pkgs` PR) once signed releases exist.
+- [ ] winget manifest (`winget-pkgs` PR) for the GitHub edition once signed releases exist. The Store edition is already in winget through the `msstore` source: `winget install 9PKVXM3Q7P7L`.
 - [x] **Microsoft Store edition** (signed by Microsoft, without driver installation): published 2026-11-22, <https://apps.microsoft.com/detail/9PKVXM3Q7P7L>. How to submit updates: [store-edition.md](store-edition.md#updating-the-store-edition).
 
 ## Every release

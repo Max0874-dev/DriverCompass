@@ -25,6 +25,12 @@ DriverCompass gibt es in zwei Ausgaben:
 - **[Microsoft Store](https://apps.microsoft.com/detail/9PKVXM3Q7P7L)** (empfohlen): von Microsoft signiert, ohne SmartScreen-Warnung, mit automatischen Updates. Findet Treiberprobleme, verlinkt die offiziellen Treiberseiten und prüft Versionen – installiert aber selbst keine Treiber, weil der Store keine Apps mit Administratorrechten zulässt.
 - **ZIP von GitHub:** zusätzlich mit „Installieren …“ (ein bestätigter Treiber, Wiederherstellungspunkt, Verlauf mit „Rückgängig machen“). Noch nicht signiert, siehe unten.
 
+Die Store-Ausgabe lässt sich auch mit winget installieren:
+
+```powershell
+winget install 9PKVXM3Q7P7L
+```
+
 ### ZIP von GitHub
 
 1. Lade beim [neuesten Release](https://github.com/Max0874-dev/DriverCompass/releases/latest) die passende ZIP-Datei herunter:
