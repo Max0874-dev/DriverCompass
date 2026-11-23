@@ -54,7 +54,7 @@ Tested on 2026-11-21 with the registered x64 package (Developer Mode): the app s
    - `STORE_PUBLISHER_DISPLAY_NAME` = `Package/Properties/PublisherDisplayName`
 4. **Build the packages.** Run the workflow *Store package* by hand, or push a `v*` tag. Download the artifacts `store-package-x64` and `store-package-ARM64`; each contains one `.msixupload`.
 5. **Create the submission:**
-   - *Packages:* upload both `.msixupload` files.
+   - *Packages:* upload both `.msixupload` files. Below them, under *Device family availability*, tick **Windows 10/11 Desktop**. Without it Partner Center warns that the product "will not be available to customers on Windows 10/11": the Store page opens by its link, but the app does not show up in the Store search.
    - *Store listing:* description and screenshots. `docs/images/simple-view-*.png` and `expert-view-*.png` are a start; the Store asks for at least 1366×768.
    - *Privacy policy URL:* `https://github.com/Max0874-dev/DriverCompass/blob/main/PRIVACY.md`.
    - *Age ratings:* the IARC questionnaire.
@@ -63,13 +63,13 @@ Tested on 2026-11-21 with the registered x64 package (Developer Mode): the app s
 
    > DriverCompass lists the devices on this PC whose driver is missing, failing or only generic, and opens the official driver page of the PC, mainboard or chip manufacturer in the default browser. It does not download or install drivers and never asks for administrator rights. runFullTrust is needed for the WMI device query (Win32_PnPEntity, read-only) and the optional Windows Update driver search (Windows Update Agent API, search only). The only automatic network access is the download of a public vendor list from raw.githubusercontent.com, which the user can turn off on first start. Source code: https://github.com/Max0874-dev/DriverCompass
 
-The first submission (2026-11-21) passed certification as described: self-contained Windows App SDK in the package, `runFullTrust` with the justification above, category *Utilities & tools*, age rating 3+ / USK 0. It was set to publish only after "Publish now", which the maintainer clicked on 2026-11-22.
+The first submission (2026-11-21) passed certification as described: self-contained Windows App SDK in the package, `runFullTrust` with the justification above, category *Utilities & tools*, age rating 3+ / USK 0. It was set to publish only after "Publish now", which the maintainer clicked on 2026-11-22. Afterwards the Store page opened by its link, but the search did not find the app, and *Device family availability* had no device family ticked. Since 2026-11-23 the app shows up in the Store search.
 
 ## Updating the Store edition
 
 1. Release the new version as usual (raise `<Version>`, tag `vX.Y.Z`). The tag also starts *Store package*; its artifacts contain the `.msixupload` files with the Store identity from the secrets.
 2. In Partner Center open DriverCompass → *Update* (a new submission copies the previous one).
-3. *Packages:* upload the two new `.msixupload` files and remove the old ones. The version must be higher than the published one.
+3. *Packages:* upload the two new `.msixupload` files and remove the old ones. The version must be higher than the published one. Check that **Windows 10/11 Desktop** is still ticked under *Device family availability*.
 4. Adjust the store listings if something visible changed (for example *What's new in this version*), then *Submit to the Store*.
 
 The Store keeps installed copies up to date by itself; there is nothing to change in the app.
