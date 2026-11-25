@@ -72,9 +72,16 @@ The first submission (2026-11-21) passed certification as described: self-contai
 1. Release the new version as usual (raise `<Version>`, tag `vX.Y.Z`). The tag also starts *Store package*; its artifacts contain the `.msixupload` files with the Store identity from the secrets.
 2. In Partner Center open DriverCompass → *Update* (a new submission copies the previous one).
 3. *Packages:* upload the two new `.msixupload` files and remove the old ones. The version must be higher than the published one. Check that **Windows 10/11 Desktop** is still ticked under *Device family availability*.
-4. Adjust the store listings if something visible changed (for example *What's new in this version*), then *Submit to the Store*.
+4. Partner Center asks again why the app needs `runFullTrust`. Paste the current justification (below) and keep it in step with what the app does.
+5. Adjust the store listings if something visible changed (for example *What's new in this version*), then *Submit to the Store*.
 
 The Store keeps installed copies up to date by itself; there is nothing to change in the app.
+
+`runFullTrust` justification used for 0.4.0:
+
+> DriverCompass is a desktop app (WinUI 3, packaged Win32) that lists the devices on this PC whose driver is missing, failing or only generic, and opens the official driver page of the PC, mainboard or chip manufacturer in the default browser. runFullTrust is needed because it is a full-trust desktop app and uses Win32 APIs that are not available to AppContainer apps: the read-only WMI device query (Win32_PnPEntity, Win32_ComputerSystem, Win32_BaseBoard, Win32_BIOS) and the optional Windows Update driver search (Windows Update Agent COM API, search only). The optional version check also extracts the vendors' signed catalog files (Dell, HP) with Windows' own expand.exe. The app does not download or install drivers and never asks for administrator rights; for a newer Windows Update driver it only opens Settings > Windows Update > Optional updates. Network access: a public vendor list from raw.githubusercontent.com (can be turned off on first start), opt-in vendor catalogs (Dell, Lenovo, HP), and HP's public platform list when the user opens an HP support link. Source code: https://github.com/Max0874-dev/DriverCompass
+
+Submissions: 0.3.1.0 (first, published 2026-11-22), 0.4.0.0 (submitted 2026-11-25).
 
 Tested on 2026-11-23 with the app installed from the Store (0.3.1.0, x64, signed by the Store): the Dell and HP catalogs only run on PCs of those makers, and the test PC is not one. So the risky part was run inside the Store package with `Invoke-CommandInDesktopPackage`, the same way `CatalogDownloader` and `CabExtractor` do it: download `CatalogIndexPC.cab` (Dell) and `platformList.cab` (HP) over HTTPS into `%LOCALAPPDATA%\DriverCompass\cache`, check the Authenticode signer (both valid: Dell Technologies Inc., HP Inc.) and extract with `System32\expand.exe` into `%TEMP%\DriverCompass`. Both returned exit code 0 and exactly one file. Lenovo's catalog is a plain XML download over HTTPS without a CAB, the same way the vendor list is loaded, which works in the package.
 
