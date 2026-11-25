@@ -2,9 +2,12 @@
 
 ## [Unreleased]
 
+## [0.4.0] – 2026-11-25
+
+**Preview:** the EXE from GitHub is still not code-signed, so Windows SmartScreen will warn ("Windows protected your PC" → *More info* → *Run anyway*). Check the SHA-256 against `SHA256SUMS-*.txt` before running it. The Microsoft Store edition is signed by Microsoft.
+
 ### Added
 - DriverCompass is now in the Microsoft Store (<https://apps.microsoft.com/detail/9PKVXM3Q7P7L>), signed by Microsoft and updated by the Store. The Store edition is the same app without driver installation, install history and update hint, because the Store accepts no app that needs administrator rights. It is built with `-p:DriverCompassEdition=Store` and contains no installer code at all. The new workflow *Store package* builds it for x64 and ARM64. See docs/store-edition.md. It can also be installed with `winget install 9PKVXM3Q7P7L`.
-
 - **"How to"** for every device that needs a driver or has a newer one: numbered steps from the right source to the installed driver, with buttons that open the page, Windows Update or the catalog search, or copy the package name, model or hardware ID. Covers a newer driver at Windows Update (Settings → Optional updates), a newer package at Dell, HP or Lenovo (package page, version, HP SoftPaq number, the maker's own update program), the maker's or chip vendor's page (model, Windows version, driver category, .inf install via Device Manager) and the Microsoft Update Catalog.
 - **HP: the driver page of your model** instead of HP's general driver page. When you open "HP support for your model", DriverCompass looks up the product number in HP's signed platform list (no device data sent) and opens `support.hp.com/drivers/model/<number>`. If that fails, the general HP page opens as before.
 - **More makers link to your model:** ASUS and ASRock open the support page of your mainboard or notebook, MSI, GIGABYTE, Acer and Framework their product or search page for your model, instead of the general download page. The general page stays as a fallback. Delivered with the online vendor list, no app update needed.
@@ -15,6 +18,10 @@
 ### Fixed
 - PRIVACY.md showed the version-catalog cache folder with a broken path; it is `%LOCALAPPDATA%\DriverCompass\cache\versions`.
 - Vendor list: Dell's general driver page moved and returned "Page not found"; the Silicon Labs and Panasonic driver pages moved to new addresses. The app gets the corrected list at its next start, no update needed.
+
+### Download
+- `DriverCompass-0.4.0-win-x64.zip` / `-win-arm64.zip`: unzip and run `DriverCompass.exe` (self-contained, no installation, Windows 10 1809+ / Windows 11). The license texts are in the folder `licenses`.
+- Or from the Microsoft Store: <https://apps.microsoft.com/detail/9PKVXM3Q7P7L> (`winget install 9PKVXM3Q7P7L`).
 
 ## [0.3.1] – 2026-11-19
 
