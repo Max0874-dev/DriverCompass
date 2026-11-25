@@ -66,6 +66,10 @@ Placeholders:
 
 Values are URL-encoded. Placeholders such as "To Be Filled By O.E.M." count as missing, and then the next template is tried.
 
+**Model page templates:** because values are URL-encoded, a template cannot turn "MAG X670E TOMAHAWK WIFI" into a path like `mag-x670e-tomahawk-wifi`. So only add a model template if the maker's site accepts the name as Windows reports it – usually a search page with a query parameter, sometimes a path that takes spaces (`%20`) as-is (ASUS). Open the expanded URL with a real value (`Win32_ComputerSystem.Model`, `Win32_BaseBoard.Product`) in a browser and add the example to `Repository_model_page_templates_expand_as_checked` in `tests/DriverCompass.Data.Tests/VendorCatalogValidatorTests.cs`. Use `{board}` where the maker's page is keyed by the board (ASUS, ASRock), and `{model}` where the system model works better (MSI, Acer, Framework). For self-built PCs `{model}` is the board name anyway. Always keep the general page as the last template with `"requires": []`.
+
+**Model pages that need a lookup (HP):** some makers address a model by an internal number that is not in SMBIOS. Such links are built in code, not in `vendors.json`, because a new placeholder would make older app versions reject the whole online list. For HP, `HpModelPageProvider` (`src/DriverCompass.VersionProviders/Hp/`) maps the platform ID from the mainboard (e.g. `880D`) to HP's product number via HP's signed `platformList.cab` and opens `https://support.hp.com/drivers/model/<number>`. This happens only when the user opens the HP link; if it fails, the general template from `vendors.json` opens. A provider implements `IOemModelPageProvider` and is matched by the OEM's `id`.
+
 ### Generic driver rule
 
 ```json

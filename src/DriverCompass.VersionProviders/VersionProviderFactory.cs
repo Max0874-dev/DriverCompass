@@ -44,4 +44,12 @@ public static class VersionProviderFactory
             new HpVersionProvider(downloader, extractor),
         ];
     }
+
+    /// <summary>Model pages for PC makers whose vendor-list link is generic (HP). Contacted only when the user opens the link.</summary>
+    public static IReadOnlyList<IOemModelPageProvider> CreateModelPageProviders(HttpClient http, ILoggerFactory loggerFactory, string? cacheDirectory = null)
+    {
+        var downloader = new CatalogDownloader(http, cacheDirectory ?? DefaultCacheDirectory, logger: loggerFactory.CreateLogger<CatalogDownloader>());
+        var extractor = new ExpandCabExtractor(logger: loggerFactory.CreateLogger<ExpandCabExtractor>());
+        return [new HpModelPageProvider(downloader, extractor, loggerFactory.CreateLogger<HpModelPageProvider>())];
+    }
 }

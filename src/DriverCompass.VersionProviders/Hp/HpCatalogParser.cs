@@ -12,6 +12,9 @@ namespace DriverCompass.VersionProviders.Hp;
 /// <summary>A Windows release for which HP publishes a reference file for one platform.</summary>
 public sealed record HpPlatformOs(bool IsWindows11, string ReleaseIdFilename, int Build);
 
+/// <summary>One HP model of a platform: product number (used by support.hp.com) and name.</summary>
+public sealed record HpProduct(string Id, string Name);
+
 /// <summary>
 /// Parses HP Image Assistant data: <c>platformList.xml</c> (platform ID → supported Windows releases)
 /// and the per-platform reference file (devices with driver version + SoftPaq).
@@ -38,6 +41,64 @@ public static class HpCatalogParser
 
         return [];
     }
+
+    /// <summary>
+    /// HP product numbers of one platform (<c>&lt;ProductName Id="38460774"&gt;HP EliteBook 840 G8 Notebook PC&lt;/ProductName&gt;</c>).
+    /// support.hp.com opens the driver page of a model at <c>/drivers/model/{Id}</c>. Only plain numbers are kept.
+    /// </summary>
+    public static IReadOnlyList<HpProduct> ParseProducts(Stream stream, string platformId)
+    {
+        foreach (var platform in SafeXml.ReadChildren(stream, n => n == "Platform"))
+        {
+            if (!string.Equals(platform.Kid("SystemID").Text(), platformId, StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            return platform.Kids("ProductName")
+                .Select(p => new HpProduct(p.Attr("Id") ?? string.Empty, p.Text() ?? string.Empty))
+                .Where(p => p.Id.Length is > 0 and <= 12 && p.Id.All(char.IsAsciiDigit))
+                .ToList();
+        }
+
+        return [];
+    }
+
+    /// <summary>
+    /// The product whose name matches the PC's model (Win32_ComputerSystem.Model), else the first one.
+    /// Products of one platform share the mainboard and therefore the drivers.
+    /// </summary>
+    public static HpProduct? ChooseProduct(IReadOnlyList<HpProduct> products, string? model)
+    {
+        if (products.Count == 0)
+        {
+            return null;
+        }
+
+        var wanted = Normalize(model);
+        if (wanted.Length > 0)
+        {
+            var exact = products.FirstOrDefault(p => Normalize(p.Name) == wanted);
+            if (exact is not null)
+            {
+                return exact;
+            }
+
+            var partial = products.FirstOrDefault(p => Normalize(p.Name) is { Length: > 0 } n && (n.Contains(wanted, StringComparison.Ordinal) || wanted.Contains(n, StringComparison.Ordinal)));
+            if (partial is not null)
+            {
+                return partial;
+            }
+        }
+
+        return products[0];
+    }
+
+    /// <summary>Driver page of one HP model, e.g. https://support.hp.com/drivers/model/38460774 (HP picks the country).</summary>
+    public static Uri ModelPageUri(HpProduct product) => new($"https://support.hp.com/drivers/model/{product.Id}");
+
+    private static string Normalize(string? name) =>
+        name is null ? string.Empty : new string(name.Where(char.IsLetterOrDigit).Select(char.ToUpperInvariant).ToArray());
 
     /// <summary>Picks the reference file closest to the installed Windows: same generation, same release, else newest not newer than this build.</summary>
     public static HpPlatformOs? ChooseOs(IReadOnlyList<HpPlatformOs> available, bool isWindows11, string? displayVersion, int? build)

@@ -72,4 +72,16 @@ public sealed class OnlineCatalogTests : IDisposable
 
         AssertNewer(result, device.Device.InstanceId);
     }
+
+    /// <summary>HP's platform list → product number → support.hp.com model page (checked by hand: "HP EliteBook 840 G8 Notebook PC").</summary>
+    [Fact]
+    public async Task Hp_880D_ModelPage()
+    {
+        RequireOnline();
+        var system = new SystemInfo { Manufacturer = "HP", Model = "HP EliteBook 840 G8 Notebook PC", BaseBoardProduct = "880D" };
+
+        var page = await new HpModelPageProvider(Downloader, new ExpandCabExtractor()).FindModelPageAsync(system, TestContext.Current.CancellationToken);
+
+        Assert.Equal("https://support.hp.com/drivers/model/38460774", page?.AbsoluteUri);
+    }
 }

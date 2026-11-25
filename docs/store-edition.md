@@ -25,6 +25,8 @@ The Store edition therefore does not just hide stage 3. It is built without it:
 - `Program.cs` has no `--elevated` entry point.
 - `App.xaml.cs` registers `NoInstallation` and `NoAppUpdateChecker` (in `src/DriverCompass.Core/Installation/NoInstallation.cs`).
 
+What the Store edition offers instead: the **"How to"** guide per device leads to the driver step by step. A newer Windows Update driver is installed with Windows' own *Optional updates* page (DriverCompass opens it); for Dell, HP and Lenovo packages the guide opens the official package or model page and names the package, version and the maker's own update program. DriverCompass itself downloads no driver and starts no installer.
+
 The workflow *Store package* checks that the package contains no installer and does not ask for `allowElevation`. The Store edition does not mention the GitHub edition, because Store products may only offer other products that are themselves in the Store.
 
 ## Build locally

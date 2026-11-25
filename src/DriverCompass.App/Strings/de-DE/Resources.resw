@@ -319,4 +319,42 @@
   <data name="InstallOutcomeShort_NotInstallable" xml:space="preserve"><value>nicht installierbar</value></data>
   <data name="PackageHost_lenovo" xml:space="preserve"><value>download.lenovo.com</value></data>
   <data name="Install_Steps_Lenovo" xml:space="preserve"><value>Das Paket wird von {1} geladen und mit der Prüfsumme aus dem {0}-Katalog sowie der {0}-Signatur geprüft. Wichtig: Lenovo-Pakete lassen sich nur mit Lenovos eigenem, signiertem Programm entpacken. Dieses Programm läuft dafür einmal mit Administratorrechten – nur zum Entpacken, so wie bei Lenovo System Update. Installiert wird danach nur der signierte Treiber, keine Lenovo-Software. Vorher wird ein Wiederherstellungspunkt angelegt, und Windows fragt nach Administratorrechten. Rückgängig machen können Sie die Installation über „Verlauf“.</value></data>
+  <data name="Guide_Button" xml:space="preserve"><value>Anleitung</value></data>
+  <data name="Guide_Title" xml:space="preserve"><value>So kommen Sie an den Treiber</value></data>
+  <data name="Guide_HintsHeader" xml:space="preserve"><value>Gut zu wissen</value></data>
+  <data name="Guide_Close" xml:space="preserve"><value>Schließen</value></data>
+  <data name="Guide_Action_Open" xml:space="preserve"><value>Öffnen</value></data>
+  <data name="Guide_Action_Copy" xml:space="preserve"><value>Kopieren</value></data>
+  <data name="Guide_Action_Catalog" xml:space="preserve"><value>Suche öffnen</value></data>
+  <data name="Guide_InstallHere" xml:space="preserve"><value>Am einfachsten: DriverCompass installiert genau diesen Treiber für Sie – mit Wiederherstellungspunkt und „Rückgängig machen“. Oder Sie gehen selbst so vor:</value></data>
+  <data name="Guide_Intro_Generic" xml:space="preserve"><value>Das Gerät läuft mit einem allgemeinen Treiber von Windows. Das ist oft in Ordnung. Den Treiber des Herstellers brauchen Sie vor allem, wenn Funktionen fehlen oder etwas nicht richtig läuft.</value></data>
+  <data name="Guide_Restart" xml:space="preserve"><value>Starten Sie den PC neu, wenn Sie dazu aufgefordert werden. Prüfen Sie danach in DriverCompass erneut („Neu scannen“).</value></data>
+  <data name="Guide_Wu_DriverFallback" xml:space="preserve"><value>den Treiber für dieses Gerät</value></data>
+  <data name="Guide_Wu_Open" xml:space="preserve"><value>Öffnen Sie Windows Update, dort „Erweiterte Optionen“ → „Optionale Updates“. Der Knopf darunter führt direkt dorthin.</value></data>
+  <data name="Guide_Wu_Select" xml:space="preserve"><value>Klappen Sie „Treiberupdates“ auf und setzen Sie nur den Haken bei „{0}“.</value></data>
+  <data name="Guide_Wu_Install" xml:space="preserve"><value>Wählen Sie „Herunterladen und installieren“. Windows lädt den von Microsoft geprüften Treiber und installiert ihn.</value></data>
+  <data name="Guide_Oem_OpenPackage" xml:space="preserve"><value>Öffnen Sie die Seite des Treiberpakets bei {0}.</value></data>
+  <data name="Guide_Oem_OpenModel" xml:space="preserve"><value>Öffnen Sie die Treiberseite Ihres Modells bei {0}.</value></data>
+  <data name="Guide_Oem_FindSupport" xml:space="preserve"><value>Öffnen Sie die Support-Seite von {0} und wählen Sie Ihr Modell.</value></data>
+  <data name="Guide_Oem_Download" xml:space="preserve"><value>Laden Sie dort das Paket „{0}“ herunter.</value></data>
+  <data name="Guide_Oem_DownloadVersion" xml:space="preserve"><value>Laden Sie dort das Paket „{0}“ in Version {1} herunter.</value></data>
+  <data name="Guide_Oem_SoftPaq" xml:space="preserve"><value>Bei HP heißt das Paket „SoftPaq“ und hat die Nummer {0}. Damit finden Sie es auch über die Suche auf der HP-Seite.</value></data>
+  <data name="Guide_Oem_Run" xml:space="preserve"><value>Führen Sie die heruntergeladene Datei aus und folgen Sie dem Installationsprogramm von {0}. Windows fragt dabei nach Administratorrechten.</value></data>
+  <data name="Guide_Tool_hp" xml:space="preserve"><value>HP hat dafür auch ein eigenes Programm: HP Support Assistant (auf vielen HP-PCs vorinstalliert) bzw. HP Image Assistant für Firmen-PCs. Beide finden und installieren die passenden HP-Treiber.</value></data>
+  <data name="Guide_Tool_dell" xml:space="preserve"><value>Dell hat dafür auch ein eigenes Programm: Dell Command Update bzw. SupportAssist. Beide finden und installieren die passenden Dell-Treiber.</value></data>
+  <data name="Guide_Tool_lenovo" xml:space="preserve"><value>Lenovo hat dafür auch ein eigenes Programm: Lenovo Vantage bzw. Lenovo System Update. Beide finden und installieren die passenden Lenovo-Treiber.</value></data>
+  <data name="Guide_Page_Open" xml:space="preserve"><value>Öffnen Sie die Treiberseite von {0}.</value></data>
+  <data name="Guide_Page_Model" xml:space="preserve"><value>Falls die Seite nach Ihrem Gerät fragt, geben Sie Ihr Modell ein: „{0}“.</value></data>
+  <data name="Guide_Page_Product" xml:space="preserve"><value>Suchen Sie dort nach dem Produkt „{0}“.</value></data>
+  <data name="Guide_Page_Os" xml:space="preserve"><value>Wählen Sie als Betriebssystem {0}.</value></data>
+  <data name="Guide_Page_Category" xml:space="preserve"><value>Suchen Sie den Bereich, der zu „{0}“ passt, und laden Sie den neuesten Treiber herunter.</value></data>
+  <data name="Guide_Page_Run" xml:space="preserve"><value>Führen Sie die heruntergeladene Datei aus und folgen Sie den Anweisungen. Windows fragt dabei nach Administratorrechten.</value></data>
+  <data name="Guide_Hint_Inf" xml:space="preserve"><value>Enthält der Download kein Installationsprogramm, sondern nur einen Ordner mit .inf-Dateien: Entpacken Sie ihn, öffnen Sie den Geräte-Manager (Rechtsklick auf Start), klicken Sie mit rechts auf das Gerät → „Treiber aktualisieren“ → „Auf meinem Computer nach Treibern suchen“ und wählen Sie den Ordner.</value></data>
+  <data name="Guide_Hint_WindowsUpdate" xml:space="preserve"><value>Manchmal bietet auch Windows Update einen passenden Treiber an: Einstellungen → Windows Update → Erweiterte Optionen → Optionale Updates.</value></data>
+  <data name="Guide_Cat_Copy" xml:space="preserve"><value>Kopieren Sie die Hardware-ID: {0}</value></data>
+  <data name="Guide_Cat_Open" xml:space="preserve"><value>Öffnen Sie die Suche im Microsoft Update Catalog.</value></data>
+  <data name="Guide_Cat_Pick" xml:space="preserve"><value>Wählen Sie den neuesten Eintrag für {0} und laden Sie die .cab-Datei herunter.</value></data>
+  <data name="Guide_Cat_Install" xml:space="preserve"><value>Entpacken Sie die .cab-Datei in einen Ordner (Doppelklick, Dateien herauskopieren). Öffnen Sie den Geräte-Manager (Rechtsklick auf Start), klicken Sie mit rechts auf das Gerät → „Treiber aktualisieren“ → „Auf meinem Computer nach Treibern suchen“ und wählen Sie den Ordner.</value></data>
+  <data name="Guide_None_WindowsUpdate" xml:space="preserve"><value>Prüfen Sie, ob Windows Update unter „Optionale Updates“ einen Treiber für das Gerät anbietet.</value></data>
+  <data name="Guide_None_Maker" xml:space="preserve"><value>Sonst fragen Sie beim Hersteller des Geräts nach einem Treiber für Ihre Windows-Version.</value></data>
 </root>

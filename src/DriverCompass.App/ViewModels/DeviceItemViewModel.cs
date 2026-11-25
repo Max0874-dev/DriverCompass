@@ -13,11 +13,22 @@ namespace DriverCompass.App.ViewModels;
 public sealed partial class DeviceItemViewModel
 {
     private readonly Func<DeviceItemViewModel, Task>? _install;
+    private readonly Func<DeviceItemViewModel, Task>? _showGuide;
 
-    public DeviceItemViewModel(DeviceAssessment assessment, ITextProvider t, string language, Func<DeviceItemViewModel, Task>? install = null)
+    /// <param name="install">Stage 3 (GitHub edition only).</param>
+    /// <param name="showGuide">Opens the step-by-step guide for this device.</param>
+    /// <param name="modelPage">Resolver that turns a maker's general link into this model's page when opened (HP).</param>
+    public DeviceItemViewModel(
+        DeviceAssessment assessment,
+        ITextProvider t,
+        string language,
+        Func<DeviceItemViewModel, Task>? install = null,
+        Func<DeviceItemViewModel, Task>? showGuide = null,
+        Func<DriverLink, Func<Task<Uri?>>?>? modelPage = null)
     {
         Assessment = assessment;
         _install = install;
+        _showGuide = showGuide;
         var device = assessment.Device;
         var driver = device.Driver;
 
@@ -51,7 +62,13 @@ public sealed partial class DeviceItemViewModel
         VersionSourceUri = check?.SourceUri;
         IsWindowsUpdateSource = check?.ProviderId == VersionSourceIds.WindowsUpdate;
 
-        Links = assessment.Links.Select(l => new LinkViewModel(l, AssessmentTexts.LinkLabel(t, l))).ToList();
+        Links = assessment.Links.Select(l =>
+        {
+            // A general maker link that can be resolved to this model's page is labelled as a model link.
+            var resolve = modelPage?.Invoke(l);
+            var label = resolve is null ? AssessmentTexts.LinkLabel(t, l) : AssessmentTexts.Format(t.Get("Link_OemSupport_Model"), l.SourceName);
+            return new LinkViewModel(l, label, resolve);
+        }).ToList();
         PrimaryLink = Links.FirstOrDefault();
         SecondaryLinks = Links.Skip(1).ToList();
 
@@ -115,11 +132,14 @@ public sealed partial class DeviceItemViewModel
     public bool HasLinks => Links.Count > 0;
     public bool HasSecondaryLinks => SecondaryLinks.Count > 0;
 
-    /// <summary>The prominent "Get driver" button is shown for problem devices only.</summary>
-    /// <summary>Stage 3: DriverCompass can install this newer Windows Update driver itself (one click = one driver, with confirmation).</summary>
+    /// <summary>Stage 3: DriverCompass can install this newer driver itself (one click = one driver, with confirmation).</summary>
     public bool CanInstall => _install is not null && Assessment.VersionCheck?.IsInstallable == true;
 
+    /// <summary>The prominent "Get driver" button is shown for problem devices only.</summary>
     public bool ShowGetDriver => ((NeedsAttention && HasLinks) || ShowVersionAction) && !CanInstall;
+
+    /// <summary>"How to" for every device that needs a driver or has a newer one.</summary>
+    public bool ShowGuide => _showGuide is not null && (NeedsAttention || IsNewerAvailable);
 
     public bool ShowNoLinks => NeedsAttention && !HasLinks && !ShowVersionAction;
 
@@ -141,11 +161,14 @@ public sealed partial class DeviceItemViewModel
             return OpenVersionSourceAsync();
         }
 
-        return PrimaryLink is null ? Task.CompletedTask : Launcher.OpenAsync(PrimaryLink.Uri);
+        return PrimaryLink is null ? Task.CompletedTask : PrimaryLink.OpenLinkAsync();
     }
 
     [RelayCommand]
     private Task InstallAsync() => CanInstall ? _install!(this) : Task.CompletedTask;
+
+    [RelayCommand]
+    private Task ShowGuideAsync() => ShowGuide ? _showGuide!(this) : Task.CompletedTask;
 
     [RelayCommand]
     private Task OpenVersionSourceAsync() =>
@@ -155,15 +178,27 @@ public sealed partial class DeviceItemViewModel
     private void CopyInstanceId() => Launcher.CopyText(InstanceId);
 }
 
-public sealed partial class LinkViewModel(DriverLink link, string label)
+/// <param name="resolve">Optional: finds this model's page when the link is opened; the link's own URL is the fallback.</param>
+public sealed partial class LinkViewModel(DriverLink link, string label, Func<Task<Uri?>>? resolve = null)
 {
     public DriverLink Link { get; } = link;
     public Uri Uri => Link.Uri;
     public string Label { get; } = label;
     public string Host => Link.Uri.Host;
 
+    public async Task OpenLinkAsync()
+    {
+        var uri = Link.Uri;
+        if (resolve is not null && await resolve() is { } modelPage)
+        {
+            uri = modelPage;
+        }
+
+        await Launcher.OpenAsync(uri);
+    }
+
     [RelayCommand]
-    private Task OpenAsync() => Launcher.OpenAsync(Link.Uri);
+    private Task OpenAsync() => OpenLinkAsync();
 }
 
 public sealed partial class HardwareIdItem(string id)

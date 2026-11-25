@@ -39,6 +39,15 @@ public class LinkResolverTests
     }
 
     [Fact]
+    public void Oem_links_carry_the_vendor_list_id()
+    {
+        var links = Resolve(Assess(@"PCI\VEN_10DE&DEV_2489"), TestCatalog.Dell());
+
+        Assert.All(links.Where(l => l.Kind == DriverLinkKind.OemSupport), l => Assert.Equal("dell", l.OemId));
+        Assert.All(links.Where(l => l.Kind != DriverLinkKind.OemSupport), l => Assert.Null(l.OemId));
+    }
+
+    [Fact]
     public void Serial_is_not_used_when_disabled_in_settings()
     {
         var oem = Resolve(Assess(@"PCI\VEN_10DE&DEV_2489"), TestCatalog.Dell(), useSerial: false)

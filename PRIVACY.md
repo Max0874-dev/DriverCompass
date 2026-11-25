@@ -11,6 +11,7 @@ DriverCompass läuft vollständig lokal auf deinem PC.
 - **Links** öffnen sich erst beim Klick in deinem Browser. Die Links enthalten aber Daten:
   - Hersteller-Links können **Modell** oder **Seriennummer** enthalten, damit sich die genaue Supportseite öffnet. Die Seriennummer lässt sich in den Einstellungen ausschließen.
   - Links zum Microsoft Update Catalog enthalten die **Hardware-ID**.
+  - **HP-Modellseite:** Bei HP-PCs sucht die App erst beim Klick auf „HP-Support für Ihr Modell“ die Produktnummer deines Modells heraus. Dafür lädt sie HPs öffentliche Plattformliste `hpia.hpcloud.hp.com/ref/platformList.cab` (keine Gerätedaten, von HP signiert, wird bis zu 7 Tage zwischengespeichert) und öffnet dann `support.hp.com/drivers/model/<Produktnummer>`. Ist das Laden der Herstellerliste abgeschaltet, unterbleibt auch dieser Abruf und es öffnet sich die allgemeine HP-Seite.
 
   Diese Daten erhält der jeweilige Hersteller bzw. Microsoft nur, wenn du klickst.
 - **Versionsprüfung (optional, standardmäßig aus):** Erst wenn du eine Quelle in den Einstellungen einschaltest **und** auf „Versionen prüfen“ klickst, nimmt die App Kontakt auf. Pro Quelle:
@@ -38,6 +39,7 @@ DriverCompass runs entirely on your PC.
 - **Links** only open in your browser when you click them. The links do contain data:
   - Manufacturer links may contain the **model** or **serial number**, so the exact support page opens. The serial number can be excluded in the settings.
   - Microsoft Update Catalog links contain the **hardware ID**.
+  - **HP model page:** on HP PCs the app looks up your model's product number only when you click "HP support for your model". For this it downloads HP's public platform list `hpia.hpcloud.hp.com/ref/platformList.cab` (no device data, signed by HP, cached for up to 7 days) and then opens `support.hp.com/drivers/model/<product number>`. If the vendor list download is turned off, this download is skipped too and the general HP page opens.
 
   The manufacturer or Microsoft only receives this data when you click.
 - **Version check (optional, off by default):** the app only connects after you turn a source on in the settings **and** click "Check versions". Per source:

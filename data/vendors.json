@@ -1,7 +1,7 @@
 {
   "$schema": "./vendors.schema.json",
   "schemaVersion": 1,
-  "dataVersion": "2026.11.20.1",
+  "dataVersion": "2026.11.25.1",
   "chipVendors": [
     {
       "id": "nvidia",
@@ -236,7 +236,7 @@
       "name": "HP",
       "ids": { "usb": ["03F0"] },
       "allowedDomains": ["hp.com"],
-      "driverPages": [{ "url": "https://support.hp.com/us-en/drivers" }]
+      "driverPages": [{ "url": "https://support.hp.com/drivers" }]
     }
   ],
   "oems": [
@@ -265,42 +265,58 @@
       "name": "HP",
       "match": ["^HP$", "^HP ", "^Hewlett[- ]?Packard"],
       "allowedDomains": ["hp.com"],
-      "supportUrls": [{ "template": "https://support.hp.com/us-en/drivers", "requires": [] }]
+      "supportUrls": [{ "template": "https://support.hp.com/drivers", "requires": [] }]
     },
     {
       "id": "asus",
       "name": "ASUS",
       "match": ["^ASUSTeK", "^ASUS"],
       "allowedDomains": ["asus.com"],
-      "supportUrls": [{ "template": "https://www.asus.com/support/download-center/", "requires": [] }]
+      "supportUrls": [
+        { "template": "https://www.asus.com/supportonly/{board}/helpdesk_download/", "requires": ["board"] },
+        { "template": "https://www.asus.com/support/download-center/", "requires": [] }
+      ]
     },
     {
       "id": "msi",
       "name": "MSI",
       "match": ["^Micro-Star", "^MSI\\b"],
       "allowedDomains": ["msi.com"],
-      "supportUrls": [{ "template": "https://www.msi.com/support/download", "requires": [] }]
+      "supportUrls": [
+        { "template": "https://www.msi.com/search/{model}", "requires": ["model"] },
+        { "template": "https://www.msi.com/support/download", "requires": [] }
+      ]
     },
     {
       "id": "gigabyte",
       "name": "GIGABYTE",
       "match": ["^Gigabyte", "^GIGA-BYTE"],
       "allowedDomains": ["gigabyte.com"],
-      "supportUrls": [{ "template": "https://www.gigabyte.com/Support", "requires": [] }]
+      "supportUrls": [
+        { "template": "https://www.gigabyte.com/Search?keyword={model}", "requires": ["model"] },
+        { "template": "https://www.gigabyte.com/Search?keyword={board}", "requires": ["board"] },
+        { "template": "https://www.gigabyte.com/Support", "requires": [] }
+      ]
     },
     {
       "id": "asrock",
       "name": "ASRock",
       "match": ["^ASRock"],
       "allowedDomains": ["asrock.com"],
-      "supportUrls": [{ "template": "https://www.asrock.com/support/index.asp", "requires": [] }]
+      "supportUrls": [
+        { "template": "https://www.asrock.com/support/index.asp?Model={board}", "requires": ["board"] },
+        { "template": "https://www.asrock.com/support/index.asp", "requires": [] }
+      ]
     },
     {
       "id": "acer",
       "name": "Acer",
       "match": ["^Acer"],
       "allowedDomains": ["acer.com"],
-      "supportUrls": [{ "template": "https://www.acer.com/us-en/support/drivers-and-manuals", "requires": [] }]
+      "supportUrls": [
+        { "template": "https://www.acer.com/us-en/support/product-support/{model}", "requires": ["model"] },
+        { "template": "https://www.acer.com/us-en/support/drivers-and-manuals", "requires": [] }
+      ]
     },
     {
       "id": "microsoft-surface",
@@ -356,7 +372,10 @@
       "name": "Framework",
       "match": ["^Framework"],
       "allowedDomains": ["frame.work"],
-      "supportUrls": [{ "template": "https://knowledgebase.frame.work/", "requires": [] }]
+      "supportUrls": [
+        { "template": "https://knowledgebase.frame.work/en_us/search?q={model}%20BIOS%20and%20Driver%20Releases", "requires": ["model"] },
+        { "template": "https://knowledgebase.frame.work/", "requires": [] }
+      ]
     },
     {
       "id": "panasonic",

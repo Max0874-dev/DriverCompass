@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using DriverCompass.Core.Links;
 using DriverCompass.Core.Models;
 using DriverCompass.Core.Parsing;
 
@@ -58,6 +59,33 @@ public class VendorCatalogValidatorTests
     {
         var catalog = _validator.Validate(RepoFile("vendors.json")).Catalog!;
         Assert.Equal(expectedOem, catalog.FindOem(new SystemInfo { Manufacturer = smbiosManufacturer })?.Vendor.Id);
+    }
+
+    /// <summary>
+    /// Model page templates, each with a value as Windows reports it, checked by hand in a browser
+    /// on 2026-11-25. The first template whose value exists is the one the app opens.
+    /// </summary>
+    [Theory]
+    [InlineData("asus", "board", "ROG STRIX B550-F GAMING (WI-FI)", "https://www.asus.com/supportonly/ROG%20STRIX%20B550-F%20GAMING%20%28WI-FI%29/helpdesk_download/")]
+    [InlineData("asus", "board", "FA507NV", "https://www.asus.com/supportonly/FA507NV/helpdesk_download/")]
+    [InlineData("msi", "model", "Katana GF66 11UE", "https://www.msi.com/search/Katana%20GF66%2011UE")]
+    [InlineData("msi", "model", "MAG X670E TOMAHAWK WIFI (MS-7E12)", "https://www.msi.com/search/MAG%20X670E%20TOMAHAWK%20WIFI%20%28MS-7E12%29")]
+    [InlineData("gigabyte", "model", "AORUS 15 9KF", "https://www.gigabyte.com/Search?keyword=AORUS%2015%209KF")]
+    [InlineData("gigabyte", "board", "B550 AORUS ELITE V2", "https://www.gigabyte.com/Search?keyword=B550%20AORUS%20ELITE%20V2")]
+    [InlineData("asrock", "board", "B650M Pro RS", "https://www.asrock.com/support/index.asp?Model=B650M%20Pro%20RS")]
+    [InlineData("acer", "model", "Nitro AN515-58", "https://www.acer.com/us-en/support/product-support/Nitro%20AN515-58")]
+    [InlineData("framework", "model", "Laptop 16 (AMD Ryzen 7040 Series)", "https://knowledgebase.frame.work/en_us/search?q=Laptop%2016%20%28AMD%20Ryzen%207040%20Series%29%20BIOS%20and%20Driver%20Releases")]
+    public void Repository_model_page_templates_expand_as_checked(string oemId, string placeholder, string value, string expected)
+    {
+        var catalog = _validator.Validate(RepoFile("vendors.json")).Catalog!;
+        var oem = Assert.Single(catalog.Oems, o => o.Id == oemId);
+        var values = new Dictionary<string, string?>(StringComparer.Ordinal) { [placeholder] = value };
+
+        var url = oem.SupportUrls
+            .Select(t => UrlSafety.Expand(t.Template, values, oem.AllowedDomains))
+            .First(u => u is not null);
+
+        Assert.Equal(expected, url!.AbsoluteUri);
     }
 
     [Theory]

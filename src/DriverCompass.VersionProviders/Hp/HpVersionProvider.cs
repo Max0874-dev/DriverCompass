@@ -22,7 +22,9 @@ public sealed partial class HpVersionProvider(ICatalogDownloader downloader, ICa
 
     public VersionSourceInfo Source { get; } = new(VersionSourceIds.Hp, TransmitsDeviceData: true);
 
-    public bool IsApplicable(SystemInfo system) =>
+    public bool IsApplicable(SystemInfo system) => IsHp(system);
+
+    internal static bool IsHp(SystemInfo system) =>
         system.Manufacturer?.Trim() is { } m &&
         (m.StartsWith("HP", StringComparison.OrdinalIgnoreCase) || m.StartsWith("Hewlett", StringComparison.OrdinalIgnoreCase));
 

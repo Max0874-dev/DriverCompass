@@ -74,6 +74,23 @@ public interface ILinkSource
 
 public sealed record LinkContext(SystemInfo System, IVendorCatalog Catalog, AnalysisOptions Options);
 
+/// <summary>
+/// Finds the PC maker's driver page for exactly this model when the vendor list cannot build it from
+/// the system values (HP: product number from HP's signed platform list). Asked only when the user opens
+/// the maker's link; any failure falls back to the link from the vendor list.
+/// </summary>
+public interface IOemModelPageProvider
+{
+    /// <summary>Vendor-list id of the PC maker this provider is for (e.g. "hp").</summary>
+    string OemId { get; }
+
+    /// <summary>True if this PC has the values the provider needs (no network access).</summary>
+    bool CanResolve(SystemInfo system);
+
+    /// <summary>The model page (HTTPS, maker's own domain) or <c>null</c>. Does not throw for network or data errors.</summary>
+    Task<Uri?> FindModelPageAsync(SystemInfo system, CancellationToken cancellationToken = default);
+}
+
 /// <summary>Combines all <see cref="ILinkSource"/>s, orders and de-duplicates the links.</summary>
 public interface ILinkResolver
 {

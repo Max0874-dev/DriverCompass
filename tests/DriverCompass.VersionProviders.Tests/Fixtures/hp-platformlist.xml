@@ -10,6 +10,15 @@
     <SystemID>8B41</SystemID>
   </Platform>
   <Platform>
+    <ProductName Id="38460777">HP EliteBook 830 G8 Notebook PC</ProductName>
+    <ProductName Id="38460774">HP EliteBook 840 G8 Notebook PC</ProductName>
+    <ProductName Id="2100104090">HP EliteBook 840 Aero G8 Notebook PC</ProductName>
+    <ProductName Id="../evil">Not a number</ProductName>
+    <OS><OSVersion>10.0</OSVersion><OSReleaseIdFilename>24H2</OSReleaseIdFilename><OSBuildId>26100</OSBuildId><IsWindows11>true</IsWindows11></OS>
+    <SystemFamily>HP EliteBook</SystemFamily>
+    <SystemID>880D</SystemID>
+  </Platform>
+  <Platform>
     <OS><OSReleaseIdFilename>../x</OSReleaseIdFilename><OSBuildId>1</OSBuildId><IsWindows11>true</IsWindows11></OS>
     <SystemID>0000</SystemID>
   </Platform>

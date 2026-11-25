@@ -75,7 +75,8 @@ public enum LinkSpecificity
 /// <param name="Uri">Absolute HTTPS URI (already validated against the vendor's allowed domains).</param>
 /// <param name="Specificity">How exact the link is.</param>
 /// <param name="SourceName">Vendor/OEM name for display, e.g. "Dell", "NVIDIA", "Microsoft Update Catalog".</param>
-public sealed record DriverLink(DriverLinkKind Kind, Uri Uri, LinkSpecificity Specificity, string SourceName);
+/// <param name="OemId">Vendor-list id of the PC maker (e.g. "hp") for <see cref="DriverLinkKind.OemSupport"/> links.</param>
+public sealed record DriverLink(DriverLinkKind Kind, Uri Uri, LinkSpecificity Specificity, string SourceName, string? OemId = null);
 
 /// <summary>Result of evaluating one device.</summary>
 public sealed record DeviceAssessment

@@ -36,7 +36,7 @@ public sealed class OemSupportLinkSource : ILinkSource
                 continue;
             }
 
-            var link = new DriverLink(DriverLinkKind.OemSupport, uri, SpecificityOf(template), oem.Name);
+            var link = new DriverLink(DriverLinkKind.OemSupport, uri, SpecificityOf(template), oem.Name, oem.Id);
             if (specific is null)
             {
                 specific = link;

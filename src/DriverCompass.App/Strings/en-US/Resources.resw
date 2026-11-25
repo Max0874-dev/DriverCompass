@@ -319,4 +319,42 @@
   <data name="InstallOutcomeShort_NotInstallable" xml:space="preserve"><value>not installable</value></data>
   <data name="PackageHost_lenovo" xml:space="preserve"><value>download.lenovo.com</value></data>
   <data name="Install_Steps_Lenovo" xml:space="preserve"><value>The package is downloaded from {1} and checked against the checksum from the {0} catalog and the {0} signature. Important: Lenovo packages can only be extracted by Lenovo's own signed program. That program runs once with administrator rights – only to extract, just like Lenovo System Update does. Afterwards only the signed driver is installed, no Lenovo software. A restore point is created first, and Windows asks for administrator rights. You can undo the installation under "History".</value></data>
+  <data name="Guide_Button" xml:space="preserve"><value>How to</value></data>
+  <data name="Guide_Title" xml:space="preserve"><value>How to get the driver</value></data>
+  <data name="Guide_HintsHeader" xml:space="preserve"><value>Good to know</value></data>
+  <data name="Guide_Close" xml:space="preserve"><value>Close</value></data>
+  <data name="Guide_Action_Open" xml:space="preserve"><value>Open</value></data>
+  <data name="Guide_Action_Copy" xml:space="preserve"><value>Copy</value></data>
+  <data name="Guide_Action_Catalog" xml:space="preserve"><value>Open search</value></data>
+  <data name="Guide_InstallHere" xml:space="preserve"><value>The easiest way: DriverCompass installs exactly this driver for you – with a restore point and "Undo". Or do it yourself:</value></data>
+  <data name="Guide_Intro_Generic" xml:space="preserve"><value>The device runs on a generic Windows driver. That is often fine. You mainly need the maker's driver if features are missing or something does not work properly.</value></data>
+  <data name="Guide_Restart" xml:space="preserve"><value>Restart the PC if you are asked to. Then check again in DriverCompass ("Scan again").</value></data>
+  <data name="Guide_Wu_DriverFallback" xml:space="preserve"><value>the driver for this device</value></data>
+  <data name="Guide_Wu_Open" xml:space="preserve"><value>Open Windows Update, then "Advanced options" → "Optional updates". The button below goes straight there.</value></data>
+  <data name="Guide_Wu_Select" xml:space="preserve"><value>Expand "Driver updates" and tick only "{0}".</value></data>
+  <data name="Guide_Wu_Install" xml:space="preserve"><value>Choose "Download and install". Windows downloads the driver, which Microsoft has checked, and installs it.</value></data>
+  <data name="Guide_Oem_OpenPackage" xml:space="preserve"><value>Open the page of the driver package at {0}.</value></data>
+  <data name="Guide_Oem_OpenModel" xml:space="preserve"><value>Open the driver page of your model at {0}.</value></data>
+  <data name="Guide_Oem_FindSupport" xml:space="preserve"><value>Open {0}'s support page and choose your model.</value></data>
+  <data name="Guide_Oem_Download" xml:space="preserve"><value>Download the package "{0}" there.</value></data>
+  <data name="Guide_Oem_DownloadVersion" xml:space="preserve"><value>Download the package "{0}", version {1}, there.</value></data>
+  <data name="Guide_Oem_SoftPaq" xml:space="preserve"><value>HP calls the package "SoftPaq"; its number is {0}. You can also find it with the search on HP's page.</value></data>
+  <data name="Guide_Oem_Run" xml:space="preserve"><value>Run the downloaded file and follow {0}'s installer. Windows asks for administrator rights.</value></data>
+  <data name="Guide_Tool_hp" xml:space="preserve"><value>HP also has its own program for this: HP Support Assistant (preinstalled on many HP PCs) or HP Image Assistant for business PCs. Both find and install the right HP drivers.</value></data>
+  <data name="Guide_Tool_dell" xml:space="preserve"><value>Dell also has its own program for this: Dell Command Update or SupportAssist. Both find and install the right Dell drivers.</value></data>
+  <data name="Guide_Tool_lenovo" xml:space="preserve"><value>Lenovo also has its own program for this: Lenovo Vantage or Lenovo System Update. Both find and install the right Lenovo drivers.</value></data>
+  <data name="Guide_Page_Open" xml:space="preserve"><value>Open {0}'s driver page.</value></data>
+  <data name="Guide_Page_Model" xml:space="preserve"><value>If the page asks for your device, enter your model: "{0}".</value></data>
+  <data name="Guide_Page_Product" xml:space="preserve"><value>Search there for the product "{0}".</value></data>
+  <data name="Guide_Page_Os" xml:space="preserve"><value>Choose {0} as the operating system.</value></data>
+  <data name="Guide_Page_Category" xml:space="preserve"><value>Look for the section that matches "{0}" and download the newest driver.</value></data>
+  <data name="Guide_Page_Run" xml:space="preserve"><value>Run the downloaded file and follow the instructions. Windows asks for administrator rights.</value></data>
+  <data name="Guide_Hint_Inf" xml:space="preserve"><value>If the download has no installer, only a folder with .inf files: unzip it, open Device Manager (right-click Start), right-click the device → "Update driver" → "Browse my computer for drivers" and choose the folder.</value></data>
+  <data name="Guide_Hint_WindowsUpdate" xml:space="preserve"><value>Sometimes Windows Update offers a matching driver too: Settings → Windows Update → Advanced options → Optional updates.</value></data>
+  <data name="Guide_Cat_Copy" xml:space="preserve"><value>Copy the hardware ID: {0}</value></data>
+  <data name="Guide_Cat_Open" xml:space="preserve"><value>Open the search in the Microsoft Update Catalog.</value></data>
+  <data name="Guide_Cat_Pick" xml:space="preserve"><value>Choose the newest entry for {0} and download the .cab file.</value></data>
+  <data name="Guide_Cat_Install" xml:space="preserve"><value>Extract the .cab file into a folder (double-click, copy the files out). Open Device Manager (right-click Start), right-click the device → "Update driver" → "Browse my computer for drivers" and choose the folder.</value></data>
+  <data name="Guide_None_WindowsUpdate" xml:space="preserve"><value>Check whether Windows Update offers a driver for the device under "Optional updates".</value></data>
+  <data name="Guide_None_Maker" xml:space="preserve"><value>Otherwise ask the device's maker for a driver for your Windows version.</value></data>
 </root>

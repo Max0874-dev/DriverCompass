@@ -109,6 +109,13 @@ public partial class App : Application
                 VersionProviderFactory.CreateAll(sp.GetRequiredService<VersionCatalogHttp>().Client, sp.GetRequiredService<ILoggerFactory>()));
         }
 
+        // A PC maker's general link → this model's page (HP), looked up only when the user opens the link.
+        services.AddSingleton<IEnumerable<IOemModelPageProvider>>(sp => isMock
+            ? []
+            : VersionProviderFactory.CreateModelPageProviders(sp.GetRequiredService<VersionCatalogHttp>().Client, sp.GetRequiredService<ILoggerFactory>()));
+        services.AddSingleton(sp => new ModelPageLinks(
+            sp.GetRequiredService<IEnumerable<IOemModelPageProvider>>(), sp.GetRequiredService<ISettingsService>(), sp.GetRequiredService<ILogger<ModelPageLinks>>()));
+
         services.AddSingleton<IVersionCheckService>(sp =>
             new VersionCheckService(sp.GetRequiredService<IEnumerable<IVersionProvider>>(), sp.GetRequiredService<ILogger<VersionCheckService>>()));
 
@@ -157,7 +164,8 @@ public partial class App : Application
             sp.GetRequiredService<ISettingsService>(),
             sp.GetServices<IReportExporter>(),
             sp.GetRequiredService<ILogger<MainViewModel>>(),
-            isMock));
+            isMock,
+            sp.GetRequiredService<ModelPageLinks>()));
 
         return services.BuildServiceProvider();
     }

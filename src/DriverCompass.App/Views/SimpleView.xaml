@@ -76,6 +76,9 @@
                       Command="{x:Bind GetDriverCommand}"
                       ToolTipService.ToolTip="{x:Bind PrimaryLink.Label}"
                       Visibility="{x:Bind svc:StatusVisuals.VisibleIf(ShowGetDriver)}" />
+              <Button Content="{x:Bind svc:Localizer.T('Guide_Button')}"
+                      Command="{x:Bind ShowGuideCommand}"
+                      Visibility="{x:Bind svc:StatusVisuals.VisibleIf(ShowGuide)}" />
               <Button Content="{x:Bind SourcesLabel}" Visibility="{x:Bind svc:StatusVisuals.VisibleIf(HasLinks)}">
                 <Button.Flyout>
                   <Flyout Placement="BottomEdgeAlignedRight">

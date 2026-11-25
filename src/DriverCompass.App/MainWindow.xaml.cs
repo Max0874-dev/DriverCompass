@@ -5,6 +5,7 @@ using DriverCompass.Core;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
 using Windows.Graphics;
 using Windows.Storage.Pickers;
@@ -188,6 +189,111 @@ public sealed partial class MainWindow : Window, IShellService
             Style = (Style)Application.Current.Resources["DefaultContentDialogStyle"],
         };
         return await dialog.ShowAsync() == ContentDialogResult.Primary;
+    }
+
+    public async Task ShowGuideAsync(DeviceItemViewModel item, Core.Reporting.DriverGuideContent guide)
+    {
+        var installRequested = false;
+        ContentDialog? dialog = null;
+
+        var panel = new StackPanel { Spacing = 12, MaxWidth = 560 };
+        panel.Children.Add(Text(item.Name, bold: true));
+        if (!string.IsNullOrWhiteSpace(guide.Intro))
+        {
+            panel.Children.Add(Text(guide.Intro, secondary: true));
+        }
+
+        if (guide.Shortcut is { } shortcut)
+        {
+            panel.Children.Add(GuideRow(null, shortcut));
+        }
+
+        for (var i = 0; i < guide.Steps.Count; i++)
+        {
+            panel.Children.Add(GuideRow((i + 1).ToString(System.Globalization.CultureInfo.CurrentCulture), guide.Steps[i]));
+        }
+
+        if (guide.Hints.Count > 0)
+        {
+            panel.Children.Add(Text(Localizer.T("Guide_HintsHeader"), bold: true));
+            foreach (var hint in guide.Hints)
+            {
+                panel.Children.Add(GuideRow("•", hint, secondary: true));
+            }
+        }
+
+        dialog = new ContentDialog
+        {
+            XamlRoot = Root.XamlRoot,
+            Title = Localizer.T("Guide_Title"),
+            Content = new ScrollViewer { Content = panel, MaxHeight = 560 },
+            CloseButtonText = Localizer.T("Guide_Close"),
+            DefaultButton = ContentDialogButton.Close,
+            Style = (Style)Application.Current.Resources["DefaultContentDialogStyle"],
+        };
+
+        await dialog.ShowAsync();
+
+        // Only one dialog can be open: the install confirmation follows after the guide is closed.
+        if (installRequested && item.InstallCommand.CanExecute(null))
+        {
+            await item.InstallCommand.ExecuteAsync(null);
+        }
+
+        FrameworkElement GuideRow(string? number, Core.Reporting.GuideStep step, bool secondary = false)
+        {
+            var grid = new Grid { ColumnSpacing = 8 };
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(number is null ? 0 : 20) });
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+
+            if (number is not null)
+            {
+                var n = Text(number, bold: true, secondary: secondary);
+                grid.Children.Add(n);
+            }
+
+            var content = new StackPanel { Spacing = 4 };
+            content.Children.Add(Text(step.Text, secondary: secondary));
+            if (GuideButton(step) is { } button)
+            {
+                content.Children.Add(button);
+            }
+
+            Grid.SetColumn(content, 1);
+            grid.Children.Add(content);
+            return grid;
+        }
+
+        ButtonBase? GuideButton(Core.Reporting.GuideStep step)
+        {
+            (string? Label, Func<Task>? Action) choice = step.Action switch
+            {
+                Core.Reporting.GuideAction.OpenPrimaryLink when item.PrimaryLink is { } link =>
+                    (link.Label, link.OpenLinkAsync),
+                Core.Reporting.GuideAction.OpenVersionSource when item.VersionSourceUri is { } uri =>
+                    (Localizer.T("Version_OpenSource"), () => Launcher.OpenAsync(uri)),
+                Core.Reporting.GuideAction.OpenWindowsUpdate =>
+                    (Localizer.T("Version_OpenWindowsUpdate"), () => Launcher.OpenWindowsUpdateAsync()),
+                Core.Reporting.GuideAction.OpenCatalogSearch when step.Value is { } id =>
+                    (Localizer.T("Guide_Action_Catalog"), () => Launcher.OpenAsync(Core.Links.MicrosoftCatalogLinkSource.BuildSearchUri(id))),
+                Core.Reporting.GuideAction.Copy when step.Value is { } value =>
+                    (Localizer.T("Guide_Action_Copy"), () => { Launcher.CopyText(value); return Task.CompletedTask; }),
+                Core.Reporting.GuideAction.Install when item.CanInstall =>
+                    (Localizer.T("Simple_Install"), () => { installRequested = true; dialog?.Hide(); return Task.CompletedTask; }),
+                _ => (null, null),
+            };
+
+            if (choice is not { Label: { } label, Action: { } action })
+            {
+                return null;
+            }
+
+            ButtonBase button = step.Action == Core.Reporting.GuideAction.Install
+                ? new Button { Content = label, Style = (Style)Application.Current.Resources["AccentButtonStyle"] }
+                : new HyperlinkButton { Content = label, Padding = new Thickness(0) };
+            button.Click += async (_, _) => await action();
+            return button;
+        }
     }
 
     public async Task<Guid?> ShowInstallHistoryAsync(IReadOnlyList<InstallHistoryItem> items)

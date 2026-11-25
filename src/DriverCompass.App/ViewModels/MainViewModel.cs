@@ -7,6 +7,7 @@ using DriverCompass.Core.Abstractions;
 using DriverCompass.Core.Evaluation;
 using DriverCompass.Core.Installation;
 using DriverCompass.Core.Models;
+using DriverCompass.Core.Reporting;
 using DriverCompass.Core.Services;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Xaml.Controls;
@@ -26,6 +27,7 @@ public sealed partial class MainViewModel : ObservableObject
     private readonly IElevatedInstallerClient _installer;
     private readonly IInstallLog _installLog;
     private readonly IAppUpdateChecker _updates;
+    private readonly ModelPageLinks? _modelPages;
     private bool _updateChecked;
     private Uri? _updatePage;
     private List<DeviceItemViewModel> _all = [];
@@ -40,8 +42,10 @@ public sealed partial class MainViewModel : ObservableObject
         ISettingsService settings,
         IEnumerable<IReportExporter> exporters,
         ILogger<MainViewModel> logger,
-        bool isMockMode)
+        bool isMockMode,
+        ModelPageLinks? modelPages = null)
     {
+        _modelPages = modelPages;
         _analysis = analysis;
         _versions = versions;
         _installer = installer;
@@ -428,7 +432,24 @@ public sealed partial class MainViewModel : ObservableObject
     {
         var lang = Localizer.Current.Language;
         Func<DeviceItemViewModel, Task>? install = InstallationAvailable ? InstallAsync : null;
-        _all = result.Devices.Select(d => new DeviceItemViewModel(d, Localizer.Current, lang, install)).ToList();
+        var system = result.Scan.System;
+        Func<DriverLink, Func<Task<Uri?>>?>? modelPage = _modelPages is null ? null : link => _modelPages.For(link, system);
+        _all = result.Devices.Select(d => new DeviceItemViewModel(d, Localizer.Current, lang, install, ShowGuideAsync, modelPage)).ToList();
+    }
+
+    /// <summary>Step-by-step help for one device: where to get the driver and how to install it.</summary>
+    public async Task ShowGuideAsync(DeviceItemViewModel item)
+    {
+        if (Shell is null || _result is null)
+        {
+            return;
+        }
+
+        var guide = DriverGuide.Build(item.Assessment, _result.Scan.System, item.CanInstall, Localizer.Current);
+        if (guide is not null)
+        {
+            await Shell.ShowGuideAsync(item, guide);
+        }
     }
 
     // ===================== Stage 3: install ONE driver (Windows Update) =====================

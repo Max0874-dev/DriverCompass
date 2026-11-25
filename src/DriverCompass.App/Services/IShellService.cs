@@ -26,6 +26,9 @@ public interface IShellService
     /// <summary>Generic yes/no question; <paramref name="primaryText"/> is the button that proceeds.</summary>
     Task<bool> ConfirmAsync(string title, string message, string primaryText);
 
+    /// <summary>Shows the step-by-step guide for one device; step buttons act on <paramref name="item"/>.</summary>
+    Task ShowGuideAsync(ViewModels.DeviceItemViewModel item, Core.Reporting.DriverGuideContent guide);
+
     /// <summary>Shows the install history; returns the entry the user wants to roll back, or <c>null</c>.</summary>
     Task<Guid?> ShowInstallHistoryAsync(IReadOnlyList<InstallHistoryItem> items);
 }

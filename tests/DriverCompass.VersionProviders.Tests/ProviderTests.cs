@@ -260,6 +260,66 @@ public class HpTests
     [InlineData("Micro-Star International Co., Ltd.", false)]
     public void Applicability(string manufacturer, bool expected) =>
         Assert.Equal(expected, new HpVersionProvider(new FakeDownloader([]), new FakeExtractor()).IsApplicable(new SystemInfo { Manufacturer = manufacturer }));
+
+    [Fact]
+    public void Products_OnlyNumericIds()
+    {
+        using var stream = File.OpenRead(Fixtures.PathOf("hp-platformlist.xml"));
+        var products = HpCatalogParser.ParseProducts(stream, "880d");
+
+        Assert.Equal(["38460777", "38460774", "2100104090"], products.Select(p => p.Id));
+    }
+
+    [Theory]
+    [InlineData("HP EliteBook 840 G8 Notebook PC", "38460774")]
+    [InlineData("hp elitebook 840 aero g8 notebook pc", "2100104090")]
+    [InlineData("HP EliteBook 840 G8", "38460774")]
+    [InlineData("Something else", "38460777")]
+    [InlineData(null, "38460777")]
+    public void Product_MatchesModelName(string? model, string expected)
+    {
+        HpProduct[] products =
+        [
+            new("38460777", "HP EliteBook 830 G8 Notebook PC"),
+            new("38460774", "HP EliteBook 840 G8 Notebook PC"),
+            new("2100104090", "HP EliteBook 840 Aero G8 Notebook PC"),
+        ];
+        Assert.Equal(expected, HpCatalogParser.ChooseProduct(products, model)!.Id);
+    }
+
+    [Fact]
+    public async Task ModelPage_FromPlatformList()
+    {
+        var downloader = new FakeDownloader(new() { ["https://hpia.hpcloud.hp.com/ref/platformList.cab"] = Fixtures.PathOf("hp-platformlist.xml") });
+        var extractor = new FakeExtractor();
+        var provider = new HpModelPageProvider(downloader, extractor);
+        var system = new SystemInfo { Manufacturer = "HP", Model = "HP EliteBook 840 G8 Notebook PC", BaseBoardProduct = "880D" };
+
+        Assert.True(provider.CanResolve(system));
+        var page = await provider.FindModelPageAsync(system, TestContext.Current.CancellationToken);
+
+        Assert.Equal("https://support.hp.com/drivers/model/38460774", page!.AbsoluteUri);
+        Assert.Equal(["HP Inc."], Assert.Single(extractor.RequiredSigners));
+    }
+
+    [Fact]
+    public async Task ModelPage_UnknownPlatformOrDownloadError_IsNull()
+    {
+        var provider = new HpModelPageProvider(
+            new FakeDownloader(new() { ["https://hpia.hpcloud.hp.com/ref/platformList.cab"] = Fixtures.PathOf("hp-platformlist.xml") }), new FakeExtractor());
+        Assert.Null(await provider.FindModelPageAsync(new SystemInfo { Manufacturer = "HP", BaseBoardProduct = "ABCD" }, TestContext.Current.CancellationToken));
+
+        var offline = new HpModelPageProvider(new FakeDownloader([]), new FakeExtractor());
+        Assert.Null(await offline.FindModelPageAsync(new SystemInfo { Manufacturer = "HP", BaseBoardProduct = "880D" }, TestContext.Current.CancellationToken));
+    }
+
+    [Theory]
+    [InlineData("Dell Inc.", "880D")]
+    [InlineData("HP", null)]
+    [InlineData("HP", "MS-7E12")]
+    public void ModelPage_NeedsHpAndPlatformId(string manufacturer, string? board) =>
+        Assert.False(new HpModelPageProvider(new FakeDownloader([]), new FakeExtractor())
+            .CanResolve(new SystemInfo { Manufacturer = manufacturer, BaseBoardProduct = board }));
 }
 
 public class WindowsUpdateTests

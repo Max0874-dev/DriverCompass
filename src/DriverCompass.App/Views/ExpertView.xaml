@@ -167,6 +167,11 @@
                                Visibility="{x:Bind svc:StatusVisuals.VisibleIf(ViewModel.SelectedItem.ShowVersionAction), Mode=OneWay}" />
             </StackPanel>
 
+            <!-- Step-by-step help to get and install the driver -->
+            <Button Content="{x:Bind svc:Localizer.T('Guide_Button')}"
+                    Command="{x:Bind ViewModel.SelectedItem.ShowGuideCommand, Mode=OneWay}"
+                    Visibility="{x:Bind svc:StatusVisuals.VisibleIf(ViewModel.SelectedItem.ShowGuide), Mode=OneWay}" />
+
             <!-- Key facts -->
             <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto" ColumnSpacing="12" RowSpacing="4">
               <TextBlock Grid.Row="0" Text="{x:Bind svc:Localizer.T('Col_DeviceClass')}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
